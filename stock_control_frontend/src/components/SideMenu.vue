@@ -8,7 +8,7 @@
                 <MenuItem to="/" label="Home" />
                 <MenuItem to="/estoques" label="Estoques" />
                 <MenuItem to="/custos" label="Custos do Estoque" />
-                <MenuItem to="/transacoes" label="Transações" />
+                <MenuItem to="/transacao" label="Transações" />
                 <MenuItem to="/logout" label="Logout" />
             </ul>
         </div>
