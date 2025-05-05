@@ -4,7 +4,10 @@ import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import StocksView from '@/views/StocksView.vue';
 import StockCostsView from '@/views/StockCostsView.vue';
-import InsertTransaction from '@/views/InsertTransaction.vue';
+import InsertTransactionView from '@/views/InsertTransactionView.vue';
+import SearchTransactionsView from '@/views/SearchTransactionsView.vue';
+import ItemsView from '@/views/ItemsView.vue';
+import UsersView from '@/views/UsersView.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const routes: Array<RouteRecordRaw> = [
@@ -26,14 +29,29 @@ const routes: Array<RouteRecordRaw> = [
     component: StocksView,
   },
   {
+    path: '/registrar-transacao',
+    name: 'Transação',
+    component: InsertTransactionView,
+  },
+  {
+    path: '/consultar-transacoes',
+    name: 'Consultar transações',
+    component: SearchTransactionsView,
+  },
+  {
     path: '/custos',
     name: 'Custos estoque',
     component: StockCostsView,
   },
   {
-    path: '/transacao',
-    name: 'Transação',
-    component: InsertTransaction,
+    path: '/itens',
+    name: 'Itens',
+    component: ItemsView,
+  },
+  {
+    path: '/usuarios',
+    name: 'Usuarios',
+    component: UsersView,
   }
 ];
 

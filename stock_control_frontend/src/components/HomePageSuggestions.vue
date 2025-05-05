@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
     <div class="homepage-title">
         <h1 class="homepage-title-text">Controle de estoque projeto congonhas</h1>
@@ -10,19 +6,17 @@
         <h2 class="suggestion-title">Acessados frequentemente</h2>
         <div class="suggestion-item">
             <button class="suggestion-item-button">
-                <!-- <img src="../assets/1.png" alt="Suggestion 1" /> -->
                 <span>Estoques</span>
             </button>
         </div>
         <div class="suggestion-item">
             <button class="suggestion-item-button">
-                <!-- <img src="../assets/2.png" alt="Suggestion 2" /> -->
                 <span>Custos do estoque</span>
             </button>
         </div>
         <div class="suggestion-item">
             <button class="suggestion-item-button">
-                <!-- <img src="../assets/3.png" alt="Suggestion 3" /> -->
+
                 <span>Registrar transação</span>
             </button>
         </div>

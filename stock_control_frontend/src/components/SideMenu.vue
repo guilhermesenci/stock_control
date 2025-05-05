@@ -7,8 +7,11 @@
             <ul>
                 <MenuItem to="/" label="Home" />
                 <MenuItem to="/estoques" label="Estoques" />
+                <MenuItem to="/registrar-transacao" label="Gegistrar transação" />
+                <MenuItem to="/consultar-transacoes" label="Consultar transações" />
                 <MenuItem to="/custos" label="Custos do Estoque" />
-                <MenuItem to="/transacao" label="Transações" />
+                <MenuItem to="/itens" label="Cadastro de Itens" />
+                <MenuItem to="/usuarios" label="Cadastro de Usuários" />
                 <MenuItem to="/logout" label="Logout" />
             </ul>
         </div>
