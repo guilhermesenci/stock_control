@@ -3,5 +3,6 @@ export interface TransactionForm {
     sku: string;
     product: string;
     quantity: number;
+    unitCost: number;
   }
   

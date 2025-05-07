@@ -1,54 +1,73 @@
-import api from './api';
-import type { AxiosResponse } from 'axios';
+import api from '@/types/api'
+import { mapPaginated, type Paginated } from '@/types/api'
 
-export interface Item {
-  cod_sku: number;
-  descricao_item: string;
-  unid_medida: string;
+export interface ItemDTO {
+  cod_sku: number
+  descricao_item: string
+  unid_medida: string
 }
 
-export interface PaginatedResponse<T> {
-  results: T[];
-  count: number;
-  next: string | null;
-  previous: string | null;
+/** Modelagem frontend em camelCase */
+export interface Item {
+  codSku: number
+  descricaoItem: string
+  unidMedida: string
 }
 
 class ItemService {
-  /** Busca a lista de itens (paginação opcional) */
-  async getItems(page = 1): Promise<PaginatedResponse<Item>> {
-    const res: AxiosResponse<PaginatedResponse<Item>> = await api.get(
-      `/vi/itens/?page=${page}`
-    );
-    return res.data;
+  /** Lista itens paginados */
+  async getItems(page = 1): Promise<Paginated<Item>> {
+    const { data } = await api.get(`/vi/itens/?page=${page}`)
+    return mapPaginated<ItemDTO, Item>(data, (i) => ({
+      codSku: i.cod_sku,
+      descricaoItem: i.descricao_item,
+      unidMedida: i.unid_medida,
+    }))
   }
 
-  /** Busca um único item pelo SKU */
-  async getItem(cod_sku: number): Promise<Item> {
-    const res: AxiosResponse<Item> = await api.get(`/vi/itens/${cod_sku}/`);
-    return res.data;
+  /** Detalha um item */
+  async getItem(codSku: number): Promise<Item> {
+    const { data } = await api.get<ItemDTO>(`/vi/itens/${codSku}/`)
+    return {
+      codSku: data.cod_sku,
+      descricaoItem: data.descricao_item,
+      unidMedida: data.unid_medida,
+    }
   }
 
-  /** Cria um novo item */
-  async createItem(item: Item): Promise<Item> {
-    const res: AxiosResponse<Item> = await api.post(`/vi/itens/`, item);
-    return res.data;
+  /** Cria um item novo */
+  async createItem(payload: Omit<Item, 'codSku'>): Promise<Item> {
+    const dto = {
+      cod_sku: 0, // backend ignora ou atribui
+      descricao_item: payload.descricaoItem,
+      unid_medida: payload.unidMedida,
+    }
+    const { data } = await api.post<ItemDTO>('/vi/itens/', dto)
+    return {
+      codSku: data.cod_sku,
+      descricaoItem: data.descricao_item,
+      unidMedida: data.unid_medida,
+    }
   }
 
   /** Atualiza um item existente */
-  async updateItem(cod_sku: number, data: Partial<Omit<Item, 'cod_sku'>>): Promise<Item> {
-    const payload = { cod_sku, ...data };
-    const res: AxiosResponse<Item> = await api.put(
-      `/vi/itens/${cod_sku}/`,
-      payload
-    );
-    return res.data;
+  async updateItem(codSku: number, payload: Partial<Omit<Item, 'codSku'>>): Promise<Item> {
+    const dto: Partial<ItemDTO> = {}
+    if (payload.descricaoItem !== undefined) dto.descricao_item = payload.descricaoItem
+    if (payload.unidMedida    !== undefined) dto.unid_medida    = payload.unidMedida
+
+    const { data } = await api.put<ItemDTO>(`/vi/itens/${codSku}/`, dto)
+    return {
+      codSku: data.cod_sku,
+      descricaoItem: data.descricao_item,
+      unidMedida: data.unid_medida,
+    }
   }
 
-  /** Deleta um item */
-  async deleteItem(cod_sku: number): Promise<void> {
-    await api.delete(`/vi/itens/${cod_sku}/`);
+  /** Remove um item */
+  async deleteItem(codSku: number): Promise<void> {
+    await api.delete(`/vi/itens/${codSku}/`)
   }
 }
 
-export const itemService = new ItemService();
+export const itemService = new ItemService()
