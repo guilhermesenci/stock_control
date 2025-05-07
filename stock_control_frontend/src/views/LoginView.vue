@@ -1,246 +1,131 @@
+<!-- LoginView.vue -->
 <template>
-    <main class="login-page">
-      <section class="login">
-        <header>
-          <h2>Login</h2>
-        </header>
-        <form @submit.prevent="handleLogin">
-          
-          <div class="form-group" style="position: relative;">
-            <label for="username">Nome de Usuário</label>
-            <input
-              id="username"
-              type="text"
-              placeholder="Selecione seu usuário..."
-              autocomplete="off"
-              required
-              v-model="username"
-              @focus="onFocus"
-              @blur="onBlur"
-              @keydown.down.prevent="onKeyDown"
-              @keydown.up.prevent="onKeyUp"
-              @keydown.enter.prevent="onKeyEnter"
-              class="login-field"
-            />
-            <ul v-if="showSuggestions && filteredUsers.length" class="suggestions-list">
-              <li
-                v-for="(user, index) in filteredUsers"
-                :key="user"
-                @mousedown.prevent="selectUser(user)"
-                :class="{ selected: index === selectedIndex }"
-              >
-                {{ user }}
-              </li>
-            </ul>
-          </div>
-  
-          <div class="form-group">
-            <label for="password">Senha</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Digite sua senha..."
-              autocomplete="current-password"
-              required
-              v-model="password"
-              class="login-field"
-            />
-          </div>
-  
-          <button type="submit" class="login-field submit-field">Entrar</button>
-          <p v-if="error" class="error-message">{{ error }}</p>
+    <div class="login-container">
+        <form @submit.prevent="onSubmit" class="login-form">
+            <h1>Login</h1>
+            <div class="form-group">
+                <label for="username">Usuário</label>
+                <input
+                    type="text"
+                    id="username"
+                    v-model="username"
+                    required
+                    autocomplete="username"
+                />
+            </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input
+                    type="password"
+                    id="password"
+                    v-model="password"
+                    required
+                    autocomplete="current-password"
+                />
+            </div>
+            <button type="submit" :disabled="loading">
+                {{ loading ? 'Entrando...' : 'Entrar' }}
+            </button>
+            <p v-if="error" class="error">{{ error }}</p>
         </form>
-      </section>
-    </main>
-  </template>
-  
-  <script setup>
-  import { ref, computed, watch } from 'vue';
-  import { useAuthStore } from '@/stores/auth';
-  import { useRouter } from 'vue-router';
-  
-  const username = ref('');
-  const password = ref('');
-  const error = ref(null);
-  const showSuggestions = ref(false);
-  
-  const selectedIndex = ref(-1);
-  
-  const users = ['joao', 'maria', 'roberto'];
-  
-  const filteredUsers = computed(() => {
-    if (!username.value) {
-      return users;
-    }
-    return users.filter((user) =>
-      user.toLowerCase().includes(username.value.toLowerCase())
-    );
-  });
-  
-  const authStore = useAuthStore();
-  const router = useRouter();
-  
-  const handleLogin = async () => {
+    </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const router = useRouter()
+const authStore = useAuthStore()
+const username = ref('')
+const password = ref('')
+const loading = ref(false)
+const error = ref('')
+
+async function onSubmit() {
     try {
-      await authStore.login({ username: username.value, password: password.value });
-      router.push({ name: 'Home' });
-    } catch (err) {
-      error.value = 'Credenciais inválidas!';
+        console.log('LoginView: Iniciando login')
+        loading.value = true
+        error.value = ''
+        
+        await authStore.login({ username: username.value, password: password.value })
+        console.log('LoginView: Login bem sucedido')
+        
+        // Redireciona para a página inicial
+        router.push('/')
+    } catch (err: any) {
+        console.error('LoginView: Erro no login:', err)
+        error.value = err.response?.data?.detail || 'Erro ao fazer login'
+    } finally {
+        loading.value = false
     }
-  };
-  
-  function selectUser(user) {
-    username.value = user;
-    showSuggestions.value = false;
-  }
-  
-  function onBlur() {
-    setTimeout(() => {
-      showSuggestions.value = false;
-    }, 100);
-  }
-  
-  function onFocus() {
-    showSuggestions.value = true;
-    selectedIndex.value = -1;
-  }
-  
-  watch(username, () => {
-    selectedIndex.value = -1;
-  });
-  
-  function onKeyDown() {
-    if (!filteredUsers.value.length) return;
-    showSuggestions.value = true;
-    selectedIndex.value =
-      (selectedIndex.value + 1) % filteredUsers.value.length;
-  }
-  
-  function onKeyUp() {
-    if (!filteredUsers.value.length) return;
-    showSuggestions.value = true;
-    if (selectedIndex.value === -1) {
-      selectedIndex.value = filteredUsers.value.length - 1;
-    } else {
-      selectedIndex.value =
-        (selectedIndex.value - 1 + filteredUsers.value.length) %
-        filteredUsers.value.length;
-    }
-  }
-  
-  function onKeyEnter() {
-    if (selectedIndex.value >= 0 && selectedIndex.value < filteredUsers.value.length) {
-      selectUser(filteredUsers.value[selectedIndex.value]);
-    }
-  }
-  </script>
-  
-  <style lang="css">
-  html, body {
+}
+</script>
+
+<style lang="css">
+html,
+body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
     height: 100%;
-  }
-  
-  .login-page {
-    background-image: url('@/assets/login_background.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 100vw;
-    height: 100vh;
+}
+
+.login-container {
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  
-  .login {
-    background: rgba(0, 0, 0, 0.9);
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.login-form {
+    background: white;
     padding: 2rem;
     border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
-  }
-  
-  form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+}
+
+.form-group {
     margin-bottom: 1rem;
-    position: relative;
-  }
-  
-  label {
+}
+
+label {
+    display: block;
     margin-bottom: 0.5rem;
-    color: #ccc;
-  }
-  
-  .login-field {
+    color: #333;
+}
+
+input {
+    width: 100%;
     padding: 0.5rem;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    background-color: #000;
     font-size: 1rem;
-    border: 1px solid #ccc;
-    color: #ccc;
+}
+
+button {
     width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .suggestions-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    background: #333;
-    color: #ccc;
-    border: 1px solid #ccc;
-    position: absolute;
-    width: 100%;
-    top: 65px;
-    left: 0;
-    z-index: 10;
-  }
-  
-  .suggestions-list li {
-    padding: 0.5rem;
+    padding: 0.75rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
     cursor: pointer;
-    color: #ccc;
-  }
-  
-  .suggestions-list li:hover {
-    background: #ccc;
-    color: #000;
-  }
-  
-  .selected {
-    background: #ccc;
-    color: #00f;
-  }
-  
-  .submit-field {
-    cursor: pointer;
-    margin-top: 1rem;
-    transition: background-color 0.3s;
-  }
-  
-  .submit-field:hover {
-    background-color: #333;
-  }
-  
-  .error-message {
-    color: red;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.error {
+    color: #dc3545;
     margin-top: 1rem;
     text-align: center;
-  }
-  </style>
-  
+}
+</style>

@@ -2,21 +2,21 @@
 <template>
     <div class="modal-backdrop">
       <div class="modal">
-        <h2>Editar Item</h2>
+        <h2>{{ item.codSku ? 'Editar Item' : 'Cadastrar novo item' }}</h2>
         <form @submit.prevent="save">
           <div class="form-group">
-            <label for="sku">SKU:</label>
-            <input id="sku" v-model="localItem.sku" type="text" required />
+            <label for="codSku">SKU:</label>
+            <input id="codSku" v-model="localItem.codSku" type="text" required />
           </div>
   
           <div class="form-group">
-            <label for="description">Descrição:</label>
-            <input id="description" v-model="localItem.description" type="text" required />
+            <label for="descricaoItem">Descrição:</label>
+            <input id="descricaoItem" v-model="localItem.descricaoItem" type="text" required />
           </div>
   
           <div class="form-group">
-            <label for="unityMeasure">Unidade de Medida:</label>
-            <input id="unityMeasure" v-model="localItem.unityMeasure" type="text" required />
+            <label for="unidMedida">Unidade de Medida:</label>
+            <input id="unidMedida" v-model="localItem.unidMedida" type="text" required />
           </div>
   
           <div class="form-group checkbox-group">
@@ -36,29 +36,23 @@
   </template>
   
   <script setup lang="ts">
-  import { reactive } from 'vue';
-  
-  export interface Item {
-    sku: string;
-    description: string;
-    unityMeasure: string;
-    active: boolean;
-  }
+  import { reactive } from 'vue'
+  import type { Item } from '@/services/itemService'
   
   const props = defineProps<{
-    item: Item;
-  }>();
+    item: Item
+  }>()
   
   const emit = defineEmits<{
-    (e: 'cancel'): void;
-    (e: 'save', updated: Item): void;
-  }>();
+    (e: 'cancel'): void
+    (e: 'save', updated: Item): void
+  }>()
   
   // cópia local para edição
-  const localItem = reactive<Item>({ ...props.item });
+  const localItem = reactive<Item>({ ...props.item })
   
   function save() {
-    emit('save', { ...localItem });
+    emit('save', { ...localItem })
   }
   </script>
   

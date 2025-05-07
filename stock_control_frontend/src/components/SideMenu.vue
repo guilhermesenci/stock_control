@@ -12,7 +12,7 @@
                 <MenuItem to="/custos" label="Custos do Estoque" />
                 <MenuItem to="/itens" label="Cadastro de Itens" />
                 <MenuItem to="/usuarios" label="Cadastro de Usuários" />
-                <MenuItem to="/logout" label="Logout" />
+                <MenuItem to="/logout" label="Logout" @click="handleLogout" />
             </ul>
         </div>
     </div>
@@ -21,26 +21,44 @@
 <script setup lang="ts">
 import { ref, defineComponent, h } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
+const authStore = useAuthStore()
 const isMenuOpen = ref(false)
+
 const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value
+}
+
+const handleLogout = () => {
+    if (confirm('Tem certeza que deseja sair?')) {
+        authStore.logout()
+    }
 }
 
 interface MenuItemProps {
     to: string;
     label: string;
+    onClick?: () => void;
 }
 
 const MenuItem = defineComponent({
     props: {
         to: { type: String, required: true },
-        label: { type: String, required: true }
+        label: { type: String, required: true },
+        onClick: { type: Function, required: false }
     },
     setup(props: MenuItemProps) {
         return () =>
             h('li', [
-                h(RouterLink, { to: props.to, class: 'active' }, props.label)
+                h(RouterLink, 
+                    { 
+                        to: props.to, 
+                        class: 'active',
+                        onClick: props.onClick
+                    }, 
+                    props.label
+                )
             ]);
     }
 });

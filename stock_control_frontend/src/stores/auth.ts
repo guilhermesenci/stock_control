@@ -1,5 +1,7 @@
+// stores/auth.ts
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import { authService } from '@/services/authService';
+import { useRouter } from 'vue-router';
 
 interface User {
   id: number;
@@ -21,26 +23,28 @@ export const useAuthStore = defineStore('auth', {
   },
   actions: {
     async login(credentials: { username: string; password: string }): Promise<void> {
-      // const response = await axios.post('https://sua-api.com/login', credentials);
-      // retornar sucesso, ainda não implementado
-      const response = {
-        data: {
-            "user": {
-                "id": 1,
-                "username": credentials.username,
-            },
-            "token": "fake-jwt-token"
-        }
-      };
-
-      this.user = response.data.user;
-      this.token = response.data.token;
-      localStorage.setItem('token', this.token);
+      try {
+        const response = await authService.login(credentials.username, credentials.password);
+        this.token = response.access;
+        localStorage.setItem('token', response.access);
+        localStorage.setItem('refreshToken', response.refresh);
+        // TODO: Implementar endpoint para obter dados do usuário
+        this.user = {
+          id: 1, // Temporário até implementar endpoint
+          username: credentials.username,
+        };
+      } catch (error) {
+        this.logout();
+        throw error;
+      }
     },
     logout(): void {
       this.user = null;
       this.token = null;
       localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      const router = useRouter();
+      router.push('/login');
     },
   },
 });

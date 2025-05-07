@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
     'inventory',
 
     'corsheaders',
@@ -118,6 +119,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+# Configuração de autenticação
+AUTHENTICATION_BACKENDS = [
+    'inventory.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 

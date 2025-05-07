@@ -41,9 +41,9 @@
   }
   
   const props = defineProps<Props<any>>();
-  const emit = defineEmits<{ (e: 'update:sort', key: keyof any): void }>();
+  const emit = defineEmits<{ (e: 'update:sort', key: string): void }>();
   
-  function handleSort(key: keyof any) {
+  function handleSort(key: string) {
     emit('update:sort', key);
   }
   

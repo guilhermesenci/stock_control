@@ -2,13 +2,13 @@
 <template>
     <div>
       <BaseTable
-        v-if="items"
+        v-if="!loading"
         :columns="columns"
-        :rows="items"
+        :rows="table.data.value"
         :sortKey="table.sortKey.value"
         :sortOrder="table.sortOrder.value"
-        keyField="sku"
-        @update:sort="(key) => table.setSort(key as keyof Item)"
+        keyField="codSku"
+        @update:sort="table.setSort"
       >
         <template #cell-active="{ value }">
           {{ value ? 'Sim' : 'Não' }}
@@ -24,43 +24,31 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, watch, onMounted } from 'vue'
+  import { ref, onMounted, watch } from 'vue'
   import BaseTable from '@/components/BaseTable.vue'
-  import { useTable, type ColumnDef } from '@/composables/useTable'
-  import { itemService } from '@/services/itemService'
+  import { useTable } from '@/composables/useTable'
+  import { itemService, type Item } from '@/services/itemService'
   import { handleApiError } from '@/composables/useApiError'
   
-  interface Item {
-    sku: string
-    description: string
-    unityMeasure: string
-    active: boolean
-  }
-  
-  interface Props {
-    filters: {
-      itemSKU: string
-      itemDescription: string
-      showOnlyActiveItems: boolean
-    }
+  const props = defineProps<{
+    filters: Record<string, string | boolean>
     refreshKey: number
-  }
+  }>()
   
-  // 1 única chamada
-  const props = defineProps<Props>()
-  const { filters, refreshKey } = props
+  const emit = defineEmits<{
+    (e: 'edit', item: Item): void
+  }>()
   
-  // estado local
-  const rawItems = ref<Item[] | null>(null)
+  const loading = ref(false)
   const items = ref<Item[]>([])
   
   // colunas
-  const columns: ColumnDef<Item>[] = [
-    { key: 'sku',           label: 'SKU',                    sortable: true },
-    { key: 'description',   label: 'Descrição do Produto',  sortable: true },
-    { key: 'unityMeasure',  label: 'Unidade de medida',      sortable: true },
-    { key: 'active',        label: 'Está ativo?',           sortable: true },
-    { key: 'edit' as keyof Item, label: 'Editar item',      sortable: false },
+  const columns = [
+    { key: 'codSku' as keyof Item, label: 'Código SKU', sortable: true },
+    { key: 'descricaoItem' as keyof Item, label: 'Descrição', sortable: true },
+    { key: 'unidMedida' as keyof Item, label: 'Unidade de Medida', sortable: true },
+    { key: 'active' as keyof Item, label: 'Está ativo?', sortable: true },
+    { key: 'edit' as keyof Item, label: 'Editar item', sortable: false },
   ]
   
   // composable de ordenação/filtros locais
@@ -69,41 +57,60 @@
   // busca na API
   async function fetchItems() {
     try {
-      rawItems.value = null
-      const paginated = await itemService.getItems(1)
-      const mapped = paginated.items.map(i => ({
-        sku: String(i.codSku),
-        description: i.descricaoItem,
-        unityMeasure: i.unidMedida,
-        active: true,
-      }))
-      rawItems.value = mapped
-      applyFiltersAndSort()
-    } catch (err) {
-      handleApiError(err)
+      console.log('ItemsList: Iniciando busca de itens')
+      console.log('ItemsList: Filtros recebidos:', props.filters)
+      
+      loading.value = true
+      items.value = [] // Limpa os itens antes de buscar novos
+      
+      // Mapeia os filtros para o formato esperado pelo serviço
+      const serviceFilters: Record<string, string | boolean> = {}
+      
+      // Só adiciona os filtros se tiverem valor
+      if (props.filters.itemSKU) {
+        serviceFilters.codSku = props.filters.itemSKU as string
+      }
+      if (props.filters.itemDescription) {
+        serviceFilters.descricaoItem = props.filters.itemDescription as string
+      }
+      if (props.filters.showOnlyActiveItems) {
+        serviceFilters.active = true
+      }
+      
+      const result = await itemService.getItems(1, serviceFilters)
+      console.log('ItemsList: Resultado da busca:', result)
+      
+      items.value = result.items
+      
+      console.log('ItemsList: Itens mapeados:', items.value)
+    } catch (error) {
+      console.error('ItemsList: Erro ao buscar itens:', error)
+    } finally {
+      loading.value = false
     }
   }
   
-  // aplica filtros locais
-  function applyFiltersAndSort() {
-    if (!rawItems.value) return
-    items.value = rawItems.value.filter(item => {
-      const matchesSKU = item.sku.includes(filters.itemSKU)
-      const matchesDesc = item.description
-        .toLowerCase()
-        .includes(filters.itemDescription.toLowerCase())
-      const matchesActive = !filters.showOnlyActiveItems || item.active
-      return matchesSKU && matchesDesc && matchesActive
-    })
-  }
+  // Busca inicial
+  onMounted(() => {
+    console.log('ItemsList: Componente montado')
+    fetchItems()
+  })
   
-  // monta e refaz ao mudar filtros ou refreshKey
-  onMounted(fetchItems)
-  watch([() => filters, () => refreshKey], fetchItems, { deep: true })
+  // Observa mudanças nos filtros e refreshKey
+  watch(
+    [() => props.filters, () => props.refreshKey],
+    ([newFilters, newRefreshKey]) => {
+      console.log('ItemsList: Watcher detectou mudança')
+      console.log('ItemsList: refreshKey:', newRefreshKey)
+      console.log('ItemsList: Filtros:', newFilters)
+      fetchItems()
+    }
+  )
   
   // ação de editar
   function onEdit(item: Item) {
-    console.log('Editar item:', item)
+    console.log('ItemsList: Editando item:', item)
+    emit('edit', item)
   }
   </script>
   
@@ -111,6 +118,7 @@
   .loading {
     padding: 1rem;
     text-align: center;
+    color: #666;
   }
   .btn-edit {
     padding: 0.25rem 0.5rem;

@@ -17,9 +17,10 @@ class NotaFiscal(models.Model):
 
 
 class Item(models.Model):
-    cod_sku = models.BigIntegerField(primary_key=True)
+    cod_sku = models.CharField(primary_key=True, max_length=50)
     descricao_item = models.TextField()
     unid_medida = models.CharField(max_length=50)
+    active = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'projinteg.itens'

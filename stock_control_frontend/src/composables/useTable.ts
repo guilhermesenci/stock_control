@@ -20,6 +20,9 @@ export function useTable<T extends Record<string, any>>(
   const filters = ref({ ...initialFilters });
 
   const filteredAndSorted = computed(() => {
+    console.log('useTable: Computando dados filtrados e ordenados');
+    console.log('useTable: Dados originais:', rows.value);
+    
     let list = [...rows.value];
 
     // filtragem via includes
@@ -49,10 +52,12 @@ export function useTable<T extends Record<string, any>>(
       }
     }
 
+    console.log('useTable: Dados processados:', list);
     return list;
   });
 
   function setSort(key: keyof T) {
+    console.log('useTable: Definindo ordenação:', key);
     if (sortKey.value === key) {
       sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
     } else {
@@ -62,6 +67,7 @@ export function useTable<T extends Record<string, any>>(
   }
 
   function setFilter(field: string, value: string) {
+    console.log('useTable: Definindo filtro:', field, value);
     filters.value[field] = value;
   }
 

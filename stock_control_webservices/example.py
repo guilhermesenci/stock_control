@@ -84,9 +84,9 @@ def delete_item(token, cod_sku):
     return response
 
 def main():
-    username = "apiuser"
-    email = "apiuser@example.com"
-    password = "apipassword123"
+    username = "jpafarelli"
+    email = "jpafarelli@gmail.com"
+    password = "0pr3SS@0"
 
     print("=== Registrando usuário ===")
     reg_response = register_user(username, email, password)

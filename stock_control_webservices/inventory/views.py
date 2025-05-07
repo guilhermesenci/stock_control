@@ -12,6 +12,9 @@ from .serializers import (
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import ItemFilter
+from rest_framework.decorators import action
 
 
 class NotaFiscalViewSet(viewsets.ModelViewSet):
@@ -31,6 +34,19 @@ class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ItemFilter
+
+    @action(detail=True, methods=['get'], url_path='custo-medio')
+    def custo_medio(self, request, pk=None):
+        try:
+            item = self.get_object()
+            # Exemplo fictício de cálculo de custo médio:
+            # Substitua pela lógica real do seu negócio!
+            custo_medio = 42.50
+            return Response({'custo_medio': custo_medio})
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class EntradaViewSet(viewsets.ModelViewSet):

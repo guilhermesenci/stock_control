@@ -11,7 +11,7 @@ interface RetryableRequest extends AxiosRequestConfig {
 }
 
 const api: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL, // ex: http://localhost:8000/api
+    baseURL: '/api/v1', // URL base para todas as requisições
 });
 
 api.interceptors.response.use(
