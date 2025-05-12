@@ -7,7 +7,7 @@
   </template>
   
   <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, onMounted, watch } from 'vue';
   import type { FilterField } from '@/types/filter';
   import BaseFilterForm from './BaseFilterForm.vue';
   
@@ -16,6 +16,7 @@
     itemSKU: string;
     itemDescription: string;
     showOnlyStockItems: boolean;
+    showOnlyActiveItems: boolean;
   }
   
   const filters = ref<StockFilters>({
@@ -23,7 +24,28 @@
     itemSKU: '',
     itemDescription: '',
     showOnlyStockItems: false,
+    showOnlyActiveItems: false,
   });
+  
+  // Emitir evento para atualizar o componente pai
+  const emit = defineEmits(['update:filters']);
+  
+  // inicializa a data com o dia atual
+  onMounted(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    filters.value.stockDate = `${year}-${month}-${day}`;
+    
+    // Emite o evento com os filtros iniciais
+    emit('update:filters', { ...filters.value });
+  });
+  
+  // Observa mudanças nos filtros para emitir eventos
+  watch(filters, (newFilters) => {
+    emit('update:filters', { ...newFilters });
+  }, { deep: true });
   
   // define os campos para esse formulário
   const fields: FilterField<StockFilters>[] = [
@@ -31,13 +53,14 @@
     { key: 'itemSKU',               label: 'SKU do produto:',                     type: 'text'},
     { key: 'itemDescription',       label: 'Descrição do produto:',               type: 'text'},
     { key: 'showOnlyStockItems',    label: 'Exibir apenas itens com estoque',     type: 'checkbox'},
+    { key: 'showOnlyActiveItems',   label: 'Exibir apenas itens ativos',          type: 'checkbox'},
   ];
   
   // dispara busca
   function onSearch(vals: Record<string, any>) {
     const filters = vals as StockFilters;
     console.log('Buscar com filtros:', vals);
-    // aqui você chama o serviço, composable ou atualiza a tabela
+    emit('update:filters', { ...vals });
   }
   </script>
   

@@ -11,6 +11,7 @@
                 <MenuItem to="/consultar-transacoes" label="Consultar transações" />
                 <MenuItem to="/custos" label="Custos do Estoque" />
                 <MenuItem to="/itens" label="Cadastro de Itens" />
+                <MenuItem to="/fornecedores" label="Cadastro de Fornecedores" />
                 <MenuItem to="/usuarios" label="Cadastro de Usuários" />
                 <MenuItem to="/logout" label="Logout" @click="handleLogout" />
             </ul>

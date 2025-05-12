@@ -22,7 +22,7 @@
   const filters = ref<ItemFilters>({
     itemSKU: '',
     itemDescription: '',
-    showOnlyActiveItems: false,
+    showOnlyActiveItems: true,
   });
 
   interface StockFilters {

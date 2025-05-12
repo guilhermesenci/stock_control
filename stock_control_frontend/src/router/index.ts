@@ -8,6 +8,7 @@ import InsertTransactionView from '@/views/InsertTransactionView.vue';
 import SearchTransactionsView from '@/views/SearchTransactionsView.vue';
 import ItemsView from '@/views/ItemsView.vue';
 import UsersView from '@/views/UsersView.vue';
+import SuppliersView from '@/views/SuppliersView.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const routes: Array<RouteRecordRaw> = [
@@ -58,6 +59,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/usuarios',
     name: 'Usuarios',
     component: UsersView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/fornecedores',
+    name: 'Fornecedores',
+    component: SuppliersView,
     meta: { requiresAuth: true },
   },
   // Rota de fallback para redirecionar para login

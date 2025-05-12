@@ -16,14 +16,19 @@ export const authService = {
     }
   },
 
-  async refreshToken(refresh: string) {
+  async refreshToken() {
     try {
       console.log('AuthService: Atualizando token');
+      const refresh = localStorage.getItem('refresh_token');
+      if (!refresh) {
+        throw new Error('No refresh token available');
+      }
       const response = await api.post('/api/token/refresh/', {
         refresh,
       });
       console.log('AuthService: Token atualizado');
-      return response.data;
+      localStorage.setItem('access_token', response.data.access);
+      return response.data.access;
     } catch (error) {
       console.error('AuthService: Erro ao atualizar token:', error);
       throw error;
@@ -32,7 +37,7 @@ export const authService = {
 
   logout() {
     console.log('AuthService: Logout');
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
   },
 };

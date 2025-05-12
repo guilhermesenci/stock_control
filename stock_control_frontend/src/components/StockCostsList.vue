@@ -6,62 +6,60 @@
         :sortKey="table.sortKey.value"
         :sortOrder="table.sortOrder.value"
         keyField="sku"
-        @update:sort="(key) => table.setSort(key as keyof ItemCost)"
+        @update:sort="(key) => table.setSort(key as keyof StockCost)"
       >
-        <!-- Exemplo de custom render para quantidade zero -->
+        <!-- Formatação para quantidade zero -->
         <template #cell-quantity="{ value }">
           <span :class="{ 'text-muted': value === 0 }">
             {{ value }}
           </span>
         </template>
+        
+        <!-- Formatação para valor unitário -->
+        <template #cell-unitCost="{ value }">
+          {{ formatCurrency(value) }}
+        </template>
+        
+        <!-- Formatação para valor total -->
+        <template #cell-totalCost="{ value }">
+          {{ formatCurrency(value) }}
+        </template>
       </BaseTable>
+      <div v-if="loading" class="loading">Carregando custos de estoque...</div>
     </div>
   </template>
   
   <script setup lang="ts">
-  import { ref, computed, watch } from 'vue';
+  import { ref, computed, watch, onMounted } from 'vue';
   import BaseTable from '@/components/BaseTable.vue';
   import { useTable } from '@/composables/useTable';
   import type { ColumnDef } from '@/composables/useTable';
-  import { parseConsumptionTime } from '@/utils/time';
-
+  import { stockCostService, type StockCost } from '@/services/stockCostService';
   
-  interface ItemCost {
-    sku: string;
-    description: string;
-    quantity: number;
-    unityMeasure: string;
-    unitCost: number;
-    totalCost: number;
+  const props = defineProps<{
+    filters: {
+      stockDate: string;
+      itemSKU: string;
+      itemDescription: string;
+      showOnlyStockItems: boolean;
+      showOnlyActiveItems: boolean;
+    }
+    refreshKey?: number
+  }>();
+  
+  const loading = ref(false);
+  const items = ref<StockCost[]>([]);
+  
+  // formatador de moeda
+  function formatCurrency(value: number): string {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
   }
   
-  // dados mock (substitua por chamada ao serviço real)
-  const items = ref<ItemCost[]>([
-    { sku: '12345', description: 'Produto A', quantity: 10, unityMeasure: "PC", unitCost: 5.00, totalCost: 50.00 },
-    { sku: '67890', description: 'Produto B', quantity: 5, unityMeasure: "PC", unitCost: 10.00, totalCost: 50.00 },
-    { sku: '54321', description: 'Produto C', quantity: 0, unityMeasure: "PC", unitCost: 15.00, totalCost: 0.00 },
-    /* ... demais itens ... */
-  ]);
-  
-  // filtros vindos de ItemsFilters ou outro lugar
-  const filters = ref({
-    itemSKU: '',
-    itemDescription: '',
-    showOnlyStockItems: false,
-  });
-  
-  // lista filtrada
-  const filteredItems = computed(() =>
-    items.value.filter(item => {
-      const matchesSKU = item.sku.includes(filters.value.itemSKU);
-      const matchesDescription = item.description.includes(filters.value.itemDescription);
-      const matchesStock = !filters.value.showOnlyStockItems || item.quantity > 0;
-      return matchesSKU && matchesDescription && matchesStock;
-    })
-  );
-  
   // definindo colunas
-  const columns: ColumnDef<ItemCost>[] = [
+  const columns: ColumnDef<StockCost>[] = [
     { key: 'sku', label: 'SKU', sortable: true },
     { key: 'description', label: 'Descrição do Produto', sortable: true },
     { key: 'quantity', label: 'Quantidade em Estoque', sortable: true },
@@ -70,22 +68,69 @@
     { key: 'totalCost', label: 'Custo Total', sortable: true },
   ];
 
-  // inicializa composable de tabela com dados filtrados
-  const table = useTable<ItemCost>(filteredItems, columns, {
-    sku: filters.value.itemSKU,
-    description: filters.value.itemDescription
-});
+  // inicializa composable de tabela com dados
+  const table = useTable<StockCost>(items, columns);
   
-  // reagir a mudanças de filtros
+  // busca os custos de estoque da API
+  async function fetchStockCosts() {
+    try {
+      loading.value = true;
+      
+      // Mapeia os filtros para o formato esperado pelo serviço
+      const serviceFilters: Record<string, any> = {};
+      
+      if (props.filters.itemSKU) {
+        serviceFilters.sku = props.filters.itemSKU;
+      }
+      
+      if (props.filters.itemDescription) {
+        serviceFilters.description = props.filters.itemDescription;
+      }
+      
+      if (props.filters.showOnlyStockItems) {
+        serviceFilters.hasStock = true;
+      }
+      
+      if (props.filters.showOnlyActiveItems) {
+        serviceFilters.active = true;
+      }
+      
+      const result = await stockCostService.getStockCosts(
+        props.filters.stockDate,
+        serviceFilters
+      );
+      
+      items.value = result.results;
+    } catch (error) {
+      console.error('Erro ao buscar custos de estoque:', error);
+    } finally {
+      loading.value = false;
+    }
+  }
+  
+  // busca inicial
+  onMounted(() => {
+    fetchStockCosts();
+  });
+  
+  // reagir a mudanças de filtros ou refreshKey
   watch(
-    () => [filters.value.itemSKU, filters.value.itemDescription, filters.value.showOnlyStockItems],
+    [() => props.filters, () => props.refreshKey],
     () => {
-      table.setFilter('sku', filters.value.itemSKU);
-      table.setFilter('description', filters.value.itemDescription);
-      // Para o filtro de estoque, se ativo, você pode usar:
-      table.setFilter('quantity', filters.value.showOnlyStockItems ? ((q: number) => q > 0).toString() : '');
+      fetchStockCosts();
     },
     { deep: true }
   );
   </script>
+  
+  <style scoped>
+  .loading {
+    padding: 1rem;
+    text-align: center;
+    color: #666;
+  }
+  .text-muted {
+    color: #999;
+  }
+  </style>
   

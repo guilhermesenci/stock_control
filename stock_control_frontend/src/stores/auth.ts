@@ -16,7 +16,7 @@ interface AuthState {
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     user: null,
-    token: localStorage.getItem('token'),
+    token: localStorage.getItem('access_token'),
   }),
   getters: {
     isAuthenticated: (state): boolean => !!state.token,
@@ -26,8 +26,8 @@ export const useAuthStore = defineStore('auth', {
       try {
         const response = await authService.login(credentials.username, credentials.password);
         this.token = response.access;
-        localStorage.setItem('token', response.access);
-        localStorage.setItem('refreshToken', response.refresh);
+        localStorage.setItem('access_token', response.access);
+        localStorage.setItem('refresh_token', response.refresh);
         // TODO: Implementar endpoint para obter dados do usuário
         this.user = {
           id: 1, // Temporário até implementar endpoint
@@ -41,8 +41,8 @@ export const useAuthStore = defineStore('auth', {
     logout(): void {
       this.user = null;
       this.token = null;
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
       const router = useRouter();
       router.push('/login');
     },

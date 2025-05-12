@@ -11,7 +11,7 @@ interface RetryableRequest extends AxiosRequestConfig {
 }
 
 const api: AxiosInstance = axios.create({
-    baseURL: '/api/v1', // URL base para todas as requisições
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
 });
 
 api.interceptors.response.use(
@@ -73,7 +73,7 @@ export default api;
  */
 export interface Paginated<T> {
     /** itens retornados na página atual */
-    items: T[];
+    results: T[];
     /** total de itens disponíveis */
     total: number;
     /** URL (ou token) da próxima página, ou null se não houver */

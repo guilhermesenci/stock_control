@@ -26,13 +26,13 @@
       </div>
   
       <div class="filter-actions">
-        <button @click="emitSearch">Pesquisar</button>
+        <button @click="emitSearch" class="search-button">Pesquisar</button>
       </div>
     </div>
   </template>
   
   <script setup lang="ts">
-  import { reactive, toRefs, watch } from 'vue';
+  import { reactive, toRefs, watch, onMounted } from 'vue';
   import type { FilterField } from '@/types/filter';
   
   // Ensure FilterField has a key of type string or number
@@ -52,18 +52,35 @@
   // cria cópia reativa dos filtros
   const localFilters = reactive({ ...props.modelValue });
   
+  onMounted(() => {
+    console.log('BaseFilterForm: Component mounted');
+    console.log('BaseFilterForm: Initial modelValue:', props.modelValue);
+    console.log('BaseFilterForm: Initial localFilters:', localFilters);
+  });
+  
   // sempre sincroniza prop -> local
   watch(
     () => props.modelValue,
     (newVal) => {
+      console.log('BaseFilterForm: modelValue changed:', newVal);
       Object.assign(localFilters, newVal);
+      console.log('BaseFilterForm: localFilters updated:', localFilters);
     }
   );
   
   // quando clica em pesquisar, emite os valores
   function emitSearch() {
-    emit('update:modelValue', { ...localFilters });
-    emit('search', { ...localFilters });
+    console.log('BaseFilterForm: emitSearch called with values:', { ...localFilters });
+    
+    try {
+      emit('update:modelValue', { ...localFilters });
+      console.log('BaseFilterForm: Emitted update:modelValue event');
+      
+      emit('search', { ...localFilters });
+      console.log('BaseFilterForm: Emitted search event');
+    } catch (error) {
+      console.error('BaseFilterForm: Error emitting events:', error);
+    }
   }
   </script>
   
@@ -83,6 +100,15 @@
   button {
     padding: 0.5rem 1rem;
     cursor: pointer;
+  }
+  .search-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+  }
+  .search-button:hover {
+    background-color: #0056b3;
   }
   </style>
   

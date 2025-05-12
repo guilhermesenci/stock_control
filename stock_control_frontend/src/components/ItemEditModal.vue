@@ -6,7 +6,14 @@
         <form @submit.prevent="save">
           <div class="form-group">
             <label for="codSku">SKU:</label>
-            <input id="codSku" v-model="localItem.codSku" type="text" required />
+            <input 
+              id="codSku" 
+              v-model="localItem.codSku" 
+              type="text" 
+              required 
+              :disabled="!!item.codSku"
+              :class="{ 'disabled': !!item.codSku }"
+            />
           </div>
   
           <div class="form-group">
@@ -87,6 +94,10 @@
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+  input[type="text"].disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
   }
   .actions {
     display: flex;

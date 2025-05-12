@@ -6,7 +6,7 @@
         :sortKey="table.sortKey.value"
         :sortOrder="table.sortOrder.value"
         keyField="codSku"
-        @update:sort="(key) => table.setSort(key as keyof Item)"
+        @update:sort="(key) => table.setSort(key as keyof StockItem)"
       >
         <!-- Exemplo de custom render para quantidade zero -->
         <template #cell-quantity="{ value }">
@@ -14,8 +14,13 @@
             {{ value }}
           </span>
         </template>
+        
+        <!-- Formatação do tempo estimado de consumo -->
+        <template #cell-estimatedConsumptionTime="{ value }">
+          <span>{{ formatConsumptionTime(value) }}</span>
+        </template>
       </BaseTable>
-      <div v-if="loading">Carregando...</div>
+      
       <div v-if="error" class="error-message">{{ error }}</div>
       <div class="pagination-controls" v-if="totalPages > 1">
         <button :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">Anterior</button>
@@ -26,14 +31,25 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, computed, watch, onMounted } from 'vue';
+  import { ref, computed, watch, onMounted, defineProps } from 'vue';
   import BaseTable from '@/components/BaseTable.vue';
   import { useTable } from '@/composables/useTable';
   import type { ColumnDef } from '@/composables/useTable';
-  import { itemService, type Item } from '@/services/itemService';
+  import { stockService, type StockItem } from '@/services/stockService';
   import { parseConsumptionTime } from '@/utils/time';
 
-  const items = ref<Item[]>([]);
+  // Recebe os filtros do componente pai
+  const props = defineProps<{
+    filters: {
+      stockDate: string;
+      itemSKU: string;
+      itemDescription: string;
+      showOnlyStockItems: boolean;
+      showOnlyActiveItems: boolean;
+    }
+  }>();
+
+  const items = ref<StockItem[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
   const currentPage = ref(1);
@@ -46,15 +62,19 @@
     loading.value = true;
     error.value = null;
     try {
-      const result = await itemService.getItems(page, {
-        codSku: filters.value.itemSKU,
-        descricaoItem: filters.value.itemDescription,
-        // unidMedida: pode ser adicionado se houver filtro
+      console.log('StockItemsList: Buscando itens com filtros:', props.filters);
+      const result = await stockService.getStockItems(page, {
+        codSku: props.filters.itemSKU,
+        descricaoItem: props.filters.itemDescription,
+        stockDate: props.filters.stockDate,
+        showOnlyStockItems: props.filters.showOnlyStockItems,
+        showOnlyActiveItems: props.filters.showOnlyActiveItems,
       });
-      items.value = result.items;
+      items.value = result.results;
       totalItems.value = result.total;
       currentPage.value = page;
     } catch (e) {
+      console.error('Erro ao carregar itens:', e);
       error.value = 'Erro ao carregar itens';
     } finally {
       loading.value = false;
@@ -67,34 +87,33 @@
     }
   }
 
-  onMounted(() => fetchItems(1));
+  // Formata o tempo estimado de consumo para exibição amigável
+  function formatConsumptionTime(time: string | null): string {
+    return parseConsumptionTime(time);
+  }
 
-  // filtros vindos de ItemsFilters ou outro lugar
-  const filters = ref({
-    itemSKU: '',
-    itemDescription: '',
-    showOnlyStockItems: false,
+  onMounted(() => {
+    console.log('StockItemsList: Component mounted');
+    // Não precisa buscar aqui, o watch nos props.filters já vai disparar a busca
   });
 
-  // Sempre busca da API quando filtros mudam
-  watch(
-    () => [filters.value.itemSKU, filters.value.itemDescription],
-    () => fetchItems(1),
-    { deep: true }
-  );
+  // Busca dados quando os filtros mudam
+  watch(() => props.filters, (newFilters) => {
+    console.log('StockItemsList: Filtros mudaram:', newFilters);
+    fetchItems(1);
+  }, { deep: true });
 
   // definindo colunas
-  const columns: ColumnDef<Item>[] = [
+  const columns: ColumnDef<StockItem>[] = [
     { key: 'codSku', label: 'SKU', sortable: true },
     { key: 'descricaoItem', label: 'Descrição do Produto', sortable: true },
     { key: 'unidMedida', label: 'Unidade de Medida', sortable: true },
+    { key: 'quantity', label: 'Quantidade em Estoque', sortable: true },
+    { key: 'estimatedConsumptionTime', label: 'Tempo Estimado de Consumo', sortable: false },
     // Adicione outras colunas conforme necessário
   ];
 
   // inicializa composable de tabela com dados
-  const table = useTable<Item>(items, columns, {
-    codSku: filters.value.itemSKU,
-    descricaoItem: filters.value.itemDescription
-  });
+  const table = useTable<StockItem>(items, columns);
   </script>
   

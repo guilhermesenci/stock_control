@@ -18,6 +18,11 @@
             Editar item
           </button>
         </template>
+        <template #cell-delete="{ row }">
+          <button class="btn-delete" @click="onDelete(row)">
+            Deletar item
+          </button>
+        </template>
       </BaseTable>
       <div v-else class="loading">Carregando itens...</div>
     </div>
@@ -37,6 +42,7 @@
   
   const emit = defineEmits<{
     (e: 'edit', item: Item): void
+    (e: 'delete', item: Item): void
   }>()
   
   const loading = ref(false)
@@ -49,6 +55,7 @@
     { key: 'unidMedida' as keyof Item, label: 'Unidade de Medida', sortable: true },
     { key: 'active' as keyof Item, label: 'Está ativo?', sortable: true },
     { key: 'edit' as keyof Item, label: 'Editar item', sortable: false },
+    { key: 'delete' as keyof Item, label: 'Deletar item', sortable: false },
   ]
   
   // composable de ordenação/filtros locais
@@ -73,14 +80,17 @@
       if (props.filters.itemDescription) {
         serviceFilters.descricaoItem = props.filters.itemDescription as string
       }
-      if (props.filters.showOnlyActiveItems) {
+      // Só inclui o filtro de active se showOnlyActiveItems estiver marcado
+      if (props.filters.showOnlyActiveItems === true) {
         serviceFilters.active = true
       }
+      
+      console.log('ItemsList: Filtros mapeados para o serviço:', serviceFilters)
       
       const result = await itemService.getItems(1, serviceFilters)
       console.log('ItemsList: Resultado da busca:', result)
       
-      items.value = result.items
+      items.value = result.results
       
       console.log('ItemsList: Itens mapeados:', items.value)
     } catch (error) {
@@ -112,6 +122,12 @@
     console.log('ItemsList: Editando item:', item)
     emit('edit', item)
   }
+
+  // ação de deletar
+  function onDelete(item: Item) {
+    console.log('ItemsList: Deletando item:', item)
+    emit('delete', item)
+  }
   </script>
   
   <style scoped>
@@ -131,6 +147,19 @@
   }
   .btn-edit:hover {
     background: #007bff;
+    color: white;
+  }
+  .btn-delete {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border: 1px solid #dc3545;
+    background: white;
+    color: #dc3545;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-delete:hover {
+    background: #dc3545;
     color: white;
   }
   </style>

@@ -21,7 +21,7 @@
       </div>
       <div class="items-list">
         <h2>Lista de itens</h2>
-        <ItemsList :filters="filters" :refreshKey="refreshKey" @edit="onEditItem" />
+        <ItemsList :filters="filters" :refreshKey="refreshKey" @edit="onEditItem" @delete="onDeleteItem" />
       </div>
     </div>
   </template>
@@ -42,7 +42,7 @@
   const filters = ref<ItemFilters>({
     itemSKU: '',
     itemDescription: '',
-    showOnlyActiveItems: false,
+    showOnlyActiveItems: true,
   })
   
   // chave reativa para forçar reload
@@ -100,6 +100,17 @@
       onSearch()
     } catch (err) {
       console.error('Erro ao editar item:', err)
+    }
+  }
+
+  async function onDeleteItem(item: Item) {
+    if (confirm(`Tem certeza que deseja deletar o item "${item.descricaoItem}"?`)) {
+      try {
+        await itemService.deleteItem(item.codSku)
+        onSearch()
+      } catch (err) {
+        console.error('Erro ao deletar item:', err)
+      }
     }
   }
   </script>
