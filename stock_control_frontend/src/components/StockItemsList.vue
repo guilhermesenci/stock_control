@@ -11,10 +11,10 @@
         <!-- Exemplo de custom render para quantidade zero -->
         <template #cell-quantity="{ value }">
           <span :class="{ 'text-muted': value === 0 }">
-            {{ value }}
+            {{ formatDecimal(value) }}
           </span>
         </template>
-        
+
         <!-- Formatação do tempo estimado de consumo -->
         <template #cell-estimatedConsumptionTime="{ value }">
           <span>{{ formatConsumptionTime(value) }}</span>
@@ -37,7 +37,7 @@
   import type { ColumnDef } from '@/composables/useTable';
   import { stockService, type StockItem } from '@/services/stockService';
   import { parseConsumptionTime } from '@/utils/time';
-
+  import { formatDecimal } from '@/utils/numbersFormat';
   // Recebe os filtros do componente pai
   const props = defineProps<{
     filters: {

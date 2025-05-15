@@ -37,12 +37,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.filter-checkbox {
-    margin: 5px 0;
-}
-label {
-    cursor: pointer;
-}
-</style>

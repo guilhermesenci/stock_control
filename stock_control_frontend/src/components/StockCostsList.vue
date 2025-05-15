@@ -35,7 +35,7 @@
   import { useTable } from '@/composables/useTable';
   import type { ColumnDef } from '@/composables/useTable';
   import { stockCostService, type StockCost } from '@/services/stockCostService';
-  
+  import formatCurrency from '@/utils/currency';
   const props = defineProps<{
     filters: {
       stockDate: string;
@@ -49,14 +49,6 @@
   
   const loading = ref(false);
   const items = ref<StockCost[]>([]);
-  
-  // formatador de moeda
-  function formatCurrency(value: number): string {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  }
   
   // definindo colunas
   const columns: ColumnDef<StockCost>[] = [
@@ -122,15 +114,4 @@
     { deep: true }
   );
   </script>
-  
-  <style scoped>
-  .loading {
-    padding: 1rem;
-    text-align: center;
-    color: #666;
-  }
-  .text-muted {
-    color: #999;
-  }
-  </style>
   

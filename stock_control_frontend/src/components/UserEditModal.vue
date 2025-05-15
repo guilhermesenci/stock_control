@@ -1,12 +1,22 @@
 <!-- UserEditModal.vue -->
 <template>
     <div class="modal-backdrop">
-      <div class="modal">
+      <div class="modal form-container">
         <h2>Editar Usuário</h2>
         <form @submit.prevent="save">
           <div class="form-group">
-            <label for="name">Nome:</label>
-            <input id="name" v-model="localUser.name" type="text" required />
+            <label for="username">Nome de usuário:</label>
+            <input id="username" v-model="localUser.username" type="text" required />
+          </div>
+  
+          <div class="form-group">
+            <label for="firstName">Nome:</label>
+            <input id="firstName" v-model="localUser.firstName" type="text" />
+          </div>
+  
+          <div class="form-group">
+            <label for="lastName">Sobrenome:</label>
+            <input id="lastName" v-model="localUser.lastName" type="text" />
           </div>
   
           <div class="form-group">
@@ -14,9 +24,19 @@
             <input id="email" v-model="localUser.email" type="email" required />
           </div>
   
+          <div class="form-group">
+            <label for="password">Senha:</label>
+            <input id="password" v-model="localUser.password" type="password" />
+          </div>
+
+          <div class="form-group">
+            <label for="password2">Confirmar Senha:</label>
+            <input id="password2" v-model="localUser.password2" type="password" />
+          </div>
+
           <div class="form-group checkbox-group">
             <label>
-              <input type="checkbox" v-model="localUser.isMaster" />
+              <input type="checkbox" v-model="localUser.isSuperuser" />
               Usuário Master
             </label>
           </div>
@@ -28,9 +48,13 @@
             </label>
           </div>
   
+          <div v-if="error" class="error-message">
+            {{ error }}
+          </div>
+
           <div class="actions">
-            <button type="button" @click="$emit('cancel')">Cancelar</button>
-            <button type="submit">Salvar</button>
+            <button class="cancel-button" type="button" @click="$emit('cancel')">Cancelar</button>
+            <button class="save-button" type="submit">Salvar</button>
           </div>
         </form>
       </div>
@@ -38,15 +62,8 @@
   </template>
   
   <script setup lang="ts">
-  import { reactive, toRefs } from 'vue';
-  
-  interface User {
-    name: string;
-    email: string;
-    isMaster: boolean;
-    isActive: boolean;
-    permissionsList: string[];
-  }
+  import { reactive, ref } from 'vue';
+  import type { User, UpdateUserData } from '@/services/userService';
   
   const props = defineProps<{
     user: User;
@@ -54,71 +71,51 @@
   
   const emit = defineEmits<{
     (e: 'cancel'): void;
-    (e: 'save', updatedUser: User): void;
+    (e: 'save', updatedUser: UpdateUserData): void;
   }>();
   
+  const error = ref<string|null>(null);
+
   // Criamos uma cópia local para edição
-  const localUser = reactive({ ...props.user });
+  const localUser = reactive<UpdateUserData>({
+    username: props.user.username,
+    email: props.user.email,
+    firstName: props.user.firstName,
+    lastName: props.user.lastName,
+    isActive: props.user.isActive,
+    isSuperuser: props.user.isMaster,
+    permissionsList: props.user.permissionsList,
+    password: '',
+    password2: ''
+  });
   
   // Ao salvar, emitimos o usuário atualizado
   function save() {
-    emit('save', { ...localUser });
+    error.value = null;
+    
+    // Validação de senha
+    if (localUser.password || localUser.password2) {
+      if (localUser.password !== localUser.password2) {
+        console.log('As senhas não coincidem');
+        console.log(localUser.password);
+        error.value = 'As senhas não coincidem';
+        return;
+      }
+      
+      if (localUser.password && localUser.password.length < 8) {
+        error.value = 'A senha deve ter pelo menos 8 caracteres';
+        return;
+      }
+    }
+    
+    // If passwords are empty, remove them before sending
+    const userData: UpdateUserData = { ...localUser };
+    if (!userData.password) {
+      delete userData.password;
+      delete userData.password2;
+    }
+    
+    emit('save', userData);
   }
   </script>
-  
-  <style scoped>
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal {
-    padding: 1.5rem;
-    border-radius: 8px;
-    width: 360px;
-  }
-  .form-group {
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
-  }
-  .form-group.checkbox-group {
-    flex-direction: row;
-    align-items: center;
-  }
-  label {
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-  input[type="text"],
-  input[type="email"] {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  .actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-  }
-  .actions button {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .actions button:first-child {
-    background: #ccc;
-  }
-  .actions button:last-child {
-    background: #007bff;
-    color: white;
-  }
-  .actions button:last-child:hover {
-    background: #0056b3;
-  }
-  </style>
   

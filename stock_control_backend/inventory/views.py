@@ -1,7 +1,8 @@
 from decimal import Decimal
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
-from .models import Transacao, Item, Entrada, Saida, Fornecedor, Usuario
+from rest_framework.pagination import PageNumberPagination
+from .models import Transacao, Item, Entrada, Saida, Fornecedor, Usuario, User
 from .serializers import (
     TransacaoSerializer,
     ItemSerializer,
@@ -10,14 +11,17 @@ from .serializers import (
     FornecedorSerializer,
     UsuarioSerializer,
     UserRegistrationSerializer,
+    UserUpdateSerializer,
+    UserDetailSerializer,
     StockItemSerializer,
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
-from .filters import ItemFilter, FornecedorFilter, TransacaoFilter
+from rest_framework.filters import SearchFilter
+from .filters import ItemFilter, FornecedorFilter, TransacaoFilter, EntradaFilter, SaidaFilter
 from rest_framework.decorators import action, api_view, permission_classes
-from django.db.models import Sum, DecimalField, F
+from django.db.models import Sum, DecimalField, F, Prefetch, Q
 from django.db.models.functions import Coalesce
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -34,6 +38,54 @@ class TransacaoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = TransacaoFilter
+    
+    def create(self, request, *args, **kwargs):
+        """
+        Override create method to validate stock availability for saidas
+        """
+        # Check if this is a transaction for a 'saida' by looking for 'is_saida' flag in request
+        is_saida = request.data.get('is_saida', False)
+        
+        if is_saida:
+            # This will be a saida transaction, we need to check stock availability
+            try:
+                cod_sku = request.data.get('cod_sku')
+                quantidade = Decimal(request.data.get('quantidade', 0))
+                
+                print(f"Verificando estoque para SKU: {cod_sku}, quantidade: {quantidade}")
+                if not cod_sku or quantidade <= 0:
+                    return Response(
+                        {"detail": "Dados inválidos para validação de estoque"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                
+                # Calculate current stock
+                entradas = Transacao.objects.filter(
+                    cod_sku=cod_sku,
+                    entradas__isnull=False
+                ).aggregate(total=Coalesce(Sum('quantidade', output_field=DecimalField()), Decimal(0)))['total']
+                
+                saidas = Transacao.objects.filter(
+                    cod_sku=cod_sku,
+                    saidas__isnull=False
+                ).aggregate(total=Coalesce(Sum('quantidade', output_field=DecimalField()), Decimal(0)))['total']
+                
+                estoque_atual = entradas - saidas
+                
+                # Check if there's enough stock
+                if estoque_atual < quantidade:
+                    return Response(
+                        {"detail": f"Estoque insuficiente. Disponível: {estoque_atual}, Solicitado: {quantidade}"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            except Exception as e:
+                return Response(
+                    {"detail": f"Erro ao validar estoque: {str(e)}"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        
+        # Continue with normal creation
+        return super().create(request, *args, **kwargs)
 
 
 class ItemViewSet(viewsets.ModelViewSet):
@@ -43,10 +95,15 @@ class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = ItemFilter
+    search_fields = ['cod_sku', 'descricao_item']
 
     def get_queryset(self):
+        # change pagination size
+        self.pagination_class = PageNumberPagination
+        self.pagination_class.page_size = 100
+
         queryset = super().get_queryset()
         
         # Filtros extras
@@ -94,11 +151,16 @@ class ItemViewSet(viewsets.ModelViewSet):
             else:
                 custo_medio = 0.0
             
-            custo_ultima_entrada = Transacao.objects.filter(
+            # Buscar última entrada com segurança
+            ultima_entrada = Transacao.objects.filter(
                 cod_sku=item.cod_sku,
                 entradas__isnull=False
             ).order_by('-id_transacao').first()
             
+            # Definir custo da última entrada ou usar 0 se não existir
+            custo_ultima_entrada = ultima_entrada.valor_unit if ultima_entrada else Decimal(0)
+            
+            custo_medio, custo_ultima_entrada = round(custo_medio, 2), round(custo_ultima_entrada, 2)
             return Response(camelize_dict_keys({
                 'custo_medio': custo_medio, 
                 'custo_ultima_entrada': custo_ultima_entrada
@@ -118,9 +180,13 @@ class StockViewSet(viewsets.ViewSet):
         Retorna a lista de produtos com informações de estoque.
         """
         # Get query parameters
-        stock_date_str = request.query_params.get('stock_date', None)
-        item_sku = request.query_params.get('cod_sku', '')
-        item_description = request.query_params.get('descricao_item', '')
+
+        self.pagination_class = PageNumberPagination
+        self.pagination_class.page_size = 100
+
+        stock_date_str = request.query_params.get('stockDate', None)
+        item_sku = request.query_params.get('codSku', '')
+        item_description = request.query_params.get('descricaoItem', '')
         show_only_stock_items = request.query_params.get('showOnlyStockItems') == 'true'
         show_only_active_items = request.query_params.get('showOnlyActiveItems') == 'true'
         
@@ -156,13 +222,15 @@ class StockViewSet(viewsets.ViewSet):
                 # Calculating stock quantity - tratando SKUs alfanuméricos
                 entradas = Decimal(0)
                 saidas = Decimal(0)
+                print('item:', item.cod_sku)
                 
                 # Busca entradas para o item
                 entradas_query = Transacao.objects.filter(
                     cod_sku=item.cod_sku,
                     entradas__data_entrada__lte=stock_date
                 )
-                
+                print('entradas_query:', entradas_query)
+
                 if entradas_query.exists():
                     entradas = entradas_query.aggregate(
                         total=Coalesce(Sum('quantidade', output_field=DecimalField()), Decimal(0))
@@ -173,6 +241,7 @@ class StockViewSet(viewsets.ViewSet):
                     cod_sku=item.cod_sku,
                     saidas__data_saida__lte=stock_date
                 )
+                print('saidas_query:', saidas_query)
                 
                 if saidas_query.exists():
                     saidas = saidas_query.aggregate(
@@ -244,20 +313,9 @@ class StockViewSet(viewsets.ViewSet):
                 print(f"Erro processando item {item.cod_sku}: {str(e)}")
                 continue
         
-        # Return paginated response
-        page = int(request.query_params.get('page', 1))
-        page_size = 10
-        start_idx = (page - 1) * page_size
-        end_idx = start_idx + page_size
-        
-        paginated_items = result_items[start_idx:end_idx]
-        total_count = len(result_items)
-        
+        # Return all items without pagination
         return Response(camelize_dict_keys({
-            'count': total_count,
-            'next': f"/api/v1/stocks/?page={page+1}" if end_idx < total_count else None,
-            'previous': f"/api/v1/stocks/?page={page-1}" if page > 1 else None,
-            'results': paginated_items
+            'results': result_items
         }))
 
 
@@ -268,6 +326,8 @@ class EntradaViewSet(viewsets.ModelViewSet):
     queryset = Entrada.objects.all()
     serializer_class = EntradaSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = EntradaFilter
 
 
 class SaidaViewSet(viewsets.ModelViewSet):
@@ -277,6 +337,8 @@ class SaidaViewSet(viewsets.ModelViewSet):
     queryset = Saida.objects.all()
     serializer_class = SaidaSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = SaidaFilter
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -349,38 +411,193 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     """
     ViewSet para gerenciar os usuários do sistema.
     """
-    queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     permission_classes = [IsAuthenticated]
-
     
+    def get_queryset(self):
+        return Usuario.objects.all().select_related('auth_user')
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para gerenciar usuários do sistema usando o modelo User do Django.
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return UserRegistrationSerializer
+        elif self.action in ['update', 'partial_update']:
+            return UserUpdateSerializer
+        return UserDetailSerializer
+    
+    def get_queryset(self):
+        return User.objects.all().prefetch_related('inventory_user')
+
+
 class RegisterView(APIView):
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Usuário criado com sucesso!"}, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            return Response({
+                "message": "Usuário criado com sucesso!",
+                "user": UserDetailSerializer(user).data
+            }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_current_usuario(request):
+def get_current_user(request):
     """
-    Return the current authenticated user's related Usuario instance
+    Return the current authenticated user with detailed information
     """
+    serializer = UserDetailSerializer(request.user)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_current_user_inventory_info(request):
+    """
+    Return the current authenticated user's inventory usuario information.
+    This endpoint specifically returns the mat_usuario needed for transactions.
+    If no associated Usuario instance exists, one will be created.
+    """
+    user = request.user
+    
     try:
-        # Get the authenticated user
-        user = request.user
-        # Get their related Usuario
-        usuario = Usuario.objects.get(auth_user=user)
+        # Check if the user has an associated Usuario instance
+        if not hasattr(user, 'inventory_user') or user.inventory_user is None:
+            # Create a new Usuario instance for this user
+            last_usuario = Usuario.objects.order_by('-mat_usuario').first()
+            new_mat_usuario = 1 if not last_usuario else last_usuario.mat_usuario + 1
+            
+            usuario = Usuario.objects.create(
+                mat_usuario=new_mat_usuario,
+                nome_usuario=user.get_full_name() or user.username,
+                auth_user=user
+            )
+            print(f"Created new Usuario record for {user.username} with mat_usuario={new_mat_usuario}")
+        else:
+            usuario = user.inventory_user
         
-        return Response(camelize_dict_keys({
-            'mat_usuario': usuario.mat_usuario,
-            'nome_usuario': usuario.nome_usuario
-        }))
-    except Usuario.DoesNotExist:
+        # Return just the necessary information for transactions
+        return Response({
+            'id': usuario.mat_usuario,  # Return mat_usuario as id
+            'nomeUsuario': usuario.nome_usuario
+        })
+    except Exception as e:
         return Response(
-            {"detail": "No Usuario record found for current user"},
-            status=status.HTTP_404_NOT_FOUND
+            {"detail": f"Error retrieving user inventory info: {str(e)}"},
+            status=status.HTTP_400_BAD_REQUEST
         )
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def unified_transactions(request):
+    """
+    Returns combined transaction data with related entry/exit, item, and user data in a single call.
+    This optimizes frontend performance by reducing multiple API calls to one.
+    """
+    # Get query parameters
+    date_from = request.query_params.get('dateFrom', None)
+    date_to = request.query_params.get('dateTo', None)
+    nota_fiscal = request.query_params.get('notaFiscal', None)
+    sku = request.query_params.get('sku', None)
+    description = request.query_params.get('description', None)
+    
+    # Optimization: Use prefetch_related to efficiently load related objects
+    transacao_prefetch = Prefetch(
+        'transacao', 
+        queryset=Transacao.objects.select_related('cod_sku', 'cod_fornecedor')
+    )
+    
+    # Base queryset for entries with prefetched relationships
+    entradas_qs = Entrada.objects.select_related('mat_usuario').prefetch_related(transacao_prefetch)
+    
+    # Base queryset for exits with prefetched relationships
+    saidas_qs = Saida.objects.select_related('mat_usuario').prefetch_related(transacao_prefetch)
+    
+    # Apply date filters
+    if date_from:
+        entradas_qs = entradas_qs.filter(data_entrada__gte=date_from)
+        saidas_qs = saidas_qs.filter(data_saida__gte=date_from)
+    if date_to:
+        entradas_qs = entradas_qs.filter(data_entrada__lte=date_to)
+        saidas_qs = saidas_qs.filter(data_saida__lte=date_to)
+    
+    # Apply nota fiscal filter (only for entries)
+    if nota_fiscal:
+        entradas_qs = entradas_qs.filter(transacao__cod_nf=nota_fiscal)
+        # Skip exits when searching by invoice number
+        saidas_qs = saidas_qs.none()
+    
+    # Apply SKU filter
+    if sku:
+        entradas_qs = entradas_qs.filter(transacao__cod_sku=sku)
+        saidas_qs = saidas_qs.filter(transacao__cod_sku=sku)
+    
+    # Apply description filter
+    if description:
+        entradas_qs = entradas_qs.filter(transacao__cod_sku__descricao_item__icontains=description)
+        saidas_qs = saidas_qs.filter(transacao__cod_sku__descricao_item__icontains=description)
+    
+    # Optimization: Add order_by to get consistent ordering and improve DB caching
+    entradas_qs = entradas_qs.order_by('-data_entrada', '-hora_entrada')
+    saidas_qs = saidas_qs.order_by('-data_saida', '-hora_saida')
+    
+    # Fetch all entries and exits without pagination
+    entradas_list = list(entradas_qs)
+    saidas_list = list(saidas_qs)
+    
+    # Build combined result list
+    result = []
+    
+    # Process entradas
+    for entrada in entradas_list:
+        transaction = entrada.transacao
+        item = transaction.cod_sku
+        usuario = entrada.mat_usuario
+        
+        result.append({
+            'id': f'entrada-{entrada.cod_entrada}',
+            'idTransacao': transaction.id_transacao,
+            'transactionType': 'entrada',
+            'date': entrada.data_entrada.isoformat(),
+            'time': entrada.hora_entrada.isoformat(),
+            'sku': item.cod_sku,
+            'description': item.descricao_item,
+            'quantity': float(transaction.quantidade),
+            'unityMeasure': item.unid_medida,
+            'unitCost': float(transaction.valor_unit),
+            'totalCost': float(transaction.quantidade * transaction.valor_unit),
+            'notaFiscal': transaction.cod_nf,
+            'username': usuario.nome_usuario if usuario else 'N/A'
+        })
+    
+    # Process saidas
+    for saida in saidas_list:
+        transaction = saida.transacao
+        item = transaction.cod_sku
+        usuario = saida.mat_usuario
+        
+        result.append({
+            'id': f'saida-{saida.cod_pedido}',
+            'idTransacao': transaction.id_transacao,
+            'transactionType': 'saida',
+            'date': saida.data_saida.isoformat(),
+            'time': saida.hora_saida.isoformat(),
+            'sku': item.cod_sku,
+            'description': item.descricao_item,
+            'quantity': float(transaction.quantidade),
+            'unityMeasure': item.unid_medida,
+            'unitCost': float(transaction.valor_unit),
+            'totalCost': float(transaction.quantidade * transaction.valor_unit),
+            'username': usuario.nome_usuario if usuario else 'N/A'
+        })
+    
+    # Return response without pagination
+    return Response({'results': result})

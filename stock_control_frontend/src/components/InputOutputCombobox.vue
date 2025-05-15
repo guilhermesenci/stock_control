@@ -72,23 +72,3 @@ watch(() => props.modelValue, (newValue) => {
     }
 });
 </script>
-
-<style scoped>
-.input-output-combobox {
-    margin-bottom: 1rem;
-}
-
-.combobox-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.combobox-select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-</style>

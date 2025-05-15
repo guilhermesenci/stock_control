@@ -1,8 +1,11 @@
 <template>
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit" class="form-container">
       <slot name="fields" :form="form" />
       <div class="form-actions">
-        <button type="submit">{{ submitLabel }}</button>
+        <!-- Se o slot actions não for fornecido, mostra o botão padrão -->
+        <slot name="actions">
+          <button type="submit">{{ submitLabel }}</button>
+        </slot>
       </div>
     </form>
   </template>
@@ -18,29 +21,11 @@
   
   const emit = defineEmits<{
     (e: 'submit', form: TransactionForm): void;
+    (e: 'cancel'): void;
   }>();
   
   function onSubmit() {
     emit('submit', { ...props.form });
   }
   </script>
-  
-  <style scoped>
-  .form-actions {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: flex-end;
-  }
-  button {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 4px;
-    background-color: #28a745;
-    color: white;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #218838;
-  }
-  </style>
   

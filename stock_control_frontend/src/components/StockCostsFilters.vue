@@ -20,7 +20,7 @@ const filters = ref<StockFilters>({
     stockDate: '',
     itemSKU: '',
     itemDescription: '',
-    showOnlyStockItems: false,
+    showOnlyStockItems: true,
     showOnlyActiveItems: true,
 });
 

@@ -20,11 +20,11 @@
   }
   
   const filters = ref<StockFilters>({
-    stockDate: '',
+    stockDate: new Date().toISOString().split('T')[0],
     itemSKU: '',
     itemDescription: '',
-    showOnlyStockItems: false,
-    showOnlyActiveItems: false,
+    showOnlyStockItems: true,
+    showOnlyActiveItems: true,
   });
   
   // Emitir evento para atualizar o componente pai

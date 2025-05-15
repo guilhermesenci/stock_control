@@ -5,22 +5,23 @@
         </button>
         <div v-if="isMenuOpen" class="menu-content">
             <ul>
-                <MenuItem to="/" label="Home" />
-                <MenuItem to="/estoques" label="Estoques" />
-                <MenuItem to="/registrar-transacao" label="Gegistrar transação" />
-                <MenuItem to="/consultar-transacoes" label="Consultar transações" />
-                <MenuItem to="/custos" label="Custos do Estoque" />
-                <MenuItem to="/itens" label="Cadastro de Itens" />
-                <MenuItem to="/fornecedores" label="Cadastro de Fornecedores" />
-                <MenuItem to="/usuarios" label="Cadastro de Usuários" />
-                <MenuItem to="/logout" label="Logout" @click="handleLogout" />
+                <!-- Home sempre visível -->
+                <MenuItem class="menu-item" to="/" label="Home" v-if="hasPermission('home')" />
+                <MenuItem class="menu-item" to="/estoques" label="Estoques" v-if="hasPermission('estoques')" />
+                <MenuItem class="menu-item" to="/registrar-transacao" label="Registrar transação" v-if="hasPermission('registrar_transacao')" />
+                <MenuItem class="menu-item" to="/consultar-transacoes" label="Consultar transações" v-if="hasPermission('consultar_transacoes')" />
+                <MenuItem class="menu-item" to="/custos" label="Custos do Estoque" v-if="hasPermission('custos_estoque')" />
+                <MenuItem class="menu-item" to="/itens" label="Cadastro de Itens" v-if="hasPermission('cadastro_itens')" />
+                <MenuItem class="menu-item" to="/fornecedores" label="Cadastro de Fornecedores" v-if="hasPermission('suppliers')" />
+                <MenuItem class="menu-item" to="/usuarios" label="Cadastro de Usuários" v-if="hasPermission('cadastro_usuarios')" />
+                <MenuItem class="menu-item" to="/logout" label="Logout" @click="handleLogout" />
             </ul>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, defineComponent, h } from 'vue'
+import { ref, defineComponent, h, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
@@ -37,6 +38,18 @@ const handleLogout = () => {
     }
 }
 
+// Verifica se o usuário tem permissão para acessar determinada rota
+const hasPermission = (permission: string): boolean => {
+    // Se não há usuário atual, não mostra nada
+    if (!authStore.currentUser) return false;
+    
+    // Usuários master têm acesso a tudo
+    if (authStore.currentUser.isMaster) return true;
+    
+    // Verifica se o usuário tem a permissão específica
+    return authStore.currentUser.permissionsList.includes(permission);
+}
+
 interface MenuItemProps {
     to: string;
     label: string;
@@ -47,7 +60,8 @@ const MenuItem = defineComponent({
     props: {
         to: { type: String, required: true },
         label: { type: String, required: true },
-        onClick: { type: Function, required: false }
+        onClick: { type: Function, required: false },
+        class: { type: String, required: false }
     },
     setup(props: MenuItemProps) {
         return () =>
@@ -55,7 +69,7 @@ const MenuItem = defineComponent({
                 h(RouterLink, 
                     { 
                         to: props.to, 
-                        class: 'active',
+                        class: props.class,
                         onClick: props.onClick
                     }, 
                     props.label
@@ -66,6 +80,13 @@ const MenuItem = defineComponent({
 </script>
 
 <style scoped>
+
+.menu-item {
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
 .side-menu {
     position: fixed;
     top: 0;
@@ -75,17 +96,24 @@ const MenuItem = defineComponent({
     color: white;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center;    
 }
 
 .menu-button {
     background-color: #444;
-    color: white;
     border: none;
     padding: 10px;
-    cursor: pointer;
+    cursor: grab;
     font-size: 20px;
 }
+
+.menu-item {
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+
 
 .menu-button:hover {
     background-color: #555;
@@ -123,4 +151,5 @@ const MenuItem = defineComponent({
     color: #ff0;
     text-decoration: underline;
 }
+
 </style>

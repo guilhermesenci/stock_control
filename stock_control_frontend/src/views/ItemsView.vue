@@ -1,8 +1,8 @@
 <!-- ItemsView.vue -->
 <template>
-    <div class="items-view">
+    <div class="items-view view">
       <h1>Cadastro de itens</h1>
-      <button class="btn-new-item" @click="showNewItemModal = true">Cadastrar novo item</button>
+      <button class="btn-new-item inclusion-button" @click="showNewItemModal = true">Cadastrar novo item</button>
       <ItemEditModal
         v-if="showNewItemModal"
         :item="emptyItem"
@@ -15,11 +15,11 @@
         @cancel="showEditItemModal = false"
         @save="onEditItemSave"
       />
-      <div class="items-filters">
+      <div class="items-filters filter-container">
         <h2>Filtros</h2>
         <ItemsFilters v-model="filters" @search="onSearch" />
       </div>
-      <div class="items-list">
+      <div class="items-list list-container">
         <h2>Lista de itens</h2>
         <ItemsList :filters="filters" :refreshKey="refreshKey" @edit="onEditItem" @delete="onDeleteItem" />
       </div>
@@ -114,20 +114,4 @@
     }
   }
   </script>
-  
-  <style scoped>
-  .btn-new-item {
-    margin-bottom: 1rem;
-    padding: 0.5rem 1rem;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  .btn-new-item:hover {
-    background: #218838;
-  }
-  </style>
   

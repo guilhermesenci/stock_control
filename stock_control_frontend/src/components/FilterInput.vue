@@ -50,23 +50,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.filter-input {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1rem;
-}
-
-.filter-label {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-.filter-input-field {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-</style>

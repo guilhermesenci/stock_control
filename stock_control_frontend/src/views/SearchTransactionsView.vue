@@ -1,32 +1,20 @@
 <template>
-    <div class="transactions-view">
+    <div class="transactions-view view">
       <h1>Registro de Transações</h1>
-      <button class="btn-new-transaction" @click="showNewTransactionModal = true">Nova Transação</button>
-      
-      <!-- New Transaction Modal -->
-      <div v-if="showNewTransactionModal" class="modal">
-        <div class="modal-content">
-          <h2>Nova Transação</h2>
-          <button class="close-btn" @click="showNewTransactionModal = false">&times;</button>
-          <TransactionForm @submit="onNewTransactionSave" />
-        </div>
-      </div>
-      
       <!-- Edit Transaction Modal -->
-      <div v-if="showEditTransactionModal" class="modal">
-        <div class="modal-content">
+      <div class="modal-backdrop" v-if="showEditTransactionModal">
+        <div class="modal form-container">
           <h2>Editar Transação</h2>
-          <button class="close-btn" @click="showEditTransactionModal = false">&times;</button>
-          <TransactionForm :transaction="transactionToEdit || undefined" @submit="onEditTransactionSave" />
+          <TransactionForm :isEditMode="true" :transaction="transactionToEdit || undefined" @submit="onEditTransactionSave" @cancel="showEditTransactionModal = false" />
         </div>
       </div>
       
-      <div class="transactions-filters">
+      <div class="transactions-filters filter-container">
         <h2>Filtros</h2>
         <TransactionsFilters v-model="filters" @search="onSearch" />
       </div>
       
-      <div class="transactions-list">
+      <div class="transactions-list list-container">
         <h2>Lista de Transações</h2>
         <TransactionsList :filters="filters" :refreshKey="refreshKey" @edit="onEditTransaction" @delete="onDeleteTransaction" />
       </div>
@@ -98,13 +86,19 @@
   
   // Salvar edição de transação
   async function onEditTransactionSave(transaction: any) {
+    transaction.id = transactionToEdit.value?.id
+    transaction.idTransacao = transactionToEdit.value?.cronology
     try {
       await transactionService.updateTransaction(transaction as FormattedTransaction);
       showEditTransactionModal.value = false;
       onSearch();
+      transactionToEdit.value = null;
+      // reload the page
+      // window.location.reload();
     } catch (err) {
       console.error('Erro ao editar transação:', err);
       alert('Erro ao editar transação: ' + err);
+      showEditTransactionModal.value = false;
     }
   }
   
@@ -122,52 +116,3 @@
     }
   }
   </script>
-  
-  <style scoped>
-  .btn-new-transaction {
-    margin-bottom: 1rem;
-    padding: 0.5rem 1rem;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
-  .btn-new-transaction:hover {
-    background: #218838;
-  }
-  
-  .modal {
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 600px;
-    position: relative;
-  }
-  
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    cursor: pointer;
-    background: none;
-    border: none;
-  }
-  </style> 

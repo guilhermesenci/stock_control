@@ -3,7 +3,7 @@
       <div 
         v-for="field in fields" 
         :key="String(field.key)" 
-        class="filter-field"
+        class="filter-field" 
       >
         <label :for="String(field.key)">{{ field.label }}</label>
   
@@ -13,6 +13,7 @@
           :id="String(field.key)"
           type="checkbox"
           v-model="localFilters[String(field.key)]"
+          class="checkbox-group"
         />
   
         <!-- demais tipos -->
@@ -83,32 +84,4 @@
     }
   }
   </script>
-  
-  <style scoped>
-  .filter-form {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
-  }
-  .filter-field {
-    display: flex;
-    flex-direction: column;
-  }
-  .filter-actions {
-    margin-left: auto;
-  }
-  button {
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-  }
-  .search-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-  }
-  .search-button:hover {
-    background-color: #0056b3;
-  }
-  </style>
   

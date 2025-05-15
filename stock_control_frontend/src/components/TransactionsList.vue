@@ -24,13 +24,30 @@
                     {{ value }}
                 </span>
             </template>
+
+            <template #cell-cronology="{ value }">
+                {{ formatInteger(value) }}
+            </template>
+
+            <template #cell-notaFiscal="{ value }">
+                {{ formatInteger(value) }}
+            </template>
+
+            <template #cell-quantity="{ value }">
+                {{ formatDecimal(value) }}
+            </template>
+
+            <template #cell-cost="{ value }">
+                {{ formatCurrency(value) }}
+            </template>
+
             <template #cell-edit="{ row }">
-                <button class="btn-edit" @click="onEdit(row)">
+                <button class="btn-edit table-btn" @click="onEdit(row)">
                     Editar
                 </button>
             </template>
             <template #cell-delete="{ row }">
-                <button class="btn-delete" @click="onDelete(row)">
+                <button class="btn-delete table-btn" @click="onDelete(row)">
                     Deletar
                 </button>
             </template>
@@ -45,6 +62,8 @@ import type { ColumnDef } from '@/composables/useTable';
 import { parseBrazilianDate, formatDateToBrazilian } from '@/utils/date';
 import { useTable } from '@/composables/useTable';
 import { transactionService, type FormattedTransaction, type TransactionSearchParams } from '@/services/transactionService';
+import formatCurrency from '@/utils/currency';
+import { formatInteger, formatDecimal, parseInteger, parseDecimal } from '@/utils/numbersFormat';
 
 // Extended column definition with formatter and html
 interface ExtendedColumnDef<T> extends ColumnDef<T> {
@@ -63,6 +82,7 @@ interface Transaction {
     quantity: number;
     unityMeasure: string;
     cost: number;
+    unitCost: number;
     transactionType: string;
     notaFiscal?: string; // Optional - only for entries
     username: string;
@@ -139,6 +159,7 @@ async function fetchTransactions() {
             description: item.description,
             quantity: item.quantity,
             unityMeasure: item.unityMeasure,
+            unitCost: item.unitCost,
             cost: item.totalCost,
             transactionType: item.transactionType === 'entrada' ? 'Entrada' : 'Saída',
             notaFiscal: item.notaFiscal,
@@ -186,7 +207,16 @@ watch([() => props.filters, () => props.refreshKey], ([newFilters, newRefreshKey
 
 // Table columns
 const columns: ExtendedColumnDef<Transaction>[] = [
-    { key: 'cronology', label: 'Cronologia', sortable: true },
+    { 
+        key: 'cronology', 
+        label: 'Cronologia', 
+        sortable: true,
+        sortFn: (a, b, order) => {
+            const timeA = parseInteger(a.cronology.toString());
+            const timeB = parseInteger(b.cronology.toString());
+            return order === 'asc' ? timeA - timeB : timeB - timeA;
+        }
+    },
     { 
         key: 'transactionType', 
         label: 'Tipo', 
@@ -212,7 +242,11 @@ const columns: ExtendedColumnDef<Transaction>[] = [
         key: 'notaFiscal', 
         label: 'Número NF',
         sortable: true,
-        formatter: (value: string) => value || '-' 
+        sortFn: (a, b, order) => {
+            const timeA = parseInteger(a.notaFiscal);
+            const timeB = parseInteger(b.notaFiscal);
+            return order === 'asc' ? timeA - timeB : timeB - timeA;
+        }
     },
     { key: 'sku', label: 'SKU', sortable: true },
     { key: 'description', label: 'Descrição', sortable: true },
@@ -220,13 +254,21 @@ const columns: ExtendedColumnDef<Transaction>[] = [
         key: 'quantity', 
         label: 'Quantidade', 
         sortable: true,
-        formatter: (value: number, row: Transaction) => `${value} ${row.unityMeasure}`
+        sortFn: (a, b, order) => {
+            const timeA = a.quantity;
+            const timeB = b.quantity;
+            return order === 'asc' ? timeA - timeB : timeB - timeA;
+        }
     },
     { 
         key: 'cost', 
         label: 'Custo da transação', 
         sortable: true,
-        formatter: (value: number) => `R$ ${value.toFixed(2).replace('.', ',')}`
+        sortFn: (a, b, order) => {
+            const timeA = parseFloat(a.cost);
+            const timeB = parseFloat(b.cost);
+            return order === 'asc' ? timeA - timeB : timeB - timeA;
+        }
     },
     { key: 'username', label: 'Usuário', sortable: true },
     { key: 'edit', label: 'Editar', sortable: false },
@@ -238,77 +280,27 @@ const table = useTable<Transaction>(transactions, columns as ColumnDef<Transacti
 
 // Functions for edit and delete buttons
 function onEdit(transaction: Transaction) {
-    emit('edit', transaction);
+    console.log('TransactionsList: Requesting edit for transaction:', transaction);
+    
+    // Log field names and values para diagnóstico
+    console.log('Available fields:', Object.keys(transaction));
+    console.log('unitCost:', transaction.unitCost);
+    console.log('cost:', transaction.cost);
+    console.log('quantity:', transaction.quantity);
+    
+    // Converter formato de transactionType para ser compatível com o TransactionForm
+    const formattedTransaction = {
+        ...transaction,
+        transactionType: transaction.transactionType === 'Entrada' ? 'entrada' : 'saida',
+        // Garantir que unitCost seja corretamente definido
+        unitCost: transaction.unitCost || (transaction.cost !== undefined && transaction.quantity ? transaction.cost / transaction.quantity : undefined)
+    };
+    
+    console.log('Formatted transaction for edit:', formattedTransaction);
+    emit('edit', formattedTransaction);
 }
 
 function onDelete(transaction: Transaction) {
     emit('delete', transaction);
 }
 </script>
-
-<style scoped>
-.transactions-table {
-    width: 100%;
-    min-height: 200px;
-}
-
-.loading-container, .error-container, .empty-state {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
-    border: 1px solid #eee;
-    border-radius: 4px;
-}
-
-.error-container {
-    color: #dc3545;
-}
-
-.badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.badge.entrada {
-    background-color: #28a745;
-    color: white;
-}
-
-.badge.saida {
-    background-color: #dc3545;
-    color: white;
-}
-
-.btn-edit {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-    border: 1px solid #007bff;
-    background: white;
-    color: #007bff;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-edit:hover {
-    background: #007bff;
-    color: white;
-}
-
-.btn-delete {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-    border: 1px solid #dc3545;
-    background: white;
-    color: #dc3545;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-delete:hover {
-    background: #dc3545;
-    color: white;
-}
-</style>

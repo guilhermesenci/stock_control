@@ -7,7 +7,7 @@
             <th
               v-for="col in columns"
               :key="col.key as string"
-              @click="col.sortable && handleSort(col.key)"
+              @click="col.sortable && handleSort(col.key as string)"
               :class="{ sortable: col.sortable, active: sortKey === col.key }"
             >
               {{ col.label }}
@@ -52,16 +52,4 @@
     return props.sortOrder === 'asc' ? '⬆' : '⬇';
   }
   </script>
-  
-  <style scoped>
-  .table-container { 
-    max-width: 800px;
-    max-height: 400px;
-    margin: 0 20px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-  }
-  th.sortable { cursor: pointer; }
-  th.active { font-weight: bold; }
-  </style>
   

@@ -77,11 +77,9 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f5f5f5;
 }
 
 .login-form {
-    background: white;
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -96,7 +94,6 @@ body {
 label {
     display: block;
     margin-bottom: 0.5rem;
-    color: #333;
 }
 
 input {
@@ -110,8 +107,6 @@ input {
 button {
     width: 100%;
     padding: 0.75rem;
-    background-color: #007bff;
-    color: white;
     border: none;
     border-radius: 4px;
     font-size: 1rem;
@@ -119,7 +114,7 @@ button {
 }
 
 button:disabled {
-    background-color: #ccc;
+    background-color: grey;
     cursor: not-allowed;
 }
 

@@ -1,6 +1,6 @@
 <!-- SuppliersList.vue -->
 <template>
-    <div>
+    <div class="list-container">
       <BaseTable
         v-if="!loading"
         :columns="columns"
@@ -18,12 +18,12 @@
           {{ value ? 'Sim' : 'Não' }}
         </template>
         <template #cell-edit="{ row }">
-          <button class="btn-edit" @click="onEdit(row)">
+          <button class="btn-edit table-btn" @click="onEdit(row)">
             Editar fornecedor
           </button>
         </template>
         <template #cell-delete="{ row }">
-          <button class="btn-delete" @click="onDelete(row)">
+          <button class="btn-delete table-btn" @click="onDelete(row)">
             Deletar fornecedor
           </button>
         </template>
@@ -129,37 +129,3 @@
     emit('delete', supplier)
   }
   </script>
-  
-  <style scoped>
-  .loading {
-    padding: 1rem;
-    text-align: center;
-    color: #666;
-  }
-  .btn-edit {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-    border: 1px solid #007bff;
-    background: white;
-    color: #007bff;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .btn-edit:hover {
-    background: #007bff;
-    color: white;
-  }
-  .btn-delete {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-    border: 1px solid #dc3545;
-    background: white;
-    color: #dc3545;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .btn-delete:hover {
-    background: #dc3545;
-    color: white;
-  }
-  </style> 

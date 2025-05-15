@@ -25,7 +25,7 @@ class ItemService {
       console.log('ItemService: Iniciando busca de itens')
       console.log('ItemService: Filtros recebidos:', filters)
       
-      const params = new URLSearchParams({ page: String(page) })
+      const params = new URLSearchParams({  })
       
       // Podemos usar camelCase diretamente nos parâmetros
       if (filters.codSku) params.append('codSku', String(filters.codSku))

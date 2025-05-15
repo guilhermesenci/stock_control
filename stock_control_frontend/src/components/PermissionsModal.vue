@@ -1,8 +1,9 @@
 <!-- PermissionsModal.vue -->
 <template>
     <div class="modal-backdrop">
-      <div class="modal">
-        <h2>Permissões de {{ user.name }}</h2>
+      <div class="modal form-container">
+        <h2>Permissões de {{ user.username }}</h2>
+        <p class="permission-info">Selecione as telas que o usuário terá acesso:</p>
         <table class="permissions-table">
           <thead>
             <tr>
@@ -23,9 +24,12 @@
             </tr>
           </tbody>
         </table>
-        <div class="actions">
-          <button @click="$emit('close')">Cancelar</button>
-          <button @click="save">Salvar</button>
+        <div class="permission-help">
+          <p><strong>Nota:</strong> Usuários sem permissões não conseguirão acessar as telas correspondentes.</p>
+        </div>
+        <div class="form-actions">
+          <button class="btn-cancel" @click="$emit('close')">Cancelar</button>
+          <button class="btn-submit" @click="save">Salvar</button>
         </div>
       </div>
     </div>
@@ -35,7 +39,7 @@
   import { ref, watch } from 'vue';
   
   const props = defineProps<{
-    user: { name: string; email: string };
+    user: { username: string; email: string };
     screens: { id: string; label: string }[];
     initialPermissions: string[];
   }>();
@@ -70,6 +74,19 @@
     padding: 1.5rem;
     border-radius: 8px;
     width: 400px;
+    
+    overflow-y: auto;
+  }
+  .permission-info {
+    margin-bottom: 0.3rem;
+  }
+  .permission-help {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #666;
+    padding: 0.75rem;
+    border-radius: 4px;
+    border-left: 3px solid #007bff;
   }
   .permissions-table {
     width: 100%;
@@ -86,19 +103,21 @@
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
+    margin-top: 1rem;
   }
-  .actions button {
+  .form-actions button {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
-    cursor: pointer;
+    cursor: grab;
   }
-  .actions button:first-child {
-    background: #ccc;
-  }
-  .actions button:last-child {
+  
+  .save-btn {
     background: #007bff;
     color: white;
+  }
+  .save-btn:hover {
+    background: #0056b3;
   }
   </style>
   

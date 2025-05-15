@@ -1,9 +1,9 @@
 <!-- SuppliersView.vue -->
 <template>
-    <div class="suppliers-view">
+    <div class="suppliers-view view">
         <h1>Cadastro de Fornecedores</h1>
         
-        <button class="btn-new-supplier" @click="showNewSupplierModal = true">Cadastrar novo fornecedor</button>
+        <button class="btn-new-supplier inclusion-button" @click="showNewSupplierModal = true">Cadastrar novo fornecedor</button>
 
         <SupplierEditModal
             v-if="showNewSupplierModal"
@@ -19,12 +19,12 @@
             @save="onEditSupplierSave"
         />
 
-        <div class="suppliers-filters">
+        <div class="suppliers-filters filter-container">
             <h2>Filtros</h2>
             <SuppliersFilters v-model="filters" @search="onSearch" />
         </div>
 
-        <div class="suppliers-list">
+        <div class="suppliers-list list-container">
             <h2>Lista de fornecedores</h2>
             <SuppliersList :filters="filters" :refreshKey="refreshKey" @edit="onEditSupplier" @delete="onDeleteSupplier" />
         </div>
@@ -116,51 +116,3 @@ async function onDeleteSupplier(supplier: Fornecedor) {
     }
 }
 </script>
-
-<style scoped lang="scss">
-.suppliers-view {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-
-    h1 {
-        margin-bottom: 2rem;
-    }
-}
-
-.btn-new-supplier {
-    margin-bottom: 1rem;
-    padding: 0.5rem 1rem;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-
-    &:hover {
-        background: #218838;
-    }
-}
-
-.suppliers-filters {
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background-color: transparent;
-    border-radius: 8px;
-
-    h2 {
-        margin-bottom: 1rem;
-        font-size: 1.2rem;
-        color: #333;
-    }
-}
-
-.suppliers-list {
-    h2 {
-        margin-bottom: 1rem;
-        font-size: 1.2rem;
-        color: #333;
-    }
-}
-</style> 

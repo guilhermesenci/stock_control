@@ -37,7 +37,3 @@
   watch(input, val => emit('update:modelValue', val));
   </script>
   
-  <style scoped>
-  /* alike your original styles */
-  </style>
-  

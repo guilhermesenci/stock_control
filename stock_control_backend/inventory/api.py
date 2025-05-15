@@ -89,7 +89,8 @@ class StockCostViewSet(viewsets.ViewSet):
                 
             entradas_aggregate = Transacao.objects.filter(
                 cod_sku=item.cod_sku,
-                entradas__isnull=False
+                entradas__isnull=False,
+                entradas__data_entrada__lte=stock_date
             ).aggregate(
                 qtde_total=Coalesce(Sum('quantidade', output_field=DecimalField()), Decimal(0)),
                 valor_total=Coalesce(Sum(F('valor_unit') * F('quantidade'), output_field=DecimalField()), Decimal(0))
@@ -100,7 +101,8 @@ class StockCostViewSet(viewsets.ViewSet):
 
             saidas_aggregate = Transacao.objects.filter(
                 cod_sku=item.cod_sku,
-                saidas__isnull=False
+                saidas__isnull=False,
+                saidas__data_saida__lte=stock_date
             ).aggregate(
                 qtde_total=Coalesce(Sum('quantidade', output_field=DecimalField()), Decimal(0)),
                 valor_total=Coalesce(Sum(F('valor_unit') * F('quantidade'), output_field=DecimalField()), Decimal(0))
@@ -121,7 +123,8 @@ class StockCostViewSet(viewsets.ViewSet):
             
             custo_ultima_entrada = Transacao.objects.filter(
                 cod_sku=item.cod_sku,
-                entradas__isnull=False
+                entradas__isnull=False,
+                entradas__data_entrada__lte=stock_date
             ).order_by('-id_transacao').first()
             
             # Usando snake_case nos dados internos para facilitar manipulação

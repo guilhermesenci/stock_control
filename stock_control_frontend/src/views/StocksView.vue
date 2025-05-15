@@ -1,11 +1,11 @@
 <template>
-    <div class="stocks-view">
+    <div class="stocks-view view">
         <h1>Estoque</h1>
         <div class="stock-filters">
             <h2>Filtros</h2>
             <StocksFilters @update:filters="updateFilters" />
         </div>
-        <div class="stock-list">
+        <div class="stock-list list-container">
         <h2>Lista de Produtos</h2>
             <StockItemsList :filters="stockFilters" />
         </div>
@@ -21,8 +21,8 @@ const stockFilters = ref({
     stockDate: '',
     itemSKU: '',
     itemDescription: '',
-    showOnlyStockItems: false,
-    showOnlyActiveItems: false,
+    showOnlyStockItems: true,
+    showOnlyActiveItems: true,
 });
 
 // Atualiza os filtros quando o componente filho emite o evento
@@ -30,17 +30,3 @@ function updateFilters(newFilters: typeof stockFilters.value) {
     stockFilters.value = { ...newFilters };
 }
 </script>
-
-<style scoped>
-.stocks-view {
-    padding: 16px;
-}
-
-.stock-filters {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 100%;
-    padding: 16px;
-    box-sizing: border-box;
-}
-</style>

@@ -1,11 +1,11 @@
 <template>
-    <div class="stock-costs-view">
+    <div class="stock-costs-view view">
         <h1>Custos do estoque</h1>
         <div class="stock-costs-filters">
             <h2>Filtros</h2>
             <StockCostsFilters v-model="filters" @search="onSearch" />
         </div>
-        <div class="stock-costs-list">
+        <div class="stock-costs-list list-container">
         <h2>Lista de Produtos</h2>
             <StockCostsList :filters="filters" :refreshKey="refreshKey" />
         </div>
@@ -41,17 +41,3 @@ function onSearch() {
     refreshKey.value++;
 }
 </script>
-
-<style scoped>
-.stock-costs-view {
-    padding: 16px;
-}
-
-.stock-costs-filters {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 100%;
-    padding: 16px;
-    box-sizing: border-box;
-}
-</style>
