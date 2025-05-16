@@ -11,7 +11,10 @@ interface RetryableRequest extends AxiosRequestConfig {
 }
 
 const api: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
+    baseURL: import.meta.env.VITE_API_URL || 'https://2f41-179-222-189-148.ngrok-free.app',
+    headers: {
+       'ngrok-skip-browser-warning': 'true',
+    },
 });
 
 api.interceptors.response.use(

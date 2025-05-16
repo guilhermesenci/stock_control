@@ -17,7 +17,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Home',
     component: HomeView,
-    meta: { requiresAuth: true, permission: 'home' },
+    meta: { requiresAuth: true, permission: 'dashboard' },
   },
   {
     path: '/login',
@@ -119,9 +119,12 @@ router.beforeEach(async (to, from, next) => {
     const requiredPermission = to.meta.permission as string;
     const userPermissions = authStore.currentUser?.permissionsList || [];
 
+    console.log('Permissões do usuário:', userPermissions);
+    console.log('Permissão necessária:', requiredPermission);
+
     if (!userPermissions.includes(requiredPermission)) {
       // Se não tiver permissão, redireciona para a página inicial ou exibe uma mensagem
-      alert(`Você não tem permissão para acessar esta página.`);
+      // alert(`Você não tem permissão para acessar esta página.`);
       next(from.path); // Volta para a página anterior
       return;
     }

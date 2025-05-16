@@ -20,6 +20,7 @@
           <span>{{ formatConsumptionTime(value) }}</span>
         </template>
       </BaseTable>
+      <div v-if="loading" class="loading">Carregando estoques...</div>
       
       <div v-if="error" class="error-message">{{ error }}</div>
       <div class="pagination-controls" v-if="totalPages > 1">
