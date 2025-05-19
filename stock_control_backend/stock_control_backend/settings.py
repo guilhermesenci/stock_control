@@ -35,7 +35,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = [
-    '2f41-179-222-189-148.ngrok-free.app'
+    'faab-2804-868-d048-19f6-2e56-c375-3794-ca21.ngrok-free.app'
 ]
 
 
@@ -181,6 +181,10 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     'ngrok-skip-browser-warning',
 ]
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:5173',
-# ]
+CORS_ALLOW_CREDENTIALS = True
+
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'https://9c57-2804-868-d048-19f6-2e56-c375-3794-ca21.ngrok-free.app'
+]
