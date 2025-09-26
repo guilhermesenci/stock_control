@@ -1,23 +1,21 @@
-from decimal import Decimal
+from datetime import datetime
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Item, Transacao, Entrada, Saida
-from .serializers import ItemSerializer, FornecedorSerializer
-from django.db.models import Sum, F, DecimalField
-from django.db.models.functions import Coalesce
-from datetime import datetime
-from .utils import camelize_dict_keys
+
+from .models import Item
+from .services import StockService
 
 
 class StockCostViewSet(viewsets.ViewSet):
     """
-    API para obter custos de estoque
+    API para obter custos de estoque.
     """
+    
     def list(self, request):
         """
-        Retorna os custos de estoque com base na data e filtros
+        Retorna os custos de estoque com base na data e filtros.
         """
-        # Pegar data do estoque (hoje se não especificado)
+        # Parse date
         stock_date = request.query_params.get('stockDate', None)
         if stock_date:
             try:
@@ -30,16 +28,18 @@ class StockCostViewSet(viewsets.ViewSet):
         else:
             stock_date = datetime.now().date()
         
-        # Filtros adicionais
+        # Get filters
         sku_filter = request.query_params.get('sku', '')
         description_filter = request.query_params.get('description', '')
         has_stock = request.query_params.get('hasStock', '') == 'true'
         active_only = request.query_params.get('active', '') == 'true'
         
-        # Consulta base: pegar todos os itens
+        # Get ordering parameters
+        ordering = request.query_params.get('ordering', '')
+        
+        # Query items with filters
         items_query = Item.objects.all()
         
-        # Aplicar filtros
         if sku_filter:
             items_query = items_query.filter(cod_sku__icontains=sku_filter)
             
@@ -49,100 +49,103 @@ class StockCostViewSet(viewsets.ViewSet):
         if active_only:
             items_query = items_query.filter(active=True)
         
-        # Calcular entradas até a data especificada
-        entradas_transacoes = Transacao.objects.filter(
-            entradas__data_entrada__lte=stock_date
-        ).values(
-            'cod_sku'
-        ).annotate(
-            total_entrada=Sum('quantidade')
-        )
-        
-        # Calcular saídas até a data especificada
-        saidas_transacoes = Transacao.objects.filter(
-            saidas__data_saida__lte=stock_date
-        ).values(
-            'cod_sku'
-        ).annotate(
-            total_saida=Sum('quantidade')
-        )
-        
-        # Preparar resultado
         result = []
         
         for item in items_query:
-            # Calcular quantidade em estoque
-            entrada_item = next(
-                (e for e in entradas_transacoes if e['cod_sku'] == item.cod_sku),
-                {'total_entrada': 0}
-            )
-            saida_item = next(
-                (s for s in saidas_transacoes if s['cod_sku'] == item.cod_sku),
-                {'total_saida': 0}
-            )
+            # Calculate stock quantity
+            estoque_atual = StockService.calculate_stock_quantity(item, stock_date)
             
-            quantidade = entrada_item['total_entrada'] - saida_item['total_saida']
-            
-            # Aplicar filtro de estoque
-            if has_stock and quantidade <= 0:
+            # Apply stock filter
+            if has_stock and estoque_atual <= 0:
                 continue
-                
-            entradas_aggregate = Transacao.objects.filter(
-                cod_sku=item.cod_sku,
-                entradas__isnull=False,
-                entradas__data_entrada__lte=stock_date
-            ).aggregate(
-                qtde_total=Coalesce(Sum('quantidade', output_field=DecimalField()), Decimal(0)),
-                valor_total=Coalesce(Sum(F('valor_unit') * F('quantidade'), output_field=DecimalField()), Decimal(0))
-            )
             
-            entradas_qtde = entradas_aggregate['qtde_total']
-            entradas_valor = entradas_aggregate['valor_total']
-
-            saidas_aggregate = Transacao.objects.filter(
-                cod_sku=item.cod_sku,
-                saidas__isnull=False,
-                saidas__data_saida__lte=stock_date
-            ).aggregate(
-                qtde_total=Coalesce(Sum('quantidade', output_field=DecimalField()), Decimal(0)),
-                valor_total=Coalesce(Sum(F('valor_unit') * F('quantidade'), output_field=DecimalField()), Decimal(0))
-            )
-
-            saidas_qtde = saidas_aggregate['qtde_total']
-            saidas_valor = saidas_aggregate['valor_total']
-            
-            estoque_atual = entradas_qtde - saidas_qtde
-            valor_estoque_atual = entradas_valor - saidas_valor
-
-            if estoque_atual > 0:
-                custo_medio = valor_estoque_atual / estoque_atual
-            else:
-                custo_medio = Decimal(0.0)
-            
+            # Calculate costs using services
+            custo_medio = StockService.calculate_average_cost(item, stock_date)
+            custo_ultima_entrada = StockService.get_last_entry_cost(item, stock_date)
             total_cost = custo_medio * estoque_atual
             
-            custo_ultima_entrada = Transacao.objects.filter(
-                cod_sku=item.cod_sku,
-                entradas__isnull=False,
-                entradas__data_entrada__lte=stock_date
-            ).order_by('-id_transacao').first()
-            
-            # Usando snake_case nos dados internos para facilitar manipulação
             item_data = {
                 'sku': item.cod_sku,
                 'description': item.descricao_item,
                 'quantity': float(estoque_atual),
-                'unity_measure': item.unid_medida,
-                'unit_cost': float(custo_medio),
-                'total_cost': float(total_cost),
+                'unityMeasure': item.unid_medida,
+                'unitCost': float(custo_medio),
+                'totalCost': float(total_cost),
                 'active': item.active,
-                'last_entry_cost': float(custo_ultima_entrada.valor_unit) if custo_ultima_entrada else None
+                'lastEntryCost': float(custo_ultima_entrada) if custo_ultima_entrada else None
             }
             
-            # Converter para camelCase na resposta
-            result.append(camelize_dict_keys(item_data))
+            result.append(item_data)
         
-        return Response(camelize_dict_keys({
-            'count': len(result),
-            'results': result
-        })) 
+        # Apply ordering if specified
+        if ordering:
+            def sort_key(item):
+                key_values = []
+                for field in ordering.split(','):
+                    field = field.strip()
+                    if field.startswith('-'):
+                        # Descending order
+                        field_name = field[1:]
+                        if field_name == 'sku':
+                            key_values.append(item.get('sku', ''))
+                        elif field_name == 'description':
+                            key_values.append(item.get('description', ''))
+                        elif field_name == 'quantity':
+                            key_values.append(item.get('quantity', 0))
+                        elif field_name == 'unityMeasure':
+                            key_values.append(item.get('unityMeasure', ''))
+                        elif field_name == 'unitCost':
+                            key_values.append(item.get('unitCost', 0))
+                        elif field_name == 'totalCost':
+                            key_values.append(item.get('totalCost', 0))
+                        elif field_name == 'active':
+                            key_values.append(item.get('active', False))
+                        elif field_name == 'lastEntryCost':
+                            key_values.append(item.get('lastEntryCost', 0))
+                    else:
+                        # Ascending order
+                        if field == 'sku':
+                            key_values.append(item.get('sku', ''))
+                        elif field == 'description':
+                            key_values.append(item.get('description', ''))
+                        elif field == 'quantity':
+                            key_values.append(item.get('quantity', 0))
+                        elif field == 'unityMeasure':
+                            key_values.append(item.get('unityMeasure', ''))
+                        elif field == 'unitCost':
+                            key_values.append(item.get('unitCost', 0))
+                        elif field == 'totalCost':
+                            key_values.append(item.get('totalCost', 0))
+                        elif field == 'active':
+                            key_values.append(item.get('active', False))
+                        elif field == 'lastEntryCost':
+                            key_values.append(item.get('lastEntryCost', 0))
+                return key_values
+            
+            # Determine if we need reverse sorting based on the first field
+            reverse_sort = ordering.split(',')[0].strip().startswith('-') if ordering else False
+            result.sort(key=sort_key, reverse=reverse_sort)
+        
+        # Apply pagination
+        page_size = int(request.query_params.get('page_size', 10))
+        page = int(request.query_params.get('page', 1))
+        
+        total_count = len(result)
+        start_index = (page - 1) * page_size
+        end_index = start_index + page_size
+        
+        paginated_results = result[start_index:end_index]
+        
+        # Calculate pagination info
+        total_pages = (total_count + page_size - 1) // page_size
+        
+        return Response({
+            'results': paginated_results,
+            'count': total_count,
+            'total': total_count,
+            'page': page,
+            'page_size': page_size,
+            'total_pages': total_pages,
+            'next': page < total_pages,
+            'previous': page > 1
+        }) 

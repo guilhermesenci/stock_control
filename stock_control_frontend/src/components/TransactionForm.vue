@@ -1,21 +1,21 @@
-<!-- TransactionForm.vue -->
+<!-- TransactionForm.vue - Refatorado -->
 <template>
-    <div>
-      <BaseForm :form="form" submitLabel="Salvar Transação" @submit="handleSubmit" @cancel="handleCancel">
-        <template #fields="{ form }">
-          <div class="form-group">
-            <InputOutputCombobox 
-              id="transaction-type" 
-              label="Tipo de Transação" 
-              v-model="form.isEntry" 
-              :options=" isEditMode ? [
-                { value: props.transaction?.transactionType === 'entrada' ? 'true' : 'false', text: props.transaction?.transactionType }, 
-              ] : [
-                { value: 'true', text: 'Entrada' }, 
-                { value: 'false', text: 'Saída' }
-              ]"
-            />
-          </div>
+  <div>
+    <BaseForm :form="form" submitLabel="Salvar Transação" @submit="handleSubmit" @cancel="handleCancel">
+      <template #fields="{ form }">
+        <div class="form-group">
+          <InputOutputCombobox 
+            id="transaction-type" 
+            label="Tipo de Transação" 
+            v-model="form.isEntry" 
+            :options="isEditMode ? [
+              { value: props.transaction?.transactionType === 'entrada' ? 'true' : 'false', text: props.transaction?.transactionType }, 
+            ] : [
+              { value: 'true', text: 'Entrada' }, 
+              { value: 'false', text: 'Saída' }
+            ]"
+          />
+        </div>
   
           <!-- Supplier field (only shown for entries) -->
           <div v-if="form.isEntry === true" class="form-group">
@@ -157,7 +157,9 @@
   import api from '@/types/api';
   import { transactionService, type FormattedTransaction } from '@/services/transactionService';
   import { useAuthStore } from '@/stores/auth';
+  import { getCurrentISODate } from '@/utils/date';
   import { stockCostService } from '@/services/stockCostService';
+  import { useErrorHandler } from '@/composables/useApiError';
   
   // Props to receive transaction for editing
   const props = defineProps<{
@@ -169,6 +171,9 @@
     (e: 'submit', transaction: TxFormType): void,
     (e: 'cancel'): void
   }>();
+
+  // Error handler
+  const { handleError, handleSuccess } = useErrorHandler();
   
   // Inicializa o form com valores padrões
   const form = reactive<TxFormType>({
@@ -492,7 +497,7 @@
       } else {
         // Para entradas, preenche com uma sugestão mas permite edição
         loadingCost.value = true;
-        const lastEntryCost = await stockCostService.getStockCosts(new Date().toISOString().split('T')[0], { sku: form.sku });
+        const lastEntryCost = await stockCostService.getStockCosts(getCurrentISODate(), { sku: form.sku });
         console.log('lastEntryCost:', lastEntryCost);
         if (lastEntryCost.results.length > 0) {
           form.unitCost = lastEntryCost.results[0].lastEntryCost;
@@ -574,7 +579,7 @@
       console.log('Submitting form with isEntry:', isEntryBoolean, 'type:', typeof isEntryBoolean);
       
       if (!authStore.user?.id) {
-        alert('Usuário não autenticado. Por favor, faça login novamente.');
+        handleError('Usuário não autenticado', 'Por favor, faça login novamente.');
         return;
       }
 
@@ -591,25 +596,25 @@
           errorMsg = error.response.data.detail;
         }
         
-        alert(errorMsg + ' Por favor, contate o administrador do sistema.');
+        handleError('Erro ao buscar informações do usuário', errorMsg + ' Por favor, contate o administrador do sistema.');
         return;
       }
 
       console.log('currentUserInfo', currentUserInfo);
 
       if (!currentUserInfo || !currentUserInfo.id) {
-        alert('Não foi possível associar sua conta a um usuário do sistema. Verifique se o seu usuário tem um registro correspondente na tabela de usuários do inventário.');
+        handleError('Erro de associação de usuário', 'Não foi possível associar sua conta a um usuário do sistema. Verifique se o seu usuário tem um registro correspondente na tabela de usuários do inventário.');
         return;
       }
 
       if (isEntryBoolean) {
         // ENTRADA
         if (!values.supplierId) {
-          alert('Por favor, selecione um fornecedor.');
+          handleError('Fornecedor obrigatório', 'Por favor, selecione um fornecedor.');
           return;
         }
         if (!values.codNf) {
-          alert('Por favor, informe o número da NF.');
+          handleError('NF obrigatória', 'Por favor, informe o número da NF.');
           return;
         }
 
@@ -617,7 +622,7 @@
           const { data : entradasMesmaNFMesmoFornecedor } = await api.get(`/api/v1/transacoes/?codNf=${values.codNf}&codFornecedor=${values.supplierId}`)
           console.log('entradasMesmaNFMesmoFornecedor:', entradasMesmaNFMesmoFornecedor);
           if (entradasMesmaNFMesmoFornecedor.results.length > 0) {
-            alert('Já existe uma entrada com a mesma NF e fornecedor');
+            handleError('NF duplicada', 'Já existe uma entrada com a mesma NF e fornecedor');
             return;
           }
         }
@@ -630,7 +635,7 @@
                 values.codNf,
                 values.supplierId
             );
-            alert('Transação de entrada salva com sucesso!');
+            handleSuccess('Transação salva', 'Transação de entrada salva com sucesso!');
         }
       } else {
         // SAÍDA
@@ -642,12 +647,12 @@
                     values.unitCost.toString(),
                     currentUserInfo.id
                 );
-                alert('Transação de saída salva com sucesso!');
+                handleSuccess('Transação salva', 'Transação de saída salva com sucesso!');
             }
         } catch (error: any) {
           // Check for insufficient stock error
           if (error.response && error.response.data && error.response.data.detail) {
-            alert(error.response.data.detail);
+            handleError('Erro na transação', error.response.data.detail);
           } else {
             throw error; // Re-throw if it's not the specific error we're handling
           }
@@ -658,7 +663,7 @@
       resetForm();
     } catch (e) {
       console.error('Erro ao salvar transação:', e);
-      alert('Erro ao salvar transação. Por favor, tente novamente.');
+      handleError('Erro ao salvar transação', 'Por favor, tente novamente.');
     }
   }
   
@@ -671,7 +676,7 @@
   // Simula sugestão de último custo (entrada)
   function suggestLastCost() {
     if (form.sku) {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getCurrentISODate();
       stockCostService.getStockCosts(today, { codSku: form.sku }).then(cost => {
         if (cost.results.length > 0) {
           form.unitCost = cost.results[0].lastEntryCost;

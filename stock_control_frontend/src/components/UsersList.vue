@@ -1,77 +1,142 @@
-<!-- UsersList.vue -->
+<!-- UsersList.vue - Refatorado com novo sistema UX -->
 <template>
-    <div>
-        <div class="users-actions">
-            <button class="inclusion-button" @click="openCreateModal">Adicionar Usuário</button>
-        </div>
-        <div class="users-list list-container">
-            <BaseTable :columns="columns" :rows="table.data.value" :sortKey="table.sortKey.value"
-                :sortOrder="table.sortOrder.value" keyField="id"
-                @update:sort="(key) => table.setSort(key as keyof User)">
-            <!-- Slot para coluna isMaster -->
-            <template #cell-isMaster="{ value }">
-                {{ value ? 'Sim' : 'Não' }}
-            </template>
+  <PageContainer
+    title="Gerenciar Usuários"
+    :global-loading="loading"
+    :error="error || undefined"
+    :empty="empty"
+    empty-title="Nenhum usuário encontrado"
+    empty-message="Não há usuários cadastrados no sistema."
+    @retry="loadUsers"
+  >
+    <template #actions>
+      <LoadingButton
+        variant="primary"
+        @click="openCreateModal"
+      >
+        Adicionar Usuário
+      </LoadingButton>
+    </template>
 
-            <!-- Slot para coluna isActive -->
-            <template #cell-isActive="{ value }">
-                {{ value ? 'Sim' : 'Não' }}
-            </template>
+    <div class="users-content">
+      <BaseTable 
+        v-if="!loading && users.length > 0"
+        :columns="columns" 
+        :rows="users" 
+        :sortKey="pagination.sortKey.value"
+        :sortOrder="pagination.sortOrder.value" 
+        keyField="id"
+        @update:sort="handleSort"
+      >
+        <!-- Slot para coluna isMaster -->
+        <template #cell-isMaster="{ value }">
+          <span :class="['status-badge', value ? 'status-badge--success' : 'status-badge--secondary']">
+            {{ value ? 'Sim' : 'Não' }}
+          </span>
+        </template>
 
-            <!-- Slot para coluna permissions -->
-            <template #cell-permissionsList="{ row }">
-                <button class="btn-edit table-btn" @click="openPermissionsModal(row)">
-                    Editar permissões
-                </button>
-            </template>
+        <!-- Slot para coluna isActive -->
+        <template #cell-isActive="{ value }">
+          <span :class="['status-badge', value ? 'status-badge--success' : 'status-badge--danger']">
+            {{ value ? 'Ativo' : 'Inativo' }}
+          </span>
+        </template>
 
-            <!-- Slot para coluna de ação edit -->
-            <template #cell-edit="{ row }">
-                <button class="btn-edit table-btn" @click="openEditModal(row)">
-                    Editar usuário
-                </button>
-            </template>
+        <!-- Slot para coluna permissions -->
+        <template #cell-permissionsList="{ row }">
+          <LoadingButton
+            variant="secondary"
+            size="small"
+            @click="openPermissionsModal(row)"
+          >
+            Editar permissões
+          </LoadingButton>
+        </template>
 
-            <!-- Slot para coluna de ação delete -->
-            <template #cell-delete="{ row }">
-                <button class="btn-delete table-btn" @click="onDelete(row)">
-                    Deletar usuário
-                </button>
-            </template>
-        </BaseTable>
-        </div>
-        <PermissionsModal v-if="selectedUser" :user="selectedUser" :screens="allScreens"
-            :initialPermissions="selectedUser.permissionsList" @close="selectedUser = null" @save="onSavePermissions" />
+        <!-- Slot para coluna de ação edit -->
+        <template #cell-edit="{ row }">
+          <LoadingButton
+            variant="secondary"
+            size="small"
+            @click="openEditModal(row)"
+          >
+            Editar
+          </LoadingButton>
+        </template>
 
-        <!-- Modal de edição de usuário -->
-        <UserEditModal
-                v-if="selectedUserForEdit"
-                :user="selectedUserForEdit"
-                @cancel="selectedUserForEdit = null"
-                @save="onSaveUser"
-            />
-            
-        <!-- Modal de criação de usuário -->
-        <UserCreateModal
-                v-if="showCreateModal"
-                @cancel="showCreateModal = false"
-                @save="onCreateUser"
-            />
+        <!-- Slot para coluna de ação delete -->
+        <template #cell-delete="{ row }">
+          <LoadingButton
+            variant="danger"
+            size="small"
+            @click="onDelete(row)"
+          >
+            Excluir
+          </LoadingButton>
+        </template>
+      </BaseTable>
+      
+      <PaginationControls
+        v-if="!loading && users.length > 0"
+        :current-page="pagination.currentPage.value"
+        :total-pages="pagination.totalPages.value"
+        :total-items="pagination.totalItems.value"
+        :page-size="pagination.pageSize.value"
+        @go-to-page="pagination.goToPage"
+        @change-page-size="pagination.updatePageSize"
+      />
     </div>
+
+    <!-- Modais -->
+    <PermissionsModal 
+      v-if="selectedUser" 
+      :user="selectedUser" 
+      :screens="allScreens"
+      :initialPermissions="selectedUser.permissionsList" 
+      @close="selectedUser = null" 
+      @save="onSavePermissions" 
+    />
+
+    <UserEditModal
+      v-if="selectedUserForEdit"
+      :user="selectedUserForEdit"
+      @cancel="selectedUserForEdit = null"
+      @save="onSaveUser"
+    />
+      
+    <UserCreateModal
+      v-if="showCreateModal"
+      @cancel="showCreateModal = false"
+      @save="onCreateUser"
+    />
+  </PageContainer>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import BaseTable from '@/components/BaseTable.vue';
+import PaginationControls from '@/components/PaginationControls.vue';
 import PermissionsModal from '@/components/PermissionsModal.vue';
 import UserEditModal from '@/components/UserEditModal.vue';
 import UserCreateModal from '@/components/UserCreateModal.vue';
-import { useTable } from '@/composables/useTable';
+import PageContainer from '@/components/PageContainer.vue';
+import LoadingButton from '@/components/LoadingButton.vue';
+import { usePagination } from '@/composables/usePagination';
+import { usePageState } from '@/composables/usePageState';
+import { useErrorHandler } from '@/composables/useApiError';
 import type { ColumnDef } from '@/composables/useTable';
 import userService, { type User, type CreateUserData, type UpdateUserData } from '@/services/userService';
 
-// lista de usuários
-const users = ref<User[]>([]);
+// Composables
+const { handleError, handleSuccess, handleWarning } = useErrorHandler();
+const { loading, error, data: users, empty, execute } = usePageState([]);
+
+// Configurar paginação
+const pagination = usePagination({
+  pageSize: 10,
+  initialPage: 1,
+  initialSort: { key: 'username', order: 'asc' }
+});
 
 const allScreens = [
   { id: 'home', label: 'Home' },
@@ -97,24 +162,47 @@ const columns: ColumnDef<User>[] = [
     { key: 'delete' as keyof User, label: 'Deletar usuário', sortable: false }
 ];
 
+// Função para buscar usuários
+async function loadUsers() {
+    await execute(async () => {
+        const queryParams = pagination.getQueryParams();
+        const result = await userService.getUsers(
+            parseInt(queryParams.page), 
+            {
+                ordering: queryParams.ordering
+            }
+        );
+        pagination.updateTotalItems(result.count);
+        return result.results;
+    });
+}
+
 // Carregar usuários ao montar o componente
-onMounted(async () => {
-    try {
-        users.value = await userService.getUsers();
-    } catch (error) {
-        console.error('Erro ao carregar usuários:', error);
-    }
+onMounted(() => {
+    loadUsers();
 });
 
-// Composable de tabela
-const table = useTable<User>(users, columns);
+// Watchers para mudanças de paginação e ordenação
+watch([
+    () => pagination.currentPage.value,
+    () => pagination.sortKey.value,
+    () => pagination.sortOrder.value,
+    () => pagination.pageSize.value
+], () => {
+    loadUsers();
+});
+
+// Função para ordenar
+function handleSort(key: string) {
+    pagination.setSort(key);
+}
 
 // Gerenciamento de permissões
 const selectedUser = ref<User|null>(null);
 function openPermissionsModal(user: User) {
   // Verifica se o usuário é master
   if (user.isMaster) {
-    alert('Usuários master já possuem acesso total ao sistema. Não é necessário gerenciar suas permissões.');
+    handleWarning('Usuário Master', 'Usuários master já possuem acesso total ao sistema. Não é necessário gerenciar suas permissões.');
     return;
   }
   
@@ -131,12 +219,13 @@ async function onSavePermissions(newPermissions: string[]) {
     );
     
     // Atualiza o usuário na lista
-    const idx = users.value.findIndex(u => u.id === updatedUser.id);
+    const idx = users.value.findIndex((u: User) => u.id === updatedUser.id);
     if (idx !== -1) users.value[idx] = updatedUser;
     
     selectedUser.value = null;
+    handleSuccess('Permissões atualizadas', 'Permissões do usuário foram atualizadas com sucesso!');
   } catch (error) {
-    console.error('Erro ao atualizar permissões:', error);
+    handleError(error, 'Erro ao atualizar permissões');
   }
 }
 
@@ -157,12 +246,13 @@ async function onSaveUser(updated: UpdateUserData) {
         );
         
         // Atualiza no array original
-        const idx = users.value.findIndex(u => u.id === updatedUser.id);
+        const idx = users.value.findIndex((u: User) => u.id === updatedUser.id);
         if (idx !== -1) users.value[idx] = updatedUser;
         
         selectedUserForEdit.value = null;
+        handleSuccess('Usuário atualizado', 'Usuário foi atualizado com sucesso!');
     } catch (error) {
-        console.error('Erro ao atualizar usuário:', error);
+        handleError(error, 'Erro ao atualizar usuário');
     }
 }
 
@@ -175,10 +265,12 @@ function openCreateModal() {
 async function onCreateUser(userData: CreateUserData) {
     try {
         const newUser = await userService.createUser(userData);
-        users.value.push(newUser);
+        // Recarregar a lista para mostrar o novo usuário
+        await loadUsers();
         showCreateModal.value = false;
+        handleSuccess('Usuário criado', 'Usuário foi criado com sucesso!');
     } catch (error) {
-        console.error('Erro ao criar usuário:', error);
+        handleError(error, 'Erro ao criar usuário');
     }
 }
 
@@ -187,11 +279,47 @@ async function onDelete(user: User) {
     if (confirm(`Tem certeza que deseja deletar o usuário "${user.username}"?`)) {
         try {
             await userService.deleteUser(user.id);
-            // Remove o usuário da lista
-            users.value = users.value.filter(u => u.id !== user.id);
+            // Recarregar a lista para atualizar a paginação
+            await loadUsers();
+            handleSuccess('Usuário excluído', 'Usuário foi excluído com sucesso!');
         } catch (error) {
-            console.error('Erro ao deletar usuário:', error);
+            handleError(error, 'Erro ao excluir usuário');
         }
     }
 }
 </script>
+
+<style scoped>
+.users-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.status-badge--success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-badge--danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge--secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+</style>

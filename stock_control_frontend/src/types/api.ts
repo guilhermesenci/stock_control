@@ -11,7 +11,7 @@ interface RetryableRequest extends AxiosRequestConfig {
 }
 
 const api: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'https://faab-2804-868-d048-19f6-2e56-c375-3794-ca21.ngrok-free.app',
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
     headers: {
        'ngrok-skip-browser-warning': 'true',
     },
@@ -78,7 +78,7 @@ export interface Paginated<T> {
     /** itens retornados na página atual */
     results: T[];
     /** total de itens disponíveis */
-    total: number;
+    count: number;
     /** URL (ou token) da próxima página, ou null se não houver */
     next: string | null;
     /** URL (ou token) da página anterior, ou null se não houver */
@@ -97,8 +97,8 @@ export interface Paginated<T> {
     mapper: (item: any) => U
   ): Paginated<U> {
     return {
-      items: data.results.map(mapper),
-      total: data.count,
+      results: data.results.map(mapper),
+      count: data.count,
       next: data.next,
       previous: data.previous,
     };

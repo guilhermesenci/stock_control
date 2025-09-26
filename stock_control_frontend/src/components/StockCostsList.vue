@@ -1,12 +1,13 @@
 <template>
     <div>
       <BaseTable
+        v-if="!loading"
         :columns="columns"
-        :rows="table.data.value"
-        :sortKey="table.sortKey.value"
-        :sortOrder="table.sortOrder.value"
+        :rows="items"
+        :sortKey="pagination.sortKey.value"
+        :sortOrder="pagination.sortOrder.value"
         keyField="sku"
-        @update:sort="(key) => table.setSort(key as keyof StockCost)"
+        @update:sort="handleSort"
       >
         <!-- Formatação para quantidade zero -->
         <template #cell-quantity="{ value }">
@@ -25,14 +26,24 @@
           {{ formatCurrency(value) }}
         </template>
       </BaseTable>
-      <div v-if="loading" class="loading">Carregando custos de estoque...</div>
+      <div v-else class="loading">Carregando custos de estoque...</div>
+      
+      <PaginationControls
+        :current-page="pagination.currentPage.value"
+        :total-pages="pagination.totalPages.value"
+        :total-items="pagination.totalItems.value"
+        :page-size="pagination.pageSize.value"
+        @go-to-page="pagination.goToPage"
+        @change-page-size="pagination.updatePageSize"
+      />
     </div>
   </template>
   
   <script setup lang="ts">
   import { ref, computed, watch, onMounted } from 'vue';
   import BaseTable from '@/components/BaseTable.vue';
-  import { useTable } from '@/composables/useTable';
+  import PaginationControls from '@/components/PaginationControls.vue';
+  import { usePagination } from '@/composables/usePagination';
   import type { ColumnDef } from '@/composables/useTable';
   import { stockCostService, type StockCost } from '@/services/stockCostService';
   import formatCurrency from '@/utils/currency';
@@ -50,6 +61,13 @@
   const loading = ref(false);
   const items = ref<StockCost[]>([]);
   
+  // Configurar paginação
+  const pagination = usePagination({
+    pageSize: 10,
+    initialPage: 1,
+    initialSort: { key: 'sku', order: 'asc' }
+  });
+  
   // definindo colunas
   const columns: ColumnDef<StockCost>[] = [
     { key: 'sku', label: 'SKU', sortable: true },
@@ -59,9 +77,6 @@
     { key: 'unitCost', label: 'Custo Unitário', sortable: true },
     { key: 'totalCost', label: 'Custo Total', sortable: true },
   ];
-
-  // inicializa composable de tabela com dados
-  const table = useTable<StockCost>(items, columns);
   
   // busca os custos de estoque da API
   async function fetchStockCosts() {
@@ -87,17 +102,31 @@
         serviceFilters.active = true;
       }
       
+      // Adicionar parâmetros de paginação e ordenação
+      const queryParams = pagination.getQueryParams();
+      serviceFilters.ordering = queryParams.ordering;
+      serviceFilters.page_size = queryParams.page_size;
+      
       const result = await stockCostService.getStockCosts(
-        props.filters.stockDate,
-        serviceFilters
+        parseInt(queryParams.page),
+        {
+          ...serviceFilters,
+          stockDate: props.filters.stockDate
+        }
       );
       
       items.value = result.results;
+      pagination.updateTotalItems(result.count);
     } catch (error) {
       console.error('Erro ao buscar custos de estoque:', error);
     } finally {
       loading.value = false;
     }
+  }
+  
+  // Função para ordenar
+  function handleSort(key: string) {
+    pagination.setSort(key);
   }
   
   // busca inicial
@@ -109,9 +138,20 @@
   watch(
     [() => props.filters, () => props.refreshKey],
     () => {
+      pagination.reset();
       fetchStockCosts();
     },
     { deep: true }
   );
+  
+  // reagir a mudanças de paginação e ordenação
+  watch([
+    () => pagination.currentPage.value,
+    () => pagination.sortKey.value,
+    () => pagination.sortOrder.value,
+    () => pagination.pageSize.value
+  ], () => {
+    fetchStockCosts();
+  });
   </script>
   

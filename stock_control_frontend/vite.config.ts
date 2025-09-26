@@ -20,14 +20,14 @@ export default defineConfig({
   },
   server: {
     allowedHosts: [
-       '9c57-2804-868-d048-19f6-2e56-c375-3794-ca21.ngrok-free.app',
+       'localhost',
     ],
     host: '0.0.0.0',
     port: 5173,
     strictPort: true,
     proxy: {
       '/api': {
-        target: 'https://faab-2804-868-d048-19f6-2e56-c375-3794-ca21.ngrok-free.app',
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: true,
       },

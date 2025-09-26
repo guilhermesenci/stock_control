@@ -1,7 +1,91 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import User
 from .models import Transacao, Item, Entrada, Saida, Fornecedor, Usuario
 from .utils import camelize_dict_keys, snakify_dict_keys
+
+
+class BrazilianDateField(serializers.DateField):
+    """
+    Campo de data personalizado que aceita formato brasileiro (DD/MM/YYYY)
+    e converte para formato ISO para armazenamento.
+    """
+    
+    def to_internal_value(self, value):
+        if not value:
+            return None
+            
+        # Se já é um objeto date, retorna como está
+        if hasattr(value, 'year'):
+            return value
+            
+        # Tenta parsear no formato brasileiro primeiro
+        if isinstance(value, str):
+            # Remove espaços em branco
+            value = value.strip()
+            
+            # Tenta formatos brasileiros primeiro
+            for date_format in ['%d/%m/%Y', '%d/%m/%y']:
+                try:
+                    from datetime import datetime
+                    return datetime.strptime(value, date_format).date()
+                except ValueError:
+                    continue
+            
+            # Se não conseguiu parsear no formato brasileiro, tenta o padrão
+            return super().to_internal_value(value)
+        
+        return super().to_internal_value(value)
+    
+    def to_representation(self, value):
+        if not value:
+            return None
+            
+        # Converte para formato brasileiro na saída
+        if hasattr(value, 'strftime'):
+            return value.strftime('%d/%m/%Y')
+        
+        return super().to_representation(value)
+
+
+class BrazilianDateTimeField(serializers.DateTimeField):
+    """
+    Campo de data/hora personalizado que aceita formato brasileiro
+    """
+    
+    def to_internal_value(self, value):
+        if not value:
+            return None
+            
+        # Se já é um objeto datetime, retorna como está
+        if hasattr(value, 'year'):
+            return value
+            
+        # Tenta parsear no formato brasileiro primeiro
+        if isinstance(value, str):
+            value = value.strip()
+            
+            # Tenta formatos brasileiros primeiro
+            for datetime_format in ['%d/%m/%Y %H:%M:%S', '%d/%m/%Y %H:%M', '%d/%m/%Y']:
+                try:
+                    from datetime import datetime
+                    return datetime.strptime(value, datetime_format)
+                except ValueError:
+                    continue
+            
+            # Se não conseguiu parsear no formato brasileiro, tenta o padrão
+            return super().to_internal_value(value)
+        
+        return super().to_internal_value(value)
+    
+    def to_representation(self, value):
+        if not value:
+            return None
+            
+        # Converte para formato brasileiro na saída
+        if hasattr(value, 'strftime'):
+            return value.strftime('%d/%m/%Y %H:%M:%S')
+        
+        return super().to_representation(value)
 
 
 class CamelCaseModelSerializer(serializers.ModelSerializer):
@@ -50,12 +134,18 @@ class StockItemSerializer(serializers.Serializer):
 
 
 class EntradaSerializer(CamelCaseModelSerializer):
+    data_entrada = BrazilianDateField()
+    hora_entrada = serializers.TimeField()
+    
     class Meta:
         model = Entrada
         fields = '__all__'
 
 
 class SaidaSerializer(CamelCaseModelSerializer):
+    data_saida = BrazilianDateField()
+    hora_saida = serializers.TimeField()
+    
     class Meta:
         model = Saida
         fields = '__all__'
@@ -98,7 +188,7 @@ class UsuarioSerializer(CamelCaseModelSerializer):
 
 class UserDetailSerializer(serializers.ModelSerializer):
     """Serializer para retornar detalhes do User do Django com seu perfil associado"""
-    inventory_user = UsuarioSerializer(read_only=True)
+    inventory_user = serializers.SerializerMethodField()
     permissions_list = serializers.SerializerMethodField()
     is_master = serializers.SerializerMethodField()
     
@@ -109,14 +199,31 @@ class UserDetailSerializer(serializers.ModelSerializer):
                   'permissions_list', 'is_master']
         read_only_fields = ['id']
     
+    def get_inventory_user(self, obj):
+        """Retorna informações do usuário do inventário se existir"""
+        try:
+            if hasattr(obj, 'inventory_user') and obj.inventory_user:
+                return UsuarioSerializer(obj.inventory_user).data
+        except Exception:
+            pass
+        return None
+    
     def get_permissions_list(self, obj):
-        if hasattr(obj, 'inventory_user') and obj.inventory_user and obj.inventory_user.permissions:
-            return obj.inventory_user.permissions
+        """Retorna lista de permissões do usuário"""
+        try:
+            if hasattr(obj, 'inventory_user') and obj.inventory_user and obj.inventory_user.permissions:
+                return obj.inventory_user.permissions
+        except Exception:
+            pass
         
         # Fallback - retornar permissões das apps que o usuário tem acesso
-        return list(Permission.objects.filter(
-            user=obj
-        ).values_list('codename', flat=True))
+        try:
+            from django.contrib.auth.models import Permission
+            return list(Permission.objects.filter(
+                user=obj
+            ).values_list('codename', flat=True))
+        except Exception:
+            return []
     
     def get_is_master(self, obj):
         return obj.is_superuser
@@ -144,6 +251,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password', 'password2', 'first_name', 
                   'last_name', 'is_active', 'is_staff', 'is_superuser', 'permissions_list']
+    
+    def to_internal_value(self, data):
+        # Converter camelCase para snake_case
+        if isinstance(data, dict):
+            data = snakify_dict_keys(data)
+        return super().to_internal_value(data)
 
     def validate(self, data):
         if data['password'] != data['password2']:
@@ -179,16 +292,45 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         required=False,
         write_only=True
     )
+    password = serializers.CharField(write_only=True, required=False, min_length=8)
+    password2 = serializers.CharField(write_only=True, required=False, min_length=8)
+    username = serializers.CharField(required=False)
     
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 
-                  'is_active', 'is_staff', 'is_superuser', 'permissions_list']
+                  'is_active', 'is_staff', 'is_superuser', 'permissions_list',
+                  'password', 'password2']
+    
+    def to_internal_value(self, data):
+        # Converter camelCase para snake_case
+        if isinstance(data, dict):
+            data = snakify_dict_keys(data)
+        return super().to_internal_value(data)
+        
+    def validate(self, data):
+        # Validação de senha se fornecida
+        password = data.get('password')
+        password2 = data.get('password2')
+        
+        if password or password2:
+            if not password or not password2:
+                raise serializers.ValidationError("Ambos os campos de senha devem ser preenchidos.")
+            if password != password2:
+                raise serializers.ValidationError({"password": "As senhas não coincidem."})
+        
+        return data
         
     def update(self, instance, validated_data):
         permissions_list = validated_data.pop('permissions_list', None)
+        password = validated_data.pop('password', None)
+        validated_data.pop('password2', None)  # Remove password2 but don't use it
         
-        # Atualiza os campos do usuário
+        # Atualiza a senha se fornecida
+        if password:
+            instance.set_password(password)
+        
+        # Atualiza os outros campos do usuário
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()

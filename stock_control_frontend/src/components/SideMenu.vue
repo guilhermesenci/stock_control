@@ -16,6 +16,29 @@
                 <MenuItem class="menu-item" to="/usuarios" label="Cadastro de Usuários" v-if="hasPermission('cadastro_usuarios')" />
                 <MenuItem class="menu-item" to="/logout" label="Logout" @click="handleLogout" />
             </ul>
+            
+            <!-- Botão de Acessibilidade -->
+            <div class="accessibility-section">
+                <button @click="toggleAccessibilityModal" class="accessibility-button" title="Configurações de Acessibilidade">
+                    <span class="accessibility-icon">♿</span>
+                    <span class="accessibility-label">Acessibilidade</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Modal de Acessibilidade -->
+        <div v-if="showAccessibilityModal" class="modal-backdrop" @click="closeAccessibilityModal">
+            <div class="modal accessibility-modal" @click.stop>
+                <div class="modal-header">
+                    <h2>Configurações de Acessibilidade</h2>
+                    <button @click="closeAccessibilityModal" class="close-button" title="Fechar">
+                        <span>✖</span>
+                    </button>
+                </div>
+                <div class="modal-content">
+                    <AccessibilitySettings />
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -24,12 +47,22 @@
 import { ref, defineComponent, h, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import AccessibilitySettings from './AccessibilitySettings.vue'
 
 const authStore = useAuthStore()
 const isMenuOpen = ref(false)
+const showAccessibilityModal = ref(false)
 
 const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value
+}
+
+const toggleAccessibilityModal = () => {
+    showAccessibilityModal.value = !showAccessibilityModal.value
+}
+
+const closeAccessibilityModal = () => {
+    showAccessibilityModal.value = false
 }
 
 const handleLogout = () => {
@@ -96,7 +129,8 @@ const MenuItem = defineComponent({
     color: white;
     display: flex;
     flex-direction: column;
-    align-items: center;    
+    align-items: center;
+    z-index: 1000;
 }
 
 .menu-button {
@@ -150,6 +184,106 @@ const MenuItem = defineComponent({
     font-weight: bold;
     color: #ff0;
     text-decoration: underline;
+}
+
+/* Accessibility Section */
+.accessibility-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #555;
+}
+
+.accessibility-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    font-size: 14px;
+}
+
+.accessibility-button:hover {
+    background-color: #0056b3;
+}
+
+.accessibility-icon {
+    font-size: 16px;
+}
+
+.accessibility-label {
+    font-weight: 500;
+}
+
+/* Accessibility Modal */
+.accessibility-modal {
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--color-heading);
+    font-size: var(--accessibility-font-size-large);
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    color: var(--color-text);
+}
+
+.close-button:hover {
+    background-color: var(--color-background-soft);
+}
+
+.modal-content {
+    padding: 0;
+}
+
+/* High Contrast Mode for Modal */
+.high-contrast .accessibility-button {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #000000 !important;
+}
+
+.high-contrast .accessibility-button:hover {
+    background-color: #333333 !important;
+}
+
+.high-contrast .modal-header {
+    border-bottom-color: #000000 !important;
+}
+
+.high-contrast .close-button {
+    color: #000000 !important;
+    border: 1px solid #000000 !important;
+}
+
+.high-contrast .close-button:hover {
+    background-color: #f0f0f0 !important;
 }
 
 </style>

@@ -7,6 +7,7 @@
 import { ref, watch, onMounted } from 'vue';
 import type { FilterField } from '@/types/filter';
 import BaseFilterForm from './BaseFilterForm.vue';
+import { getCurrentBrazilianDate, formatBrazilianDateToISO } from '@/utils/date';
 
 interface StockFilters {
     stockDate: string;
@@ -17,7 +18,7 @@ interface StockFilters {
 }
 
 const filters = ref<StockFilters>({
-    stockDate: '',
+    stockDate: getCurrentBrazilianDate(),
     itemSKU: '',
     itemDescription: '',
     showOnlyStockItems: true,
@@ -26,11 +27,7 @@ const filters = ref<StockFilters>({
 
 // Inicializa a data atual no carregamento do componente
 onMounted(() => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    filters.value.stockDate = `${year}-${month}-${day}`;
+    filters.value.stockDate = getCurrentBrazilianDate();
 });
 
 // define os campos para esse formulário
@@ -50,7 +47,14 @@ const emit = defineEmits<{
 // dispara busca
 function onSearch() {
     console.log('Buscar com filtros:', filters.value);
-    emit('update:modelValue', { ...filters.value });
+    
+    // Converte a data brasileira para ISO antes de enviar
+    const convertedFilters = { ...filters.value };
+    if (convertedFilters.stockDate && convertedFilters.stockDate.includes('/')) {
+        convertedFilters.stockDate = formatBrazilianDateToISO(convertedFilters.stockDate);
+    }
+    
+    emit('update:modelValue', convertedFilters);
     emit('search');
 }
 

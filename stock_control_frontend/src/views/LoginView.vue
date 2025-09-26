@@ -23,10 +23,14 @@
                     autocomplete="current-password"
                 />
             </div>
-            <button type="submit" :disabled="loading">
-                {{ loading ? 'Entrando...' : 'Entrar' }}
-            </button>
-            <p v-if="error" class="error">{{ error }}</p>
+            <LoadingButton 
+                type="submit" 
+                :loading="loading"
+                variant="primary"
+                size="large"
+            >
+                Entrar
+            </LoadingButton>
         </form>
     </div>
 </template>
@@ -35,28 +39,32 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useErrorHandler } from '@/composables/useApiError'
+import LoadingButton from '@/components/LoadingButton.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const { handleError, handleSuccess } = useErrorHandler()
+
 const username = ref('')
 const password = ref('')
 const loading = ref(false)
-const error = ref('')
 
 async function onSubmit() {
     try {
         console.log('LoginView: Iniciando login')
         loading.value = true
-        error.value = ''
         
         await authStore.login({ username: username.value, password: password.value })
         console.log('LoginView: Login bem sucedido')
+        
+        handleSuccess('Login realizado', 'Bem-vindo de volta!')
         
         // Redireciona para a página inicial
         router.push('/')
     } catch (err: any) {
         console.error('LoginView: Erro no login:', err)
-        error.value = err.response?.data?.detail || 'Erro ao fazer login'
+        handleError(err, 'Erro no login')
     } finally {
         loading.value = false
     }

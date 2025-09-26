@@ -1,20 +1,47 @@
 // src/composables/useApiError.ts
 import { AxiosError } from 'axios';
-import { toastError } from '@/utils/toast';
+import { useNotificationStore } from '@/stores/notifications';
 
 /**
  * Handler centralizado para erros de API.
- * Exibe uma notificação de erro usando alert() ou seu componente de toast.
+ * Exibe uma notificação de erro usando o sistema de notificações.
  */
 export function handleApiError(err: unknown): void {
-  if (err instanceof AxiosError) {
-    const message =
-      // campo `detail` é comum no DRF, mas pode variar conforme sua API
-      (err.response?.data as any)?.detail ||
-      err.response?.statusText ||
-      err.message;
-    toastError(message);
-  } else {
-    toastError(String(err));
-  }
+  const notificationStore = useNotificationStore();
+  notificationStore.apiError(err);
+}
+
+/**
+ * Composable para tratamento de erros com mais controle
+ */
+export function useErrorHandler() {
+  const notificationStore = useNotificationStore();
+
+  const handleError = (error: unknown, customTitle?: string) => {
+    notificationStore.apiError(error, customTitle);
+  };
+
+  const handleValidationError = (error: unknown, customTitle = 'Dados inválidos') => {
+    notificationStore.apiError(error, customTitle);
+  };
+
+  const handleSuccess = (title: string, message: string) => {
+    notificationStore.success(title, message);
+  };
+
+  const handleWarning = (title: string, message: string) => {
+    notificationStore.warning(title, message);
+  };
+
+  const handleInfo = (title: string, message: string) => {
+    notificationStore.info(title, message);
+  };
+
+  return {
+    handleError,
+    handleValidationError,
+    handleSuccess,
+    handleWarning,
+    handleInfo,
+  };
 }

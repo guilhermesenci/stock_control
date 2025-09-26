@@ -9,7 +9,7 @@ class EmailBackend(ModelBackend):
             return None
             
         try:
-            # Tenta encontrar o usuário pelo email
+            # Tenta encontrar o usuário pelo email (usando first() para evitar múltiplos)
             user = User.objects.filter(email=username).first()
             if user and user.check_password(password):
                 return user

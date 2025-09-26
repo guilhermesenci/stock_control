@@ -4,11 +4,11 @@
       <BaseTable
         v-if="!loading"
         :columns="columns"
-        :rows="table.data.value"
-        :sortKey="table.sortKey.value"
-        :sortOrder="table.sortOrder.value"
+        :rows="items"
+        :sortKey="pagination.sortKey.value"
+        :sortOrder="pagination.sortOrder.value"
         keyField="codSku"
-        @update:sort="table.setSort"
+        @update:sort="handleSort"
       >
         <template #cell-active="{ value }">
           {{ value ? 'Sim' : 'Não' }}
@@ -25,13 +25,23 @@
         </template>
       </BaseTable>
       <div v-else class="loading">Carregando itens...</div>
+      
+      <PaginationControls
+        :current-page="pagination.currentPage.value"
+        :total-pages="pagination.totalPages.value"
+        :total-items="pagination.totalItems.value"
+        :page-size="pagination.pageSize.value"
+        @go-to-page="pagination.goToPage"
+        @change-page-size="pagination.updatePageSize"
+      />
     </div>
   </template>
   
   <script setup lang="ts">
   import { ref, onMounted, watch } from 'vue'
   import BaseTable from '@/components/BaseTable.vue'
-  import { useTable } from '@/composables/useTable'
+  import PaginationControls from '@/components/PaginationControls.vue'
+  import { usePagination } from '@/composables/usePagination'
   import { itemService, type Item } from '@/services/itemService'
   import { handleApiError } from '@/composables/useApiError'
   
@@ -48,6 +58,13 @@
   const loading = ref(false)
   const items = ref<Item[]>([])
   
+  // Configurar paginação
+  const pagination = usePagination({
+    pageSize: 10,
+    initialPage: 1,
+    initialSort: { key: 'codSku', order: 'asc' }
+  });
+  
   // colunas
   const columns = [
     { key: 'codSku' as keyof Item, label: 'Código SKU', sortable: true },
@@ -57,9 +74,6 @@
     { key: 'edit' as keyof Item, label: 'Editar item', sortable: false },
     { key: 'delete' as keyof Item, label: 'Deletar item', sortable: false },
   ]
-  
-  // composable de ordenação/filtros locais
-  const table = useTable<Item>(items, columns)
   
   // busca na API
   async function fetchItems() {
@@ -85,12 +99,22 @@
         serviceFilters.active = true
       }
       
-      console.log('ItemsList: Filtros mapeados para o serviço:', serviceFilters)
+      // Adicionar parâmetros de paginação e ordenação
+      const queryParams = pagination.getQueryParams();
+      serviceFilters.ordering = queryParams.ordering;
+      serviceFilters.page_size = queryParams.page_size;
       
-      const result = await itemService.getItems(1, serviceFilters)
+      console.log('ItemsList: Filtros mapeados para o serviço:', serviceFilters)
+      console.log('ItemsList: Parâmetros de query:', queryParams)
+      
+      const result = await itemService.getItems(
+        parseInt(queryParams.page), 
+        serviceFilters
+      )
       console.log('ItemsList: Resultado da busca:', result)
       
       items.value = result.results
+      pagination.updateTotalItems(result.count)
       
       console.log('ItemsList: Itens mapeados:', items.value)
     } catch (error) {
@@ -98,6 +122,11 @@
     } finally {
       loading.value = false
     }
+  }
+  
+  // Função para ordenar
+  function handleSort(key: string) {
+    pagination.setSort(key);
   }
   
   // Busca inicial
@@ -113,9 +142,20 @@
       console.log('ItemsList: Watcher detectou mudança')
       console.log('ItemsList: refreshKey:', newRefreshKey)
       console.log('ItemsList: Filtros:', newFilters)
+      pagination.reset();
       fetchItems()
     }
   )
+  
+  // reagir a mudanças de paginação e ordenação
+  watch([
+    () => pagination.currentPage.value,
+    () => pagination.sortKey.value,
+    () => pagination.sortOrder.value,
+    () => pagination.pageSize.value
+  ], () => {
+    fetchItems();
+  });
   
   // ação de editar
   function onEdit(item: Item) {

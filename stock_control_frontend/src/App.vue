@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import SideMenu from './components/SideMenu.vue'
+import NotificationContainer from './components/NotificationContainer.vue'
 
 const authStore = useAuthStore()
 const isAuthenticated = computed(() => authStore.isAuthenticated)
@@ -14,4 +15,7 @@ const isAuthenticated = computed(() => authStore.isAuthenticated)
   </header>
 
   <RouterView />
+  
+  <!-- Container global de notificações -->
+  <NotificationContainer />
 </template>

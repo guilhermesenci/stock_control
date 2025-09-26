@@ -1,4 +1,4 @@
-import api from './axios'
+import api from './api'
 import { type Paginated } from '@/types/api'
 
 export interface StockItemDTO {
@@ -21,13 +21,15 @@ export interface StockItem {
 }
 
 class StockService {
-  /** Lista itens de estoque paginados, com suporte a filtros */
+  /** Lista itens de estoque paginados, com suporte a filtros e ordenação */
   async getStockItems(page = 1, filters: Partial<{ 
     codSku: string | number; 
     descricaoItem: string; 
     stockDate: string;
     showOnlyStockItems: boolean;
     showOnlyActiveItems: boolean;
+    page_size?: number;
+    ordering?: string;
   }> = {}): Promise<Paginated<StockItem>> {
     try {
       console.log('StockService: Iniciando busca de itens em estoque')
@@ -41,6 +43,10 @@ class StockService {
       if (filters.stockDate) params.append('stockDate', filters.stockDate)
       if (filters.showOnlyStockItems !== undefined) params.append('showOnlyStockItems', String(filters.showOnlyStockItems))
       if (filters.showOnlyActiveItems !== undefined) params.append('showOnlyActiveItems', String(filters.showOnlyActiveItems))
+      
+      // Adicionar parâmetros de paginação e ordenação
+      if (filters.page_size) params.append('page_size', String(filters.page_size))
+      if (filters.ordering) params.append('ordering', filters.ordering)
       
       console.log('StockService: Params construídos:', params.toString())
       

@@ -2,11 +2,11 @@
     <div>
       <BaseTable
         :columns="columns"
-        :rows="table.data.value"
-        :sortKey="table.sortKey.value"
-        :sortOrder="table.sortOrder.value"
+        :rows="items"
+        :sortKey="sortKey"
+        :sortOrder="sortOrder"
         keyField="codSku"
-        @update:sort="(key) => table.setSort(key as keyof StockItem)"
+        @update:sort="handleSort"
       >
         <!-- Exemplo de custom render para quantidade zero -->
         <template #cell-quantity="{ value }">
@@ -23,18 +23,23 @@
       <div v-if="loading" class="loading">Carregando estoques...</div>
       
       <div v-if="error" class="error-message">{{ error }}</div>
-      <div class="pagination-controls" v-if="totalPages > 1">
-        <button :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">Anterior</button>
-        <span>Página {{ currentPage }} de {{ totalPages }}</span>
-        <button :disabled="currentPage === totalPages" @click="goToPage(currentPage + 1)">Próxima</button>
-      </div>
+      
+      <PaginationControls
+        :current-page="currentPage"
+        :total-pages="totalPages"
+        :total-items="totalItems"
+        :page-size="pageSize"
+        @go-to-page="goToPage"
+        @change-page-size="changePageSize"
+      />
     </div>
   </template>
   
   <script setup lang="ts">
   import { ref, computed, watch, onMounted, defineProps } from 'vue';
   import BaseTable from '@/components/BaseTable.vue';
-  import { useTable } from '@/composables/useTable';
+  import PaginationControls from '@/components/PaginationControls.vue';
+  import { usePagination } from '@/composables/usePagination';
   import type { ColumnDef } from '@/composables/useTable';
   import { stockService, type StockItem } from '@/services/stockService';
   import { parseConsumptionTime } from '@/utils/time';
@@ -53,27 +58,40 @@
   const items = ref<StockItem[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
-  const currentPage = ref(1);
-  const totalItems = ref(0);
-  const pageSize = 10; // ou o valor padrão da sua API
-  const totalPages = computed(() => Math.ceil(totalItems.value / pageSize));
+  
+  // Usar o novo composable de paginação
+  const pagination = usePagination({
+    pageSize: 10,
+    initialPage: 1,
+    initialSort: { key: 'codSku', order: 'asc' }
+  });
 
-  // Busca itens da API com filtros e paginação
-  async function fetchItems(page = currentPage.value) {
+  // Busca itens da API com filtros, paginação e ordenação
+  async function fetchItems() {
     loading.value = true;
     error.value = null;
     try {
       console.log('StockItemsList: Buscando itens com filtros:', props.filters);
-      const result = await stockService.getStockItems(page, {
+      console.log('StockItemsList: Estado da paginação:', pagination.paginationState.value);
+      console.log('StockItemsList: Estado da ordenação:', pagination.sortState.value);
+      
+      // Preparar parâmetros de query
+      const queryParams = {
+        ...pagination.getQueryParams(),
         codSku: props.filters.itemSKU,
         descricaoItem: props.filters.itemDescription,
         stockDate: props.filters.stockDate,
         showOnlyStockItems: props.filters.showOnlyStockItems,
         showOnlyActiveItems: props.filters.showOnlyActiveItems,
-      });
+      };
+      
+      const result = await stockService.getStockItems(
+        parseInt(queryParams.page), 
+        queryParams
+      );
+      
       items.value = result.results;
-      totalItems.value = result.total;
-      currentPage.value = page;
+      pagination.updateTotalItems(result.count);
     } catch (e) {
       console.error('Erro ao carregar itens:', e);
       error.value = 'Erro ao carregar itens';
@@ -82,10 +100,19 @@
     }
   }
 
+  // Função para mudar de página
   function goToPage(page: number) {
-    if (page >= 1 && page <= totalPages.value) {
-      fetchItems(page);
-    }
+    pagination.goToPage(page);
+  }
+
+  // Função para mudar tamanho da página
+  function changePageSize(size: number) {
+    pagination.updatePageSize(size);
+  }
+
+  // Função para ordenar
+  function handleSort(key: string) {
+    pagination.setSort(key);
   }
 
   // Formata o tempo estimado de consumo para exibição amigável
@@ -101,8 +128,19 @@
   // Busca dados quando os filtros mudam
   watch(() => props.filters, (newFilters) => {
     console.log('StockItemsList: Filtros mudaram:', newFilters);
-    fetchItems(1);
+    pagination.reset();
+    fetchItems();
   }, { deep: true });
+
+  // Busca dados quando paginação ou ordenação mudam
+  watch([
+    () => pagination.currentPage.value,
+    () => pagination.sortKey.value,
+    () => pagination.sortOrder.value,
+    () => pagination.pageSize.value
+  ], () => {
+    fetchItems();
+  });
 
   // definindo colunas
   const columns: ColumnDef<StockItem>[] = [
@@ -114,7 +152,12 @@
     // Adicione outras colunas conforme necessário
   ];
 
-  // inicializa composable de tabela com dados
-  const table = useTable<StockItem>(items, columns);
+  // Expor dados para o template
+  const currentPage = computed(() => pagination.currentPage.value);
+  const totalPages = computed(() => pagination.totalPages.value);
+  const totalItems = computed(() => pagination.totalItems.value);
+  const pageSize = computed(() => pagination.pageSize.value);
+  const sortKey = computed(() => pagination.sortKey.value);
+  const sortOrder = computed(() => pagination.sortOrder.value);
   </script>
   

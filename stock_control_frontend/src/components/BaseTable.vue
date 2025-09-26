@@ -41,10 +41,16 @@
   }
   
   const props = defineProps<Props<any>>();
-  const emit = defineEmits<{ (e: 'update:sort', key: string): void }>();
+  const emit = defineEmits<{ 
+    (e: 'update:sort', key: string): void;
+    (e: 'sort-changed', key: string, order: 'asc' | 'desc'): void;
+  }>();
   
   function handleSort(key: string) {
     emit('update:sort', key);
+    // Emitir evento adicional com informações completas de ordenação
+    const newOrder = props.sortKey === key && props.sortOrder === 'asc' ? 'desc' : 'asc';
+    emit('sort-changed', key, newOrder);
   }
   
   function sortIcon<T>(col: ColumnDef<T>) {

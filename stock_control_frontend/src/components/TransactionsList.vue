@@ -13,11 +13,11 @@
         <BaseTable 
             v-else
             :columns="columns" 
-            :rows="table.data.value" 
-            :sortKey="table.sortKey.value"
-            :sortOrder="table.sortOrder.value" 
+            :rows="transactions" 
+            :sortKey="pagination.sortKey.value"
+            :sortOrder="pagination.sortOrder.value" 
             keyField="id"
-            @update:sort="(key) => table.setSort(key as keyof Transaction)" 
+            @update:sort="handleSort" 
         >
             <template #cell-transactionType="{ value }">
                 <span :class="['badge', value === 'Entrada' ? 'entrada' : 'saida']">
@@ -52,15 +52,26 @@
                 </button>
             </template>
         </BaseTable>
+        
+        <PaginationControls
+            v-if="!loading && !error && transactions.length > 0"
+            :current-page="pagination.currentPage.value"
+            :total-pages="pagination.totalPages.value"
+            :total-items="pagination.totalItems.value"
+            :page-size="pagination.pageSize.value"
+            @go-to-page="pagination.goToPage"
+            @change-page-size="pagination.updatePageSize"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue';
 import BaseTable from './BaseTable.vue';
+import PaginationControls from '@/components/PaginationControls.vue';
+import { usePagination } from '@/composables/usePagination';
 import type { ColumnDef } from '@/composables/useTable';
 import { parseBrazilianDate, formatDateToBrazilian } from '@/utils/date';
-import { useTable } from '@/composables/useTable';
 import { transactionService, type FormattedTransaction, type TransactionSearchParams } from '@/services/transactionService';
 import formatCurrency from '@/utils/currency';
 import { formatInteger, formatDecimal, parseInteger, parseDecimal } from '@/utils/numbersFormat';
@@ -132,6 +143,13 @@ const transactions = ref<Transaction[]>([]);
 const loading = ref(false);
 const error = ref<string | null>(null);
 
+// Configurar paginação
+const pagination = usePagination({
+  pageSize: 10,
+  initialPage: 1,
+  initialSort: { key: 'cronology', order: 'desc' }
+});
+
 // Load transactions with filters
 async function fetchTransactions() {
     console.log('TransactionsList: fetchTransactions called');
@@ -144,13 +162,22 @@ async function fetchTransactions() {
     try {
         console.log('TransactionsList: Calling API with params:', JSON.stringify(serviceParams.value));
         
+        // Adicionar parâmetros de paginação e ordenação
+        const queryParams = pagination.getQueryParams();
+        const apiParams = {
+            ...serviceParams.value,
+            page: parseInt(queryParams.page),
+            ordering: queryParams.ordering,
+            page_size: queryParams.page_size
+        };
+        
         // Use converted params for the API call
-        const result = await transactionService.getTransactions(serviceParams.value);
+        const result = await transactionService.getTransactions(apiParams);
         
         console.log('TransactionsList: API call result:', result);
         
         // Convert from FormattedTransaction to table format
-        transactions.value = result.map((item, index) => ({
+        transactions.value = result.results.map((item, index) => ({
             id: item.id,
             cronology: item.idTransacao,
             date: formatDateToBrazilian(item.date),
@@ -167,6 +194,9 @@ async function fetchTransactions() {
             edit: '', // Placeholder for edit button
             delete: '', // Placeholder for delete button
         }));
+        
+        // Atualizar informações de paginação
+        pagination.updateTotalItems(result.count);
     } catch (err) {
         console.error('Erro ao carregar transações:', err);
         error.value = 'Não foi possível carregar as transações. Tente novamente mais tarde.';
@@ -174,6 +204,11 @@ async function fetchTransactions() {
     } finally {
         loading.value = false;
     }
+}
+
+// Função para ordenar
+function handleSort(key: string) {
+    pagination.setSort(key);
 }
 
 // Load initial data when component is mounted
@@ -193,17 +228,29 @@ watch([() => props.filters, () => props.refreshKey], ([newFilters, newRefreshKey
     // Check if filters have changed
     if (JSON.stringify(newFilters) !== JSON.stringify(oldFilters)) {
         console.log('TransactionsList: Filters have changed, fetching new data');
+        pagination.reset();
         fetchTransactions();
     }
     // Check if refreshKey has changed
     else if (newRefreshKey !== oldRefreshKey) {
         console.log('TransactionsList: RefreshKey has changed, fetching new data');
+        pagination.reset();
         fetchTransactions();
     }
     else {
         console.log('TransactionsList: No significant changes detected');
     }
 }, { deep: true });
+
+// reagir a mudanças de paginação e ordenação
+watch([
+    () => pagination.currentPage.value,
+    () => pagination.sortKey.value,
+    () => pagination.sortOrder.value,
+    () => pagination.pageSize.value
+], () => {
+    fetchTransactions();
+});
 
 // Table columns
 const columns: ExtendedColumnDef<Transaction>[] = [
@@ -275,8 +322,7 @@ const columns: ExtendedColumnDef<Transaction>[] = [
     { key: 'delete', label: 'Deletar', sortable: false }
 ];
 
-// Use the useTable to manage sorting
-const table = useTable<Transaction>(transactions, columns as ColumnDef<Transaction>[]);
+// Remover o useTable já que agora usamos paginação do backend
 
 // Functions for edit and delete buttons
 function onEdit(transaction: Transaction) {

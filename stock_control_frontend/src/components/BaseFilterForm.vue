@@ -16,6 +16,14 @@
           class="checkbox-group"
         />
   
+        <!-- campo de data brasileiro -->
+        <BrazilianDateInput
+          v-else-if="field.type === 'date'"
+          :id="String(field.key)"
+          v-model="localFilters[String(field.key)]"
+          :placeholder="field.placeholder || 'DD/MM/YYYY'"
+        />
+  
         <!-- demais tipos -->
         <input
           v-else
@@ -35,6 +43,7 @@
   <script setup lang="ts">
   import { reactive, toRefs, watch, onMounted } from 'vue';
   import type { FilterField } from '@/types/filter';
+  import BrazilianDateInput from './BrazilianDateInput.vue';
   
   // Ensure FilterField has a key of type string or number
   type StringOrNumberKey = string | number;

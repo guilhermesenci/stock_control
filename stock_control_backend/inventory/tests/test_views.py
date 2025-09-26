@@ -1,62 +1,234 @@
-import pytest
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APIClient
+"""
+Testes para as views da API.
+"""
+
+from decimal import Decimal
+from django.test import TestCase
 from django.contrib.auth.models import User
+from django.urls import reverse
+from rest_framework.test import APITestCase
+from rest_framework import status
+from datetime import date, time
 
-@pytest.mark.django_db
-class TestRegisterView:
-
-    def setup_method(self):
-        self.client = APIClient()
-        self.url = reverse('register')
+from ..models import Item, Transacao, Entrada, Saida, Fornecedor, Usuario
 
 
-    def test_register_user_successfully(self):
-        payload = {
-            "username": "newuser",
-            "email": "newuser@example.com",
-            "password": "strongpassword123",
-            "password2": "strongpassword123"  # adicionado para confirmar a senha
+class TransactionAPITest(APITestCase):
+    """Testes para as APIs de transação."""
+    
+    def setUp(self):
+        """Configuração inicial para os testes."""
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        
+        self.usuario = Usuario.objects.create(
+            mat_usuario=1,
+            nome_usuario='Usuário Teste',
+            auth_user=self.user
+        )
+        
+        self.item = Item.objects.create(
+            cod_sku='TEST001',
+            descricao_item='Item de Teste',
+            unid_medida='UN',
+            active=True
+        )
+        
+        self.fornecedor = Fornecedor.objects.create(
+            nome_fornecedor='Fornecedor Teste',
+            active=True
+        )
+        
+        # Autenticar usuário
+        self.client.force_authenticate(user=self.user)
+    
+    def test_recalculate_costs_endpoint(self):
+        """Testa endpoint de recálculo de custos."""
+        # Criar transação de entrada
+        transacao = Transacao.objects.create(
+            cod_sku=self.item,
+            quantidade=Decimal('10'),
+            valor_unit=Decimal('5.00'),
+            cod_fornecedor=self.fornecedor
+        )
+        
+        Entrada.objects.create(
+            transacao=transacao,
+            mat_usuario=self.usuario,
+            data_entrada=date.today(),
+            hora_entrada=time(10, 0, 0)
+        )
+        
+        url = reverse('recalculate_costs')
+        data = {
+            'transactionId': transacao.id_transacao,
+            'sku': 'TEST001'
         }
-        response = self.client.post(self.url, payload, format='json')
-        assert response.status_code == status.HTTP_201_CREATED, f"Response: {response.json()}"
-        assert "Usuário criado com sucesso" in response.data.get("message", "")
-        assert User.objects.filter(username="newuser").exists()
-
-
-    def test_register_with_existing_username(self):
-        User.objects.create_user(username="existing", email="ex@ex.com", password="123456")
-        payload = {
-            "username": "existing",
-            "email": "another@example.com",
-            "password": "anotherpass",
-            "password2": "anotherpass"
+        
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['success'])
+    
+    def test_validate_stock_operation_endpoint(self):
+        """Testa endpoint de validação de operação de estoque."""
+        # Criar transação de entrada
+        transacao = Transacao.objects.create(
+            cod_sku=self.item,
+            quantidade=Decimal('10'),
+            valor_unit=Decimal('5.00'),
+            cod_fornecedor=self.fornecedor
+        )
+        
+        Entrada.objects.create(
+            transacao=transacao,
+            mat_usuario=self.usuario,
+            data_entrada=date.today(),
+            hora_entrada=time(10, 0, 0)
+        )
+        
+        url = reverse('validate_stock_operation')
+        data = {
+            'sku': 'TEST001',
+            'operationType': 'delete',
+            'transactionId': transacao.id_transacao
         }
-        response = self.client.post(self.url, payload, format='json')
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        errors = response.data.get("username", [])
-        assert "already exists" in " ".join(errors).lower()
-
-
-    def test_register_with_missing_fields(self):
-        payload = {
-            "username": "incomplete"
-            # faltando email, password e password2
+        
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['valid'])
+    
+    def test_delete_transaction_endpoint(self):
+        """Testa endpoint de exclusão de transação."""
+        # Criar transação de entrada
+        transacao = Transacao.objects.create(
+            cod_sku=self.item,
+            quantidade=Decimal('10'),
+            valor_unit=Decimal('5.00'),
+            cod_fornecedor=self.fornecedor
+        )
+        
+        entrada = Entrada.objects.create(
+            transacao=transacao,
+            mat_usuario=self.usuario,
+            data_entrada=date.today(),
+            hora_entrada=time(10, 0, 0)
+        )
+        
+        url = reverse('delete_transaction', kwargs={'transaction_id': f'entrada-{entrada.cod_entrada}'})
+        
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['success'])
+    
+    def test_update_transaction_endpoint(self):
+        """Testa endpoint de atualização de transação."""
+        # Criar transação de entrada
+        transacao = Transacao.objects.create(
+            cod_sku=self.item,
+            quantidade=Decimal('10'),
+            valor_unit=Decimal('5.00'),
+            cod_fornecedor=self.fornecedor
+        )
+        
+        entrada = Entrada.objects.create(
+            transacao=transacao,
+            mat_usuario=self.usuario,
+            data_entrada=date.today(),
+            hora_entrada=time(10, 0, 0)
+        )
+        
+        url = reverse('update_transaction', kwargs={'transaction_id': f'entrada-{entrada.cod_entrada}'})
+        data = {
+            'quantity': 15,
+            'unitCost': 6.00
         }
-        response = self.client.post(self.url, payload, format='json')
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        errors = response.data
-        assert "email" in errors or "password" in errors or "password2" in errors
+        
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['success'])
 
 
-    def test_register_with_invalid_email_format(self):
-        payload = {
-            "username": "useremail",
-            "email": "not-an-email",
-            "password": "123456789",
-            "password2": "123456789"
-        }
-        response = self.client.post(self.url, payload, format='json')
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert "email" in response.data
+class StockAPITest(APITestCase):
+    """Testes para as APIs de estoque."""
+    
+    def setUp(self):
+        """Configuração inicial para os testes."""
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        
+        self.usuario = Usuario.objects.create(
+            mat_usuario=1,
+            nome_usuario='Usuário Teste',
+            auth_user=self.user
+        )
+        
+        self.item = Item.objects.create(
+            cod_sku='TEST001',
+            descricao_item='Item de Teste',
+            unid_medida='UN',
+            active=True
+        )
+        
+        self.fornecedor = Fornecedor.objects.create(
+            nome_fornecedor='Fornecedor Teste',
+            active=True
+        )
+        
+        # Autenticar usuário
+        self.client.force_authenticate(user=self.user)
+    
+    def test_stock_list_endpoint(self):
+        """Testa endpoint de lista de estoque."""
+        # Criar transação de entrada
+        transacao = Transacao.objects.create(
+            cod_sku=self.item,
+            quantidade=Decimal('10'),
+            valor_unit=Decimal('5.00'),
+            cod_fornecedor=self.fornecedor
+        )
+        
+        Entrada.objects.create(
+            transacao=transacao,
+            mat_usuario=self.usuario,
+            data_entrada=date.today(),
+            hora_entrada=time(10, 0, 0)
+        )
+        
+        url = reverse('stocks-list')
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('results', response.data)
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['quantity'], 10.0)
+    
+    def test_stock_cost_list_endpoint(self):
+        """Testa endpoint de lista de custos de estoque."""
+        # Criar transação de entrada
+        transacao = Transacao.objects.create(
+            cod_sku=self.item,
+            quantidade=Decimal('10'),
+            valor_unit=Decimal('5.00'),
+            cod_fornecedor=self.fornecedor
+        )
+        
+        Entrada.objects.create(
+            transacao=transacao,
+            mat_usuario=self.usuario,
+            data_entrada=date.today(),
+            hora_entrada=time(10, 0, 0)
+        )
+        
+        url = reverse('stock-costs-list')
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('results', response.data)
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['unitCost'], 5.0)

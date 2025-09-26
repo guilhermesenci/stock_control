@@ -1,8 +1,2 @@
-export type FilterType = 'text' | 'date' | 'number' | 'checkbox';
-
-export interface FilterField<T = any> {
-  key: keyof T;
-  label: string;
-  type: FilterType;
-  placeholder?: string;
-}
+// types/filter.ts - Re-exporta tipos comuns de filtro
+export type { FilterType, FilterField, BaseFilter } from './common';

@@ -8,6 +8,7 @@ import { ref, watch, onMounted } from 'vue'
 import type { FilterField } from '@/types/filter'
 import BaseFilterForm from './BaseFilterForm.vue'
 import type { TransactionSearchParams } from '@/services/transactionService'
+import { getCurrentBrazilianDate, formatBrazilianDateToISO } from '@/utils/date'
 
 // Interface for the filter form
 interface TransactionFilters {
@@ -24,8 +25,8 @@ const emit = defineEmits<{
     (e: 'search'): void;
 }>();
 
-// Get today's date in YYYY-MM-DD format for default values
-const today = new Date().toISOString().split('T')[0];
+// Get today's date in Brazilian format for default values
+const today = getCurrentBrazilianDate();
 
 // Local filter state
 const filters = ref<TransactionFilters>({
@@ -51,8 +52,17 @@ function onSearch() {
     console.log('TransactionsFilters: Current filters:', filters.value);
     
     try {
+        // Convert Brazilian dates to ISO format before sending
+        const convertedFilters = { ...filters.value };
+        if (convertedFilters.transactionsDateFrom && convertedFilters.transactionsDateFrom.includes('/')) {
+            convertedFilters.transactionsDateFrom = formatBrazilianDateToISO(convertedFilters.transactionsDateFrom);
+        }
+        if (convertedFilters.transactionsDateTo && convertedFilters.transactionsDateTo.includes('/')) {
+            convertedFilters.transactionsDateTo = formatBrazilianDateToISO(convertedFilters.transactionsDateTo);
+        }
+        
         // First update the model
-        emit('update:modelValue', { ...filters.value });
+        emit('update:modelValue', convertedFilters);
         console.log('TransactionsFilters: Emitted update:modelValue event');
         
         // Then trigger search event

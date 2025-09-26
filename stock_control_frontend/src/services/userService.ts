@@ -1,4 +1,5 @@
-import api from './axios';
+import api from './api';
+import type { Paginated } from '@/types/api';
 
 export interface User {
   id: number;
@@ -41,11 +42,27 @@ export interface UpdateUserData {
 
 const userService = {
   /**
-   * Get all users
+   * Get all users with pagination
    */
-  getUsers: async (): Promise<User[]> => {
-    const response = await api.get('/api/v1/users/');
-    return response.data.results || response.data;
+  getUsers: async (page = 1, filters?: { username?: string; email?: string; isActive?: boolean; ordering?: string }): Promise<Paginated<User>> => {
+    const params = new URLSearchParams({ page: String(page) });
+    
+    if (filters?.username) {
+      params.append('username', filters.username);
+    }
+    if (filters?.email) {
+      params.append('email', filters.email);
+    }
+    if (filters?.isActive !== undefined) {
+      params.append('isActive', String(filters.isActive));
+    }
+    if (filters?.ordering) {
+      params.append('ordering', filters.ordering);
+    }
+    
+    const url = `/api/v1/users/?${params.toString()}`;
+    const response = await api.get(url);
+    return response.data;
   },
 
   /**

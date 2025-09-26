@@ -27,11 +27,12 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, watch } from 'vue'
-  import ItemsFilters from '@/components/ItemsFilters.vue'
-  import ItemsList from '@/components/ItemsList.vue'
-  import ItemEditModal from '@/components/ItemEditModal.vue'
-  import { itemService, type Item } from '@/services/itemService'
+import { ref, watch } from 'vue'
+import ItemsFilters from '@/components/ItemsFilters.vue'
+import ItemsList from '@/components/ItemsList.vue'
+import ItemEditModal from '@/components/ItemEditModal.vue'
+import { itemService, type Item } from '@/services/itemService'
+import { useErrorHandler } from '@/composables/useApiError'
   
   interface ItemFilters {
     itemSKU: string
@@ -47,6 +48,9 @@
   
   // chave reativa para forçar reload
   const refreshKey = ref(0)
+
+  // Error handler
+  const { handleError, handleSuccess } = useErrorHandler()
 
   // controle do modal
   const showNewItemModal = ref(false)
@@ -79,8 +83,9 @@
       await itemService.createItem(newItem)
       showNewItemModal.value = false
       onSearch()
+      handleSuccess('Item criado', 'Item foi criado com sucesso!')
     } catch (err) {
-      console.error('Erro ao cadastrar item:', err)
+      handleError(err, 'Erro ao cadastrar item')
     }
   }
 
@@ -98,8 +103,9 @@
       })
       showEditItemModal.value = false
       onSearch()
+      handleSuccess('Item atualizado', 'Item foi atualizado com sucesso!')
     } catch (err) {
-      console.error('Erro ao editar item:', err)
+      handleError(err, 'Erro ao editar item')
     }
   }
 
@@ -108,8 +114,9 @@
       try {
         await itemService.deleteItem(item.codSku)
         onSearch()
+        handleSuccess('Item excluído', 'Item foi excluído com sucesso!')
       } catch (err) {
-        console.error('Erro ao deletar item:', err)
+        handleError(err, 'Erro ao deletar item')
       }
     }
   }
