@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import action, api_view, permission_classes
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.permissions import AllowAny
 
 from .models import Transacao, Item, Entrada, Saida, Fornecedor, Usuario, User
 from .serializers import (
@@ -363,6 +364,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class RegisterView(APIView):
+    permission_classes = [AllowAny]
+    
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():

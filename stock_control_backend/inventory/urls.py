@@ -16,7 +16,7 @@ from .views import (
     recalculate_costs,
     validate_stock_operation,
     delete_transaction,
-    update_transaction
+    update_transaction,
 )
 from .api import StockCostViewSet
 
