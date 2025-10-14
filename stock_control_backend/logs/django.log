@@ -7070,3 +7070,5 @@ INFO 2025-10-13 22:09:22,912 basehttp 5032 26152 "POST /api/token/ HTTP/1.1" 200
 WARNING 2025-10-13 22:11:49,004 log 5032 2976 Unauthorized: /api/current-user-info/
 WARNING 2025-10-13 22:11:49,005 basehttp 5032 2976 "GET /api/current-user-info/ HTTP/1.1" 401 81
 WARNING 2025-10-13 22:12:01,032 log 5032 2976 Unauthorized: /api/current-user-info/
+WARNING 2025-10-13 22:12:01,033 basehttp 5032 2976 "GET /api/current-user-info/ HTTP/1.1" 401 81
+INFO 2025-10-13 22:12:38,058 basehttp 5032 2976 "GET /api/current-user-info/ HTTP/1.1" 200 496
