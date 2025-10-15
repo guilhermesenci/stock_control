@@ -2,7 +2,7 @@
   <PageContainer
     title="Inserir Transação"
     :global-loading="loading"
-    :error="error"
+    :error="error ?? undefined"
     @retry="loadTransactionForm"
   >
     <div class="transaction-form-container">

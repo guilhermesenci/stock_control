@@ -168,7 +168,7 @@ async function fetchTransactions() {
             ...serviceParams.value,
             page: parseInt(queryParams.page),
             ordering: queryParams.ordering,
-            page_size: queryParams.page_size
+            page_size: parseInt(queryParams.page_size)
         };
         
         // Use converted params for the API call
@@ -261,6 +261,9 @@ const columns: ExtendedColumnDef<Transaction>[] = [
         sortFn: (a, b, order) => {
             const timeA = parseInteger(a.cronology.toString());
             const timeB = parseInteger(b.cronology.toString());
+            if (timeA == null && timeB == null) return 0;
+            if (timeA == null) return order === 'asc' ? 1 : -1;
+            if (timeB == null) return order === 'asc' ? -1 : 1;
             return order === 'asc' ? timeA - timeB : timeB - timeA;
         }
     },
@@ -277,6 +280,9 @@ const columns: ExtendedColumnDef<Transaction>[] = [
         sortFn: (a, b, order) => {
             const timeA = parseBrazilianDate(a.date);
             const timeB = parseBrazilianDate(b.date);
+            if (timeA == null && timeB == null) return 0;
+            if (timeA == null) return order === 'asc' ? 1 : -1;
+            if (timeB == null) return order === 'asc' ? -1 : 1;
             return order === 'asc' ? timeA - timeB : timeB - timeA;
         }
     },
@@ -290,8 +296,11 @@ const columns: ExtendedColumnDef<Transaction>[] = [
         label: 'Número NF',
         sortable: true,
         sortFn: (a, b, order) => {
-            const timeA = parseInteger(a.notaFiscal);
-            const timeB = parseInteger(b.notaFiscal);
+            const timeA = parseInteger(a.notaFiscal ?? '');
+            const timeB = parseInteger(b.notaFiscal ?? '');
+            if (timeA == null && timeB == null) return 0;
+            if (timeA == null) return order === 'asc' ? 1 : -1;
+            if (timeB == null) return order === 'asc' ? -1 : 1;
             return order === 'asc' ? timeA - timeB : timeB - timeA;
         }
     },
@@ -312,8 +321,8 @@ const columns: ExtendedColumnDef<Transaction>[] = [
         label: 'Custo da transação', 
         sortable: true,
         sortFn: (a, b, order) => {
-            const timeA = parseFloat(a.cost);
-            const timeB = parseFloat(b.cost);
+            const timeA = a.cost;
+            const timeB = b.cost;
             return order === 'asc' ? timeA - timeB : timeB - timeA;
         }
     },
@@ -338,8 +347,12 @@ function onEdit(transaction: Transaction) {
     const formattedTransaction = {
         ...transaction,
         transactionType: transaction.transactionType === 'Entrada' ? 'entrada' : 'saida',
-        // Garantir que unitCost seja corretamente definido
-        unitCost: transaction.unitCost || (transaction.cost !== undefined && transaction.quantity ? transaction.cost / transaction.quantity : undefined)
+        // Garantir que unitCost seja corretamente definido e nunca undefined
+        unitCost: transaction.unitCost !== undefined
+            ? transaction.unitCost
+            : (transaction.cost !== undefined && transaction.quantity
+                ? transaction.cost / transaction.quantity
+                : 0)
     };
     
     console.log('Formatted transaction for edit:', formattedTransaction);

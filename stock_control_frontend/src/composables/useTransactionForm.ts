@@ -7,6 +7,7 @@ import type { TransactionForm } from '@/types/transaction';
 import type { Item } from '@/types/item';
 import type { Fornecedor } from '@/services/supplierService';
 import { getCurrentISODate } from '@/utils/date';
+import api from '@/services/api';
 
 export function useTransactionForm(initialForm?: Partial<TransactionForm>) {
   const authStore = useAuthStore();
@@ -86,7 +87,7 @@ export function useTransactionForm(initialForm?: Partial<TransactionForm>) {
       loadingCost.value = true;
       
       try {
-        const { data } = await api.get(`/api/v1/itens/${sku}/custo-medio/`);
+        const { data } = await api.get(`itens/${sku}/custo-medio/`);
         if (data && data.custoMedio !== undefined) {
           return data.custoMedio;
         }
@@ -120,7 +121,7 @@ export function useTransactionForm(initialForm?: Partial<TransactionForm>) {
       loadingCost.value = true;
       try {
         const today = getCurrentISODate();
-        const cost = await stockCostService.getStockCosts(today, { codSku: form.value.sku });
+        const cost = await stockCostService.getStockCosts(undefined, { stockDate: today, sku: form.value.sku });
         if (cost.results.length > 0) {
           form.value.unitCost = cost.results[0].lastEntryCost;
         }

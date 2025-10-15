@@ -28,7 +28,7 @@ export function useAuth() {
    * Faz login e popula os tokens.
    */
   async function login(username: string, password: string) {
-    const response = await authService.login({ username, password })
+    const response = await authService.login(username, password)
     setTokens(response.access, response.refresh)
   }
 
@@ -40,5 +40,5 @@ export function useAuth() {
     authStore.logout() // Usa o método do store que já faz tudo necessário
   }
 
-  return { accessToken, login, logout }
+  return { accessToken, login, logout, setTokens }
 }

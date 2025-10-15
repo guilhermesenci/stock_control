@@ -15,40 +15,30 @@
         </span>
       </template>
       <template #cell-edit="{ row }">
-        <LoadingButton
-          variant="secondary"
-          size="small"
-          @click="onEdit(row)"
-        >
+        <LoadingButton variant="secondary" size="small" @click="onEdit(row)">
           Editar
         </LoadingButton>
       </template>
       <template #cell-delete="{ row }">
-        <LoadingButton
-          variant="danger"
-          size="small"
-          @click="onDelete(row)"
-        >
+        <LoadingButton variant="danger" size="small" @click="onDelete(row)">
           Excluir
         </LoadingButton>
       </template>
     </BaseTable>
-    
+
     <div v-if="loading" class="loading-container">
       <LoadingSpinner size="medium" message="Carregando itens..." />
     </div>
-    
+
     <div v-if="error" class="error-container">
       <div class="error-card">
         <div class="error-icon">⚠️</div>
         <h3>Erro ao carregar itens</h3>
         <p>{{ error }}</p>
-        <LoadingButton variant="primary" @click="fetchItems">
-          Tentar novamente
-        </LoadingButton>
+        <LoadingButton variant="primary" @click="fetchItems"> Tentar novamente </LoadingButton>
       </div>
     </div>
-    
+
     <div v-if="!loading && !error && items.length === 0" class="empty-container">
       <div class="empty-card">
         <div class="empty-icon">📦</div>
@@ -56,7 +46,7 @@
         <p>Não há itens que correspondam aos filtros aplicados.</p>
       </div>
     </div>
-    
+
     <PaginationControls
       v-if="!loading && !error && items.length > 0"
       :current-page="currentPage"
@@ -70,99 +60,99 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue';
-import BaseTable from '@/components/BaseTable.vue';
-import PaginationControls from '@/components/PaginationControls.vue';
-import LoadingButton from '@/components/LoadingButton.vue';
-import LoadingSpinner from '@/components/LoadingSpinner.vue';
-import { usePagination } from '@/composables/usePagination';
-import { useErrorHandler } from '@/composables/useApiError';
-import type { ColumnDef } from '@/composables/useTable';
-import { itemService, type Item } from '@/services/itemService';
+import { ref, computed, watch, onMounted } from 'vue'
+import BaseTable from '@/components/BaseTable.vue'
+import PaginationControls from '@/components/PaginationControls.vue'
+import LoadingButton from '@/components/LoadingButton.vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import { usePagination } from '@/composables/usePagination'
+import { useErrorHandler } from '@/composables/useApiError'
+import type { ColumnDef } from '@/composables/useTable'
+import { itemService } from '@/services/itemService'
+import type { Item } from '@/types/item'
 
 // Props para receber filtros do componente pai
 const props = defineProps<{
   filters?: {
-    codSku?: string;
-    descricaoItem?: string;
-    unidMedida?: string;
-    active?: boolean;
+    codSku?: string
+    descricaoItem?: string
+    unidMedida?: string
+    active?: boolean
   }
-}>();
+}>()
 
 // Emits para comunicação com componente pai
 const emit = defineEmits<{
-  edit: [item: Item];
-  delete: [item: Item];
-}>();
+  edit: [item: Item]
+  delete: [item: Item]
+}>()
 
 // Composables
-const { handleError } = useErrorHandler();
+const { handleError } = useErrorHandler()
 
-const items = ref<Item[]>([]);
-const loading = ref(false);
-const error = ref<string | null>(null);
+const items = ref<Item[]>([])
+const loading = ref(false)
+const error = ref<string | null>(null)
 
 // Usar o novo composable de paginação
 const pagination = usePagination({
   pageSize: 10,
   initialPage: 1,
-  initialSort: { key: 'codSku', order: 'asc' }
-});
+  initialSort: { key: 'codSku', order: 'asc' },
+})
 
 // Busca itens da API com filtros, paginação e ordenação
 async function fetchItems() {
-  loading.value = true;
-  error.value = null;
+  loading.value = true
+  error.value = null
   try {
-    console.log('ItemsListWithPagination: Buscando itens com filtros:', props.filters);
-    console.log('ItemsListWithPagination: Estado da paginação:', pagination.paginationState.value);
-    console.log('ItemsListWithPagination: Estado da ordenação:', pagination.sortState.value);
-    
+    console.log('ItemsListWithPagination: Buscando itens com filtros:', props.filters)
+    console.log('ItemsListWithPagination: Estado da paginação:', pagination.paginationState.value)
+    console.log('ItemsListWithPagination: Estado da ordenação:', pagination.sortState.value)
+
     // Preparar parâmetros de query
+    const baseQueryParams = pagination.getQueryParams()
     const queryParams = {
-      ...pagination.getQueryParams(),
-      ...props.filters
-    };
-    
-    const result = await itemService.getItems(
-      parseInt(queryParams.page), 
-      queryParams
-    );
-    
-    items.value = result.results;
-    pagination.updateTotalItems(result.count);
+      ...props.filters,
+      ...baseQueryParams,
+      page: baseQueryParams.page, // garante que page está presente
+    }
+
+    const result = await itemService.getItems(parseInt(String(queryParams.page)), queryParams)
+
+    items.value = result.results
+    pagination.updateTotalItems(result.count)
   } catch (e) {
-    console.error('Erro ao carregar itens:', e);
-    error.value = 'Erro ao carregar itens';
-    handleError(e, 'Erro ao carregar itens');
+    console.error('Erro ao carregar itens:', e)
+    error.value = 'Erro ao carregar itens'
+    handleError(e, 'Erro ao carregar itens')
   } finally {
-    loading.value = false;
+    loading.value = false
   }
 }
 
 // Função para mudar de página
 function goToPage(page: number) {
-  pagination.goToPage(page);
+  pagination.goToPage(page)
 }
 
 // Função para mudar tamanho da página
 function changePageSize(size: number) {
-  pagination.updatePageSize(size);
+  pagination.updatePageSize(size)
 }
 
 // Função para ordenar
 function handleSort(key: string) {
-  pagination.setSort(key);
+  pagination.setSort(key)
 }
 
 // Funções para editar e deletar
 function onEdit(item: Item) {
-  emit('edit', item);
+  emit('edit', item)
 }
 
 function onDelete(item: Item) {
-  emit('delete', item);
+  emit('delete', item)
 }
 
 // Definir colunas da tabela
@@ -173,37 +163,44 @@ const columns: ColumnDef<Item>[] = [
   { key: 'active', label: 'Ativo', sortable: true },
   { key: 'edit', label: 'Ações', sortable: false },
   { key: 'delete', label: '', sortable: false },
-];
+]
 
 // Expor dados para o template
-const currentPage = computed(() => pagination.currentPage.value);
-const totalPages = computed(() => pagination.totalPages.value);
-const totalItems = computed(() => pagination.totalItems.value);
-const pageSize = computed(() => pagination.pageSize.value);
-const sortKey = computed(() => pagination.sortKey.value);
-const sortOrder = computed(() => pagination.sortOrder.value);
+const currentPage = computed(() => pagination.currentPage.value)
+const totalPages = computed(() => pagination.totalPages.value)
+const totalItems = computed(() => pagination.totalItems.value)
+const pageSize = computed(() => pagination.pageSize.value)
+const sortKey = computed(() => pagination.sortKey.value)
+const sortOrder = computed(() => pagination.sortOrder.value)
 
 // Busca dados quando os filtros mudam
-watch(() => props.filters, (newFilters) => {
-  console.log('ItemsListWithPagination: Filtros mudaram:', newFilters);
-  pagination.reset();
-  fetchItems();
-}, { deep: true });
+watch(
+  () => props.filters,
+  (newFilters) => {
+    console.log('ItemsListWithPagination: Filtros mudaram:', newFilters)
+    pagination.reset()
+    fetchItems()
+  },
+  { deep: true },
+)
 
 // Busca dados quando paginação ou ordenação mudam
-watch([
-  () => pagination.currentPage.value,
-  () => pagination.sortKey.value,
-  () => pagination.sortOrder.value,
-  () => pagination.pageSize.value
-], () => {
-  fetchItems();
-});
+watch(
+  [
+    () => pagination.currentPage.value,
+    () => pagination.sortKey.value,
+    () => pagination.sortOrder.value,
+    () => pagination.pageSize.value,
+  ],
+  () => {
+    fetchItems()
+  },
+)
 
 onMounted(() => {
-  console.log('ItemsListWithPagination: Component mounted');
-  fetchItems();
-});
+  console.log('ItemsListWithPagination: Component mounted')
+  fetchItems()
+})
 </script>
 
 <style scoped>

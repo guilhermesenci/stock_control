@@ -67,7 +67,7 @@
         
         <!-- Autocomplete suggestions -->
         <div 
-          v-if="showSuggestions && suggestions.length > 0" 
+          v-if="showSuggestions && suggestions && suggestions.length > 0" 
           class="form-field__suggestions"
         >
           <div

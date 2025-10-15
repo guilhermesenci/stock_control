@@ -87,6 +87,7 @@ interface MenuItemProps {
     to: string;
     label: string;
     onClick?: () => void;
+    class?: string;
 }
 
 const MenuItem = defineComponent({

@@ -42,6 +42,11 @@ export const mockData = {
     email: 'test@example.com',
     isMaster: false,
     permissionsList: ['view_items', 'add_transactions'],
+    firstName: 'Test',
+    lastName: 'User',
+    isActive: true,
+    isStaff: false,
+    isSuperuser: false,
   },
   
   supplier: {

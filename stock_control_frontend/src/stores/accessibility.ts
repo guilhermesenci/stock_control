@@ -53,8 +53,14 @@ export const useAccessibilityStore = defineStore('accessibility', {
      * Retorna as variáveis CSS customizadas para aplicar no documento
      */
     cssVariables: (state) => {
-      const fontSizeMultiplier = state.fontSizeMultiplier;
-      
+      const multipliers = {
+        'small': 0.875,
+        'normal': 1,
+        'large': 1.125,
+        'extra-large': 1.25
+      };
+      const fontSizeMultiplier = multipliers[state.fontSize];
+
       return {
         '--accessibility-font-size': `${fontSizeMultiplier}rem`,
         '--accessibility-font-size-small': `${fontSizeMultiplier * 0.875}rem`,

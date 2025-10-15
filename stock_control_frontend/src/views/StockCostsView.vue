@@ -2,7 +2,7 @@
   <PageContainer
     title="Custos do Estoque"
     :global-loading="loading"
-    :error="error"
+    :error="error ?? undefined"
     @retry="loadStockCosts"
   >
     <div class="stock-costs-content">

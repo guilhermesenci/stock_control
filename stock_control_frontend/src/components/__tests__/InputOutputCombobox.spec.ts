@@ -124,7 +124,9 @@ describe('InputOutputCombobox', () => {
     const select = vModelWrapper.find('select')
     await select.setValue('false')
     
-    expect(vModelWrapper.emitted('update:modelValue')[0]).toEqual([false])
+    const emitted = vModelWrapper.emitted('update:modelValue')
+    expect(emitted).toBeTruthy()
+    expect(emitted && emitted[0]).toEqual([false])
   })
 
   it('trata mudanças de opções dinamicamente', async () => {

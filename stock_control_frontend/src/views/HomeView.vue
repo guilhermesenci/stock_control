@@ -28,7 +28,7 @@ onMounted(() => {
     title="Dashboard"
     :global-loading="loading"
     loading-message="Carregando dashboard..."
-    :error="error"
+    :error="error ?? undefined"
     @retry="loadHomeData"
   >
     <template #actions>

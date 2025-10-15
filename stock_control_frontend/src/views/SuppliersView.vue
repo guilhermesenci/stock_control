@@ -3,7 +3,7 @@
   <PageContainer
     title="Cadastro de Fornecedores"
     :global-loading="loading"
-    :error="error"
+    :error="error ?? undefined"
     @retry="loadSuppliers"
   >
     <template #actions>

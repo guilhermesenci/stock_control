@@ -2,7 +2,7 @@
   <PageContainer
     title="Sobre o Sistema"
     :global-loading="loading"
-    :error="error"
+    :error="error ?? undefined"
     @retry="loadAboutData"
   >
     <div class="about-content">

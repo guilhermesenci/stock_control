@@ -151,7 +151,7 @@ export function usePaginatedList<T>(
   fetchFn: (page: number, filters?: any) => Promise<{ results: T[]; count: number; [key: string]: any }>,
   initialFilters: any = {}
 ) {
-  const pageState = usePageState<T[]>([]);
+  const pageState = usePageState([]);
   const currentPage = ref(1);
   const totalPages = ref(0);
   const totalCount = ref(0);

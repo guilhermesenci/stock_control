@@ -189,7 +189,14 @@ const handleSubmit = async () => {
   try {
     await withLoading(async () => {
       const userData: CreateUserData = {
-        ...formData.value,
+        username: formData.value.username,
+        email: formData.value.email,
+        password: formData.value.password,
+        password2: formData.value.password2,
+        firstName: formData.value.firstName,
+        lastName: formData.value.lastName,
+        isActive: formData.value.isActive,
+        isSuperuser: formData.value.isSuperuser,
         permissionsList: ['dashboard'] // Permissão básica
       };
       

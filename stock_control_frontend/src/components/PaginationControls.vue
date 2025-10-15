@@ -31,7 +31,7 @@
         <button
           v-if="page !== '...'"
           :class="['pagination-btn', 'page-number', { active: page === currentPage }]"
-          @click="$emit('go-to-page', page)"
+          @click="$emit('go-to-page', Number(page))"
         >
           {{ page }}
         </button>

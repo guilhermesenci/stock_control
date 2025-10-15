@@ -108,6 +108,7 @@ export interface FormattedTransaction {
   totalCost: number;
   notaFiscal?: string;
   username?: string;
+  supplierId?: number;
 }
 
 // Interface para parâmetros de busca

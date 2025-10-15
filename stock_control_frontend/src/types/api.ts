@@ -83,6 +83,9 @@ export interface Paginated<T> {
     next: string | null;
     /** URL (ou token) da página anterior, ou null se não houver */
     previous: string | null;
+
+    /** número da página atual (adicional, não vem da API) */ 
+    page?: any;
   }
   
   /**

@@ -90,7 +90,7 @@ import { useLoading } from '@/composables/useLoading';
 import { useErrorHandler } from '@/composables/useApiError';
 import FormField from './FormField.vue';
 import LoadingButton from './LoadingButton.vue';
-import type { Item } from '@/services/itemService';
+import type { Item } from '@/types/item';
 
 const props = defineProps<{
   item: Item;
@@ -137,7 +137,7 @@ const handleSubmit = async () => {
 
   try {
     await withLoading(async () => {
-      const itemData: Item = {
+      const itemData: any = {
         ...formData.value,
         codSku: formData.value.codSku || props.item.codSku
       };

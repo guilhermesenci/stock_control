@@ -1,5 +1,5 @@
 // src/test/setup.ts - Configuração global para testes
-import { vi } from 'vitest'
+import { vi, afterEach } from 'vitest'
 import { config } from '@vue/test-utils'
 
 // Mock do localStorage
@@ -96,9 +96,10 @@ vi.mock('vue-router', () => ({
 
 // Mock para Pinia
 vi.mock('pinia', async (importOriginal) => {
-  const actual = await importOriginal()
+  const actual = await importOriginal();
+  const actualObj = (actual && typeof actual === 'object') ? actual : {};
   return {
-    ...actual,
+    ...actualObj,
     createPinia: vi.fn(() => ({
       install: vi.fn(),
     })),

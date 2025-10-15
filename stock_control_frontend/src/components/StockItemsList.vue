@@ -76,17 +76,18 @@
       console.log('StockItemsList: Estado da ordenação:', pagination.sortState.value);
       
       // Preparar parâmetros de query
+      const baseQueryParams = pagination.getQueryParams();
       const queryParams = {
-        ...pagination.getQueryParams(),
         codSku: props.filters.itemSKU,
         descricaoItem: props.filters.itemDescription,
         stockDate: props.filters.stockDate,
         showOnlyStockItems: props.filters.showOnlyStockItems,
         showOnlyActiveItems: props.filters.showOnlyActiveItems,
+        ...baseQueryParams,
       };
       
       const result = await stockService.getStockItems(
-        parseInt(queryParams.page), 
+        parseInt(baseQueryParams.page), 
         queryParams
       );
       

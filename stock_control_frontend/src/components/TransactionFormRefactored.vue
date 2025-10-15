@@ -10,7 +10,7 @@
             label="Tipo de Transação" 
             v-model="form.isEntry" 
             :options="isEditMode ? [
-              { value: props.transaction?.transactionType === 'entrada' ? 'true' : 'false', text: props.transaction?.transactionType }, 
+              { value: props.transaction?.transactionType === 'entrada' ? 'true' : 'false', text: props.transaction?.transactionType ?? '' }, 
             ] : [
               { value: 'true', text: 'Entrada' }, 
               { value: 'false', text: 'Saída' }

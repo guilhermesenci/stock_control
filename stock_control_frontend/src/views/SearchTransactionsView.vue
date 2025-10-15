@@ -2,7 +2,7 @@
   <PageContainer
     title="Consultar Transações"
     :global-loading="loading"
-    :error="error"
+    :error="error ?? undefined"
     @retry="loadTransactions"
   >
     <template #actions>
@@ -173,7 +173,7 @@ function onEditTransaction(transaction: any) {
 // Salvar edição de transação
 async function onEditTransactionSave(transaction: any) {
   transaction.id = transactionToEdit.value?.id;
-  transaction.idTransacao = transactionToEdit.value?.cronology;
+  transaction.idTransacao = transactionToEdit.value?.idTransacao;
   
   try {
     await transactionService.updateTransaction(transaction as FormattedTransaction);

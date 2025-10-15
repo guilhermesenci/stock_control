@@ -72,14 +72,29 @@ describe('useAuthStore', () => {
 
     it('hasPermission retorna true para usuário master', () => {
       const store = useAuthStore()
-      store.currentUser = { ...mockData.user, isMaster: true }
+      store.currentUser = { 
+        ...mockData.user, 
+        isMaster: true,
+        firstName: mockData.user.firstName ?? '',
+        lastName: mockData.user.lastName ?? '',
+        isActive: mockData.user.isActive ?? true,
+        isStaff: mockData.user.isStaff ?? false,
+        isSuperuser: mockData.user.isSuperuser ?? false
+      }
       
       expect(store.hasPermission('any_permission')).toBe(true)
     })
 
     it('hasPermission retorna true para permissão específica', () => {
       const store = useAuthStore()
-      store.currentUser = mockData.user
+      store.currentUser = {
+        ...mockData.user,
+        firstName: mockData.user.firstName ?? '',
+        lastName: mockData.user.lastName ?? '',
+        isActive: mockData.user.isActive ?? true,
+        isStaff: mockData.user.isStaff ?? false,
+        isSuperuser: mockData.user.isSuperuser ?? false
+      }
       
       expect(store.hasPermission('view_items')).toBe(true)
       expect(store.hasPermission('add_transactions')).toBe(true)

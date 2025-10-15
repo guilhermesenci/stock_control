@@ -20,6 +20,9 @@ export interface Item extends ActivatableEntity {
   unidMedida: string;
   quantity?: number;
   estimatedConsumptionTime?: string;
+  page: any;
+  edit: any;
+  delete: any;
 }
 
 /**
@@ -52,4 +55,5 @@ export interface ItemFilters {
   stockDate?: string;
   showOnlyStockItems?: boolean;
   showOnlyActiveItems?: boolean;
+  page: any;
 } 

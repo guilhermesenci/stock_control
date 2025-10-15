@@ -55,7 +55,7 @@ const searchTerm = ref('');
 const suggestions = ref<Item[]>([]);
 const showSuggestions = ref(false);
 const selectedIndex = ref(-1);
-let searchTimeout: number | null = null;
+let searchTimeout: any = null;
 
 // Sincroniza com o valor do modelo
 watch(() => props.modelValue, (newValue) => {

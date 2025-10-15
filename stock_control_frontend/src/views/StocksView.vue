@@ -2,7 +2,7 @@
   <PageContainer
     title="Consulta de Estoque"
     :global-loading="loading"
-    :error="error"
+    :error="error ?? undefined"
     @retry="loadStocks"
   >
     <div class="stocks-content">
