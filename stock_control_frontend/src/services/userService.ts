@@ -69,7 +69,7 @@ const userService = {
    * Get user by ID
    */
   getUserById: async (id: number): Promise<User> => {
-    const response = await api.get(`/api/v1/users/${id}/`);
+    const response = await api.get(`v1/users/${id}/`);
     return response.data;
   },
 
@@ -77,7 +77,7 @@ const userService = {
    * Get current logged in user
    */
   getCurrentUser: async (): Promise<User> => {
-    const response = await api.get('/api/v1/current-user-info/');
+    const response = await api.get('current-user-info/');
     return response.data;
   },
 
@@ -85,7 +85,7 @@ const userService = {
    * Create a new user
    */
   createUser: async (userData: CreateUserData): Promise<User> => {
-    const response = await api.post('/api/v1/register/', userData);
+    const response = await api.post('v1/register/', userData);
     return response.data.user;
   },
 
@@ -93,7 +93,7 @@ const userService = {
    * Update a user
    */
   updateUser: async (id: number, userData: UpdateUserData): Promise<User> => {
-    const response = await api.patch(`/api/v1/users/${id}/`, userData);
+    const response = await api.patch(`v1/users/${id}/`, userData);
     return response.data;
   },
 
@@ -108,7 +108,7 @@ const userService = {
    * Delete a user
    */
   deleteUser: async (id: number): Promise<void> => {
-    await api.delete(`/api/v1/users/${id}/`);
+    await api.delete(`v1/users/${id}/`);
   }
 };
 

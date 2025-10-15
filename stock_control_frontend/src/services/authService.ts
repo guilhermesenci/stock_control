@@ -4,7 +4,7 @@ export const authService = {
   async login(username: string, password: string) {
     try {
       console.log('AuthService: Iniciando login');
-      const response = await api.post('/api/token/', {
+      const response = await api.post('/token/', {
         username,
         password,
       });
@@ -23,7 +23,7 @@ export const authService = {
       if (!refresh) {
         throw new Error('No refresh token available');
       }
-      const response = await api.post('/api/token/refresh/', {
+      const response = await api.post('/token/refresh/', {
         refresh,
       });
       console.log('AuthService: Token atualizado');

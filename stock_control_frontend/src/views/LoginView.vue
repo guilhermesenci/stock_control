@@ -1,38 +1,27 @@
 <!-- LoginView.vue -->
 <template>
-    <div class="login-container">
-        <form @submit.prevent="onSubmit" class="login-form">
-            <h1>Login</h1>
-            <div class="form-group">
-                <label for="username">Usuário</label>
-                <input
-                    type="text"
-                    id="username"
-                    v-model="username"
-                    required
-                    autocomplete="username"
-                />
-            </div>
-            <div class="form-group">
-                <label for="password">Senha</label>
-                <input
-                    type="password"
-                    id="password"
-                    v-model="password"
-                    required
-                    autocomplete="current-password"
-                />
-            </div>
-            <LoadingButton 
-                type="submit" 
-                :loading="loading"
-                variant="primary"
-                size="large"
-            >
-                Entrar
-            </LoadingButton>
-        </form>
-    </div>
+  <div class="login-container">
+    <form @submit.prevent="onSubmit" class="login-form">
+      <h1>Login</h1>
+      <div class="form-group">
+        <label for="username">Usuário</label>
+        <input type="text" id="username" v-model="username" required autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input
+          type="password"
+          id="password"
+          v-model="password"
+          required
+          autocomplete="current-password"
+        />
+      </div>
+      <LoadingButton type="submit" :loading="loading" variant="primary" size="large">
+        Entrar
+      </LoadingButton>
+    </form>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -51,84 +40,85 @@ const password = ref('')
 const loading = ref(false)
 
 async function onSubmit() {
-    try {
-        console.log('LoginView: Iniciando login')
-        loading.value = true
-        
-        await authStore.login({ username: username.value, password: password.value })
-        console.log('LoginView: Login bem sucedido')
-        
-        handleSuccess('Login realizado', 'Bem-vindo de volta!')
-        
-        // Redireciona para a página inicial
-        router.push('/')
-    } catch (err: any) {
-        console.error('LoginView: Erro no login:', err)
-        handleError(err, 'Erro no login')
-    } finally {
-        loading.value = false
-    }
+  try {
+    console.log('LoginView: Iniciando login')
+    console.log('LoginView: Usuário:', authStore)
+    loading.value = true
+
+    await authStore.login({ username: username.value, password: password.value })
+    console.log('LoginView: Login bem sucedido')
+
+    handleSuccess('Login realizado', 'Bem-vindo de volta!')
+
+    // Redireciona para a página inicial
+    router.push('/')
+  } catch (err: any) {
+    console.error('LoginView: Erro no login:', err)
+    handleError(err, 'Erro no login')
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
 <style lang="css">
 html,
 body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .login-form {
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
 }
 
 .form-group {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 label {
-    display: block;
-    margin-bottom: 0.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
 }
 
 input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
 button {
-    width: 100%;
-    padding: 0.75rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 button:disabled {
-    background-color: grey;
-    cursor: not-allowed;
+  background-color: grey;
+  cursor: not-allowed;
 }
 
 .error {
-    color: #dc3545;
-    margin-top: 1rem;
-    text-align: center;
+  color: #dc3545;
+  margin-top: 1rem;
+  text-align: center;
 }
 </style>
