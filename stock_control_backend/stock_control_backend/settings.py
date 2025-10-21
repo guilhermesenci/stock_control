@@ -270,3 +270,10 @@ CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     'http://localhost:5173',
     'http://127.0.0.1:5173',
 ])
+
+#  Additional allowed hosts for deployment (RENDER)
+ALLOWED_HOSTS = [
+    'stock-control-6ecv.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]

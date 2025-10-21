@@ -46,7 +46,7 @@
   
   // define os campos para esse formulário
   const fields: FilterField<StockFilters>[] = [
-    { key: 'stockDate',             label: 'Estoque do dia:',                     type: 'date' },
+    // { key: 'stockDate',             label: 'Estoque do dia:',                     type: 'date' },
     { key: 'itemSKU',               label: 'SKU do produto:',                     type: 'text'},
     { key: 'itemDescription',       label: 'Descrição do produto:',               type: 'text'},
     { key: 'showOnlyStockItems',    label: 'Exibir apenas itens com estoque',     type: 'checkbox'},

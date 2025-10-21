@@ -40,7 +40,7 @@ class StockService {
       // Usar camelCase diretamente nos parâmetros
       if (filters.codSku) params.append('codSku', String(filters.codSku))
       if (filters.descricaoItem) params.append('descricaoItem', filters.descricaoItem)
-      if (filters.stockDate) params.append('stockDate', filters.stockDate)
+      // if (filters.stockDate) params.append('stockDate', filters.stockDate)
       if (filters.showOnlyStockItems !== undefined) params.append('showOnlyStockItems', String(filters.showOnlyStockItems))
       if (filters.showOnlyActiveItems !== undefined) params.append('showOnlyActiveItems', String(filters.showOnlyActiveItems))
       
@@ -50,7 +50,7 @@ class StockService {
       
       console.log('StockService: Params construídos:', params.toString())
       
-      const url = `/api/v1/stocks/?${params.toString()}`
+      const url = `/stocks/?${params.toString()}`
       console.log('StockService: URL da requisição:', url)
       
       const response = await api.get(url)

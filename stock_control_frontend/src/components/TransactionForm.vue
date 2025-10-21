@@ -431,7 +431,7 @@ async function handleProductSearch() {
   productSearchTimeout = setTimeout(async () => {
     try {
       // Search both by SKU and description
-      const { data } = await api.get(`/api/v1/itens/?search=${productSearch.value}`)
+      const { data } = await api.get(`/api/itens/?search=${productSearch.value}`)
       productSuggestions.value = data.results || []
       showProductSuggestions.value = productSuggestions.value.length > 0
       productSelectedIndex.value = -1 // Reset selection when results change
@@ -480,7 +480,7 @@ async function getAverageCost(sku: string): Promise<number> {
     loadingCost.value = true
     // Primeiro tenta obter o custo médio da API específica
     try {
-      const { data } = await api.get(`/api/v1/itens/${sku}/custo-medio/`)
+      const { data } = await api.get(`/api/itens/${sku}/custo-medio/`)
       if (data && data.custoMedio !== undefined) {
         console.log('Custo médio obtido da API:', data.custoMedio)
         return data.custoMedio
@@ -675,7 +675,7 @@ async function handleSubmit(values: TxFormType) {
 
       if (!isEditMode.value) {
         const { data: entradasMesmaNFMesmoFornecedor } = await api.get(
-          `/api/v1/transacoes/?codNf=${values.codNf}&codFornecedor=${values.supplierId}`,
+          `/api/transacoes/?codNf=${values.codNf}&codFornecedor=${values.supplierId}`,
         )
         console.log('entradasMesmaNFMesmoFornecedor:', entradasMesmaNFMesmoFornecedor)
         if (entradasMesmaNFMesmoFornecedor.results.length > 0) {

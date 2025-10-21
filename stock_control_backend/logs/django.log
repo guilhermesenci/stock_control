@@ -7072,3 +7072,429 @@ WARNING 2025-10-13 22:11:49,005 basehttp 5032 2976 "GET /api/current-user-info/ 
 WARNING 2025-10-13 22:12:01,032 log 5032 2976 Unauthorized: /api/current-user-info/
 WARNING 2025-10-13 22:12:01,033 basehttp 5032 2976 "GET /api/current-user-info/ HTTP/1.1" 401 81
 INFO 2025-10-13 22:12:38,058 basehttp 5032 2976 "GET /api/current-user-info/ HTTP/1.1" 200 496
+INFO 2025-10-13 22:47:06,557 autoreload 5032 17632 C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\stock_control_backend\settings.py changed, reloading.
+INFO 2025-10-13 22:47:07,662 autoreload 30028 27440 Watching for file changes with StatReloader
+INFO 2025-10-14 22:23:17,404 autoreload 22960 19776 Watching for file changes with StatReloader
+WARNING 2025-10-14 22:24:28,579 log 22960 2428 Unauthorized: /api/token/
+WARNING 2025-10-14 22:24:28,580 basehttp 22960 2428 "POST /api/token/ HTTP/1.1" 401 64
+INFO 2025-10-14 22:26:54,559 basehttp 22960 22968 "POST /api/token/ HTTP/1.1" 200 486
+INFO 2025-10-14 22:36:39,495 autoreload 22960 19776 C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\views.py changed, reloading.
+INFO 2025-10-14 22:36:40,565 autoreload 19868 2888 Watching for file changes with StatReloader
+INFO 2025-10-14 22:37:13,059 autoreload 19868 2888 C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\stock_control_backend\urls.py changed, reloading.
+INFO 2025-10-14 22:37:13,962 autoreload 21448 19464 Watching for file changes with StatReloader
+INFO 2025-10-14 22:39:30,143 autoreload 21448 19464 C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\stock_control_backend\urls.py changed, reloading.
+INFO 2025-10-14 22:39:31,021 autoreload 7800 8496 Watching for file changes with StatReloader
+INFO 2025-10-14 22:40:29,292 autoreload 7800 8496 C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\stock_control_backend\urls.py changed, reloading.
+INFO 2025-10-14 22:40:30,116 autoreload 22188 7080 Watching for file changes with StatReloader
+INFO 2025-10-14 22:40:34,636 autoreload 22188 7080 C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\stock_control_backend\urls.py changed, reloading.
+INFO 2025-10-14 22:40:35,406 autoreload 5732 5292 Watching for file changes with StatReloader
+INFO 2025-10-14 22:41:26,355 autoreload 5732 5292 C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\stock_control_backend\urls.py changed, reloading.
+INFO 2025-10-14 22:41:27,130 autoreload 4836 9008 Watching for file changes with StatReloader
+INFO 2025-10-14 22:42:23,710 basehttp 4836 4736 "GET /api/test-db/ HTTP/1.1" 200 288
+WARNING 2025-10-14 22:52:32,721 log 4836 19660 Unauthorized: /api/token/
+WARNING 2025-10-14 22:52:32,722 basehttp 4836 19660 "POST /api/token/ HTTP/1.1" 401 64
+INFO 2025-10-14 22:52:51,509 basehttp 4836 2648 "POST /api/token/ HTTP/1.1" 200 486
+WARNING 2025-10-14 22:52:51,527 log 4836 22972 Not Found: /api/api/v1/current-user-info/
+WARNING 2025-10-14 22:52:51,528 basehttp 4836 22972 "GET /api/api/v1/current-user-info/ HTTP/1.1" 404 35435
+INFO 2025-10-14 22:53:20,181 basehttp 4836 21460 "POST /api/token/ HTTP/1.1" 200 486
+WARNING 2025-10-14 22:53:20,198 log 4836 21960 Not Found: /api/api/v1/current-user-info/
+WARNING 2025-10-14 22:53:20,199 basehttp 4836 21960 "GET /api/api/v1/current-user-info/ HTTP/1.1" 404 35435
+WARNING 2025-10-14 22:55:52,047 log 4836 10396 Unauthorized: /api/token/
+WARNING 2025-10-14 22:55:52,048 basehttp 4836 10396 "POST /api/token/ HTTP/1.1" 401 64
+INFO 2025-10-14 22:55:59,620 basehttp 4836 14148 "POST /api/token/ HTTP/1.1" 200 486
+WARNING 2025-10-14 22:55:59,637 log 4836 22996 Not Found: /api/v1/current-user-info/
+WARNING 2025-10-14 22:55:59,638 basehttp 4836 22996 "GET /api/v1/current-user-info/ HTTP/1.1" 404 35423
+WARNING 2025-10-14 22:56:40,865 log 4836 18448 Unauthorized: /api/token/
+WARNING 2025-10-14 22:56:40,866 basehttp 4836 18448 "POST /api/token/ HTTP/1.1" 401 64
+INFO 2025-10-14 22:56:48,036 basehttp 4836 17468 "POST /api/token/ HTTP/1.1" 200 486
+WARNING 2025-10-14 22:56:48,053 log 4836 2432 Not Found: /api/v1/current-user-info/
+WARNING 2025-10-14 22:56:48,055 basehttp 4836 2432 "GET /api/v1/current-user-info/ HTTP/1.1" 404 35423
+INFO 2025-10-14 22:58:20,929 basehttp 4836 11688 "POST /api/token/ HTTP/1.1" 200 486
+INFO 2025-10-14 22:58:22,649 basehttp 4836 20184 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-10-14 23:16:03,036 basehttp 4836 13320 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-10-21 18:33:54,920 autoreload 2840 24668 Watching for file changes with StatReloader
+INFO 2025-10-21 18:34:28,317 basehttp 2840 10868 "POST /api/token/ HTTP/1.1" 200 486
+INFO 2025-10-21 18:34:33,222 basehttp 2840 8348 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 18:35:29,023 log 2840 3488 Not Found: /api/api/v1/stocks/
+WARNING 2025-10-21 18:35:29,024 basehttp 2840 3488 "GET /api/api/v1/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 404 35532
+WARNING 2025-10-21 18:35:42,190 log 2840 12464 Not Found: /api/api/v1/stock-costs/
+WARNING 2025-10-21 18:35:42,191 basehttp 2840 12464 "GET /api/api/v1/stock-costs/?page=1&active=true&ordering=sku&page_size=10 HTTP/1.1" 404 35474
+WARNING 2025-10-21 18:36:24,957 log 2840 13160 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-10-21 18:36:24,958 basehttp 2840 13160 "GET /api/api/v1/fornecedores/?page=1&nomeFornecedor=te HTTP/1.1" 404 35449
+WARNING 2025-10-21 18:36:25,127 log 2840 23736 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-10-21 18:36:25,128 basehttp 2840 23736 "GET /api/api/v1/fornecedores/?page=1&nomeFornecedor=tes HTTP/1.1" 404 35450
+WARNING 2025-10-21 18:36:25,289 log 2840 4372 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-10-21 18:36:25,290 basehttp 2840 4372 "GET /api/api/v1/fornecedores/?page=1&nomeFornecedor=test HTTP/1.1" 404 35451
+WARNING 2025-10-21 18:36:25,343 log 2840 17668 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-10-21 18:36:25,343 basehttp 2840 17668 "GET /api/api/v1/fornecedores/?page=1&nomeFornecedor=teste HTTP/1.1" 404 35452
+WARNING 2025-10-21 18:36:25,473 log 2840 14608 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-10-21 18:36:25,474 basehttp 2840 14608 "GET /api/api/v1/fornecedores/?page=1&nomeFornecedor=teste+ HTTP/1.1" 404 35453
+WARNING 2025-10-21 18:36:25,631 log 2840 5300 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-10-21 18:36:25,632 basehttp 2840 5300 "GET /api/api/v1/fornecedores/?page=1&nomeFornecedor=teste+1 HTTP/1.1" 404 35454
+WARNING 2025-10-21 18:36:25,768 log 2840 4928 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-10-21 18:36:25,769 basehttp 2840 4928 "GET /api/api/v1/fornecedores/?page=1&nomeFornecedor=teste+12 HTTP/1.1" 404 35455
+WARNING 2025-10-21 18:36:25,869 log 2840 9992 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-10-21 18:36:25,870 basehttp 2840 9992 "GET /api/api/v1/fornecedores/?page=1&nomeFornecedor=teste+123 HTTP/1.1" 404 35456
+WARNING 2025-10-21 18:36:30,081 log 2840 25128 Not Found: /api/api/v1/itens/
+WARNING 2025-10-21 18:36:30,082 basehttp 2840 25128 "GET /api/api/v1/itens/?search=12 HTTP/1.1" 404 35409
+WARNING 2025-10-21 18:36:30,137 log 2840 19992 Not Found: /api/api/v1/itens/
+WARNING 2025-10-21 18:36:30,138 basehttp 2840 19992 "GET /api/api/v1/itens/?search=123 HTTP/1.1" 404 35410
+WARNING 2025-10-21 18:36:30,247 log 2840 25576 Not Found: /api/api/v1/itens/
+WARNING 2025-10-21 18:36:30,248 basehttp 2840 25576 "GET /api/api/v1/itens/?search=1232 HTTP/1.1" 404 35411
+WARNING 2025-10-21 18:36:30,277 log 2840 17360 Not Found: /api/api/v1/itens/
+WARNING 2025-10-21 18:36:30,278 basehttp 2840 17360 "GET /api/api/v1/itens/?search=12321 HTTP/1.1" 404 35412
+WARNING 2025-10-21 18:36:30,359 log 2840 4864 Not Found: /api/api/v1/itens/
+WARNING 2025-10-21 18:36:30,360 basehttp 2840 4864 "GET /api/api/v1/itens/?search=123213 HTTP/1.1" 404 35413
+WARNING 2025-10-21 18:36:30,414 log 2840 16748 Not Found: /api/api/v1/itens/
+WARNING 2025-10-21 18:36:30,415 basehttp 2840 16748 "GET /api/api/v1/itens/?search=1232131 HTTP/1.1" 404 35414
+WARNING 2025-10-21 18:36:30,427 log 2840 23056 Not Found: /api/api/v1/itens/
+WARNING 2025-10-21 18:36:30,428 basehttp 2840 23056 "GET /api/api/v1/itens/?search=12321312 HTTP/1.1" 404 35415
+WARNING 2025-10-21 18:36:30,505 log 2840 23972 Not Found: /api/api/v1/itens/
+WARNING 2025-10-21 18:36:30,506 basehttp 2840 23972 "GET /api/api/v1/itens/?search=123213123 HTTP/1.1" 404 35416
+WARNING 2025-10-21 18:36:30,585 log 2840 6968 Not Found: /api/api/v1/itens/
+WARNING 2025-10-21 18:36:30,586 basehttp 2840 6968 "GET /api/api/v1/itens/?search=1232131232 HTTP/1.1" 404 35417
+WARNING 2025-10-21 18:36:30,661 log 2840 26268 Not Found: /api/api/v1/itens/
+WARNING 2025-10-21 18:36:30,662 basehttp 2840 26268 "GET /api/api/v1/itens/?search=12321312323 HTTP/1.1" 404 35418
+WARNING 2025-10-21 18:36:35,655 log 2840 26380 Not Found: /api/api/v1/current-user-inventory-info/
+WARNING 2025-10-21 18:36:35,655 basehttp 2840 26380 "GET /api/api/v1/current-user-inventory-info/ HTTP/1.1" 404 35465
+WARNING 2025-10-21 18:36:43,123 log 2840 19404 Not Found: /api/api/v1/current-user-inventory-info/
+WARNING 2025-10-21 18:36:43,123 basehttp 2840 19404 "GET /api/api/v1/current-user-inventory-info/ HTTP/1.1" 404 35465
+INFO 2025-10-21 18:38:25,533 basehttp 2840 25228 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 18:38:55,366 log 2840 24624 Not Found: /api/v1/stocks/
+WARNING 2025-10-21 18:38:55,367 basehttp 2840 24624 "GET /api/v1/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 404 35520
+WARNING 2025-10-21 18:39:08,946 log 2840 328 Not Found: /api/v1/fornecedores/
+WARNING 2025-10-21 18:39:08,947 basehttp 2840 328 "GET /api/v1/fornecedores/?page=1&nomeFornecedor=12 HTTP/1.1" 404 35437
+WARNING 2025-10-21 18:39:09,025 log 2840 13176 Not Found: /api/v1/fornecedores/
+WARNING 2025-10-21 18:39:09,026 basehttp 2840 13176 "GET /api/v1/fornecedores/?page=1&nomeFornecedor=123 HTTP/1.1" 404 35438
+WARNING 2025-10-21 18:39:10,494 log 2840 20248 Not Found: /api/v1/fornecedores/
+WARNING 2025-10-21 18:39:10,495 basehttp 2840 20248 "GET /api/v1/fornecedores/?page=1&nomeFornecedor=rt HTTP/1.1" 404 35437
+WARNING 2025-10-21 18:39:10,573 log 2840 25264 Not Found: /api/v1/fornecedores/
+WARNING 2025-10-21 18:39:10,574 basehttp 2840 25264 "GET /api/v1/fornecedores/?page=1&nomeFornecedor=rte HTTP/1.1" 404 35438
+WARNING 2025-10-21 18:39:10,758 log 2840 20108 Not Found: /api/v1/fornecedores/
+WARNING 2025-10-21 18:39:10,759 basehttp 2840 20108 "GET /api/v1/fornecedores/?page=1&nomeFornecedor=rtes HTTP/1.1" 404 35439
+WARNING 2025-10-21 18:39:32,793 log 2840 13120 Not Found: /api/api/current-user-info/
+WARNING 2025-10-21 18:39:32,794 basehttp 2840 13120 "GET /api/api/current-user-info/ HTTP/1.1" 404 35426
+WARNING 2025-10-21 18:39:37,793 log 2840 20300 Not Found: /api/api/token/
+WARNING 2025-10-21 18:39:37,794 basehttp 2840 20300 "POST /api/api/token/ HTTP/1.1" 404 35391
+INFO 2025-10-21 18:39:47,351 basehttp 2840 22248 "POST /api/token/ HTTP/1.1" 200 486
+INFO 2025-10-21 18:39:49,224 basehttp 2840 2636 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 18:39:53,512 log 2840 6184 Not Found: /api/v1/stocks/
+WARNING 2025-10-21 18:39:53,513 basehttp 2840 6184 "GET /api/v1/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 404 35520
+WARNING 2025-10-21 18:40:20,454 log 2840 4952 Not Found: /api/v1/fornecedores/
+WARNING 2025-10-21 18:40:20,455 basehttp 2840 4952 "GET /api/v1/fornecedores/?page=1&active=true HTTP/1.1" 404 35431
+INFO 2025-10-21 18:42:05,450 autoreload 2840 24668 C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\urls.py changed, reloading.
+INFO 2025-10-21 18:42:06,968 autoreload 25288 12984 Watching for file changes with StatReloader
+WARNING 2025-10-21 18:42:30,359 log 25288 8080 Not Found: /api/v1/stocks/
+WARNING 2025-10-21 18:42:30,360 basehttp 25288 8080 "GET /api/v1/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 404 34998
+WARNING 2025-10-21 18:42:32,697 log 25288 11080 Not Found: /api/v1/itens/
+WARNING 2025-10-21 18:42:32,699 basehttp 25288 11080 "GET /api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34925
+INFO 2025-10-21 18:43:41,867 basehttp 25288 6340 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-10-21 18:43:43,524 basehttp 25288 10456 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 18:43:43,554 log 25288 10152 Not Found: /api/v1/itens/
+WARNING 2025-10-21 18:43:43,555 basehttp 25288 10152 "GET /api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34925
+INFO 2025-10-21 18:43:46,553 basehttp 25288 10708 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 18:43:46,599 log 25288 25676 Not Found: /api/v1/itens/
+WARNING 2025-10-21 18:43:46,600 basehttp 25288 25676 "GET /api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34925
+INFO 2025-10-21 18:43:49,423 basehttp 25288 5928 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 18:43:49,453 log 25288 2700 Not Found: /api/v1/itens/
+WARNING 2025-10-21 18:43:49,453 basehttp 25288 2700 "GET /api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34925
+INFO 2025-10-21 18:43:52,520 basehttp 25288 14908 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 18:43:52,629 log 25288 19136 Not Found: /api/v1/itens/
+WARNING 2025-10-21 18:43:52,632 basehttp 25288 19136 "GET /api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34925
+WARNING 2025-10-21 18:44:42,293 log 25288 23568 Not Found: /api/v1/itens/
+WARNING 2025-10-21 18:44:42,293 basehttp 25288 23568 "POST /api/v1/itens/ HTTP/1.1" 404 34866
+WARNING 2025-10-21 18:45:13,328 log 25288 26576 Not Found: /api/api/current-user-info/
+WARNING 2025-10-21 18:45:13,330 basehttp 25288 26576 "GET /api/api/current-user-info/ HTTP/1.1" 404 34904
+WARNING 2025-10-21 18:45:18,616 log 25288 24956 Not Found: /api/api/token/
+WARNING 2025-10-21 18:45:18,617 basehttp 25288 24956 "POST /api/api/token/ HTTP/1.1" 404 34869
+INFO 2025-10-21 18:45:35,991 basehttp 25288 17664 "POST /api/token/ HTTP/1.1" 200 486
+INFO 2025-10-21 18:45:37,862 basehttp 25288 5800 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 18:45:46,258 log 25288 8812 Not Found: /api/v1/itens/
+WARNING 2025-10-21 18:45:46,259 basehttp 25288 8812 "GET /api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34925
+WARNING 2025-10-21 18:46:12,142 log 25288 1908 Not Found: /api/v1/itens/
+WARNING 2025-10-21 18:46:12,142 basehttp 25288 1908 "GET /api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34925
+WARNING 2025-10-21 18:47:58,012 log 25288 26604 Not Found: /api/v1/itens/
+WARNING 2025-10-21 18:47:58,014 basehttp 25288 26604 "GET /api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34925
+WARNING 2025-10-21 18:48:15,555 log 25288 22236 Not Found: /api/v1/itens/
+WARNING 2025-10-21 18:48:15,556 basehttp 25288 22236 "GET /api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34925
+INFO 2025-10-21 18:48:34,045 basehttp 25288 23772 "GET /api/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 200 59
+INFO 2025-10-21 18:48:35,351 basehttp 25288 19592 "GET /api/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 200 59
+INFO 2025-10-21 18:48:54,453 basehttp 25288 26424 "POST /api/itens/ HTTP/1.1" 201 82
+INFO 2025-10-21 18:48:55,914 basehttp 25288 5292 "GET /api/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 200 141
+INFO 2025-10-21 18:53:19,687 basehttp 25288 3540 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-10-21 18:53:21,174 basehttp 25288 19464 "GET /api/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 200 141
+WARNING 2025-10-21 18:53:27,806 log 25288 26284 Bad Request: /api/stocks/
+WARNING 2025-10-21 18:53:27,807 basehttp 25288 26284 "GET /api/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 400 59
+INFO 2025-10-21 18:53:37,027 basehttp 25288 24188 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 18:53:38,267 log 25288 17448 Bad Request: /api/stocks/
+WARNING 2025-10-21 18:53:38,268 basehttp 25288 17448 "GET /api/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 400 59
+WARNING 2025-10-21 18:53:50,395 log 25288 17496 Not Found: /apiunified-transactions/
+WARNING 2025-10-21 18:53:50,396 basehttp 25288 17496 "GET /apiunified-transactions/?page=1&dateFrom=21%2F10%2F2025&dateTo=21%2F10%2F2025&ordering=-cronology&page_size=10 HTTP/1.1" 404 3020
+INFO 2025-10-21 18:54:30,154 basehttp 25288 9276 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 18:54:30,185 log 25288 25648 Not Found: /apiunified-transactions/
+WARNING 2025-10-21 18:54:30,186 basehttp 25288 25648 "GET /apiunified-transactions/?page=1&dateFrom=21%2F10%2F2025&dateTo=21%2F10%2F2025&ordering=-cronology&page_size=10 HTTP/1.1" 404 3020
+ERROR 2025-10-21 18:55:22,836 log 25288 12160 Internal Server Error: /api/unified-transactions/
+Traceback (most recent call last):
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\views.py", line 437, in unified_transactions
+    result = TransactionService.get_unified_transactions(
+        date_from=date_from,
+    ...<3 lines>...
+        description=description
+    )
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\services.py", line 322, in get_unified_transactions
+    entradas_qs = entradas_qs.filter(data_entrada__gte=date_from)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1412, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\lookups.py", line 38, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\lookups.py", line 96, in get_prep_lookup
+    return self.lhs.output_field.get_prep_value(self.rhs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 1537, in get_prep_value
+    return self.to_python(value)
+           ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 1503, in to_python
+    raise exceptions.ValidationError(
+    ...<3 lines>...
+    )
+django.core.exceptions.ValidationError: ['O valor "21/10/2025" tem um formato de data inválido. Deve ser no formato  YYYY-MM-DD.']
+ERROR 2025-10-21 18:55:22,851 basehttp 25288 12160 "GET /api/unified-transactions/?page=1&dateFrom=21%2F10%2F2025&dateTo=21%2F10%2F2025&ordering=-cronology&page_size=10 HTTP/1.1" 500 166579
+ERROR 2025-10-21 18:55:24,899 log 25288 22412 Internal Server Error: /api/unified-transactions/
+Traceback (most recent call last):
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\views.py", line 437, in unified_transactions
+    result = TransactionService.get_unified_transactions(
+        date_from=date_from,
+    ...<3 lines>...
+        description=description
+    )
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\services.py", line 322, in get_unified_transactions
+    entradas_qs = entradas_qs.filter(data_entrada__gte=date_from)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1412, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\lookups.py", line 38, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\lookups.py", line 96, in get_prep_lookup
+    return self.lhs.output_field.get_prep_value(self.rhs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 1537, in get_prep_value
+    return self.to_python(value)
+           ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 1503, in to_python
+    raise exceptions.ValidationError(
+    ...<3 lines>...
+    )
+django.core.exceptions.ValidationError: ['O valor "21/10/2025" tem um formato de data inválido. Deve ser no formato  YYYY-MM-DD.']
+ERROR 2025-10-21 18:55:24,906 basehttp 25288 22412 "GET /api/unified-transactions/?page=1&dateFrom=21%2F10%2F2025&dateTo=21%2F10%2F2025&ordering=-cronology&page_size=10 HTTP/1.1" 500 166579
+INFO 2025-10-21 18:55:46,832 basehttp 25288 20288 "GET /api/current-user-info/ HTTP/1.1" 200 481
+ERROR 2025-10-21 18:55:49,030 log 25288 24924 Internal Server Error: /api/unified-transactions/
+Traceback (most recent call last):
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\views.py", line 437, in unified_transactions
+    result = TransactionService.get_unified_transactions(
+        date_from=date_from,
+    ...<3 lines>...
+        description=description
+    )
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\services.py", line 322, in get_unified_transactions
+    entradas_qs = entradas_qs.filter(data_entrada__gte=date_from)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\sql\query.py", line 1412, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\lookups.py", line 38, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\lookups.py", line 96, in get_prep_lookup
+    return self.lhs.output_field.get_prep_value(self.rhs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 1537, in get_prep_value
+    return self.to_python(value)
+           ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 1503, in to_python
+    raise exceptions.ValidationError(
+    ...<3 lines>...
+    )
+django.core.exceptions.ValidationError: ['O valor "21/10/2025" tem um formato de data inválido. Deve ser no formato  YYYY-MM-DD.']
+ERROR 2025-10-21 18:55:49,036 basehttp 25288 24924 "GET /api/unified-transactions/?page=1&dateFrom=21%2F10%2F2025&dateTo=21%2F10%2F2025&ordering=-cronology&page_size=10 HTTP/1.1" 500 166579
+WARNING 2025-10-21 18:56:35,669 log 25288 10644 Bad Request: /api/stocks/
+WARNING 2025-10-21 18:56:35,669 basehttp 25288 10644 "GET /api/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 400 59
+WARNING 2025-10-21 18:56:49,024 log 25288 1120 Bad Request: /api/stocks/
+WARNING 2025-10-21 18:56:49,025 basehttp 25288 1120 "GET /api/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 400 59
+INFO 2025-10-21 18:57:28,573 autoreload 25288 12984 C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\urls.py changed, reloading.
+INFO 2025-10-21 18:57:30,786 autoreload 24056 13096 Watching for file changes with StatReloader
+INFO 2025-10-21 18:57:35,529 autoreload 24056 13096 C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\views.py changed, reloading.
+INFO 2025-10-21 18:57:37,813 autoreload 2460 6348 Watching for file changes with StatReloader
+WARNING 2025-10-21 18:57:46,374 log 2460 19220 Bad Request: /api/stocks/
+WARNING 2025-10-21 18:57:46,375 basehttp 2460 19220 "GET /api/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 400 59
+INFO 2025-10-21 18:58:59,552 basehttp 2460 11476 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 18:59:00,771 log 2460 24164 Bad Request: /api/stocks/
+WARNING 2025-10-21 18:59:00,771 basehttp 2460 24164 "GET /api/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 400 59
+INFO 2025-10-21 19:02:05,013 basehttp 2460 21772 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-10-21 19:02:45,785 basehttp 2460 9352 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 19:02:55,699 log 2460 10112 Not Found: /api/api/v1/stocks/
+WARNING 2025-10-21 19:02:55,701 basehttp 2460 10112 "GET /api/api/v1/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 404 35010
+INFO 2025-10-21 19:03:13,784 basehttp 2460 9188 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 19:03:13,833 log 2460 24904 Not Found: /api/v1/stocks/
+WARNING 2025-10-21 19:03:13,834 basehttp 2460 24904 "GET /api/v1/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 404 34998
+INFO 2025-10-21 19:03:25,477 basehttp 2460 2848 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 19:03:26,625 log 2460 17584 Bad Request: /api/stocks/
+WARNING 2025-10-21 19:03:26,627 basehttp 2460 17584 "GET /api/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 400 59
+INFO 2025-10-21 19:03:34,029 basehttp 2460 8508 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 19:03:34,066 log 2460 18572 Not Found: /api/v1/stocks/
+WARNING 2025-10-21 19:03:34,066 basehttp 2460 18572 "GET /api/v1/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 404 34998
+INFO 2025-10-21 19:03:41,158 basehttp 2460 25116 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 19:03:42,391 log 2460 5172 Bad Request: /api/stocks/
+WARNING 2025-10-21 19:03:42,392 basehttp 2460 5172 "GET /api/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 400 59
+INFO 2025-10-21 19:04:54,197 basehttp 2460 21096 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 19:04:55,336 log 2460 6888 Method Not Allowed: /api/stocks/
+WARNING 2025-10-21 19:04:55,337 basehttp 2460 6888 "POST /api/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 405 61
+INFO 2025-10-21 19:05:03,764 basehttp 2460 6568 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 19:05:04,903 log 2460 5980 Bad Request: /api/stocks/
+WARNING 2025-10-21 19:05:04,904 basehttp 2460 5980 "GET /api/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 400 59
+INFO 2025-10-21 19:05:20,992 basehttp 2460 20336 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-10-21 19:05:23,067 basehttp 2460 25892 "GET /api/stocks/ HTTP/1.1" 200 259
+INFO 2025-10-21 19:10:04,016 basehttp 2460 19324 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-10-21 19:10:05,283 log 2460 8432 Bad Request: /api/stocks/
+WARNING 2025-10-21 19:10:05,284 basehttp 2460 8432 "GET /api/stocks/?page=1&stockDate=21%2F10%2F2025&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 400 59
+INFO 2025-10-21 19:10:50,565 basehttp 2460 22724 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-10-21 19:10:52,106 basehttp 2460 17112 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-10-21 19:11:28,946 basehttp 2460 22680 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-10-21 19:11:30,672 basehttp 2460 14320 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-10-21 19:12:03,727 basehttp 2460 22112 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 259
+INFO 2025-10-21 19:12:05,585 basehttp 2460 20924 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 259
+INFO 2025-10-21 19:14:46,088 basehttp 2460 6888 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-10-21 19:14:49,803 basehttp 2460 5388 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-10-21 19:14:51,358 basehttp 2460 21660 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-10-21 19:14:53,579 basehttp 2460 4904 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 259
+INFO 2025-10-21 19:14:55,450 basehttp 2460 4764 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 259

@@ -1,6 +1,5 @@
 // src/stores/__tests__/auth.spec.ts
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { setActivePinia, createPinia } from 'pinia'
 import { useAuthStore } from '../auth'
 import { mockData, mockApiResponses, mockLocalStorage } from '@/test/utils'
 
