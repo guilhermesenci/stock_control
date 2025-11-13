@@ -4,7 +4,7 @@ export const authService = {
   async login(username: string, password: string) {
     try {
       console.log('AuthService: Iniciando login');
-      const response = await api.post('/token/', {
+      const response = await api.post('/token', {
         username,
         password,
       });

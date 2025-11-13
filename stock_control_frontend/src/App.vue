@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import SideMenu from './components/SideMenu.vue'
 import NotificationContainer from './components/NotificationContainer.vue'

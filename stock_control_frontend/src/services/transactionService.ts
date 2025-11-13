@@ -125,14 +125,14 @@ export interface TransactionSearchParams {
 
 class TransactionService {
   async getTransacoes(page = 1): Promise<Paginated<Transacao>> {
-    const { data } = await api.get(`/api/v1/transacoes/`)
+    const { data } = await api.get(`/transacoes/`)
     return data
   }
 
   async createTransacao(t: Omit<Transacao, 'idTransacao'>): Promise<Transacao> {
     console.log('Sending transacao payload:', t);
     
-    const { data } = await api.post('/api/v1/transacoes/', t)
+    const { data } = await api.post('/transacoes/', t)
     
     // Clear cache after creating a transaction
     transactionCache.clearEndpoint('unified-transactions');
@@ -141,7 +141,7 @@ class TransactionService {
   }
 
   async getEntradas(page = 1, params?: { dataEntradaAfter?: string; dataEntradaBefore?: string; codNf?: string; codSku?: string }): Promise<Paginated<Entrada>> {
-    let url = `/api/v1/entradas/`;
+    let url = `/entradas/`;
     
     // Add all parameters that are defined
     if (params) {
@@ -173,7 +173,7 @@ class TransactionService {
       horaEntrada: horaEntrada,
     }
     console.log('Sending entrada payload:', entrada);
-    const { data } = await api.post('/api/v1/entradas/', entrada)
+    const { data } = await api.post('/entradas/', entrada)
     
     // Clear cache after creating an entrada
     transactionCache.clearEndpoint('unified-transactions');
@@ -231,7 +231,7 @@ class TransactionService {
   }
 
   async getCurrentUserInventoryInfo(): Promise<InventoryUserInfo> {
-    const { data } = await api.get('/api/v1/current-user-inventory-info/');
+    const { data } = await api.get('/current-user-inventory-info/');
     console.log('Raw user inventory info response:', data);
     
     return data;
@@ -288,7 +288,7 @@ class TransactionService {
 
   async getNotaFiscalByCodNf(codNf: string): Promise<Transacao | null> {
     try {
-      const { data } = await api.get(`/api/v1/transacoes/?codNf=${codNf}`);
+      const { data } = await api.get(`/transacoes/?codNf=${codNf}`);
       if (data.results && data.results.length > 0) {
         return data.results[0]; 
       }
@@ -300,7 +300,7 @@ class TransactionService {
 
   async getNotaFiscalByCodNfAndFornecedor(codNf: string, codFornecedor: number): Promise<Transacao | null> {
     try {
-      const { data } = await api.get(`/api/v1/transacoes/?codNf=${codNf}&codFornecedor=${codFornecedor}`);
+      const { data } = await api.get(`/transacoes/?codNf=${codNf}&codFornecedor=${codFornecedor}`);
       if (data.results && data.results.length > 0) {
         return data.results[0];
       }
@@ -324,7 +324,7 @@ class TransactionService {
     }
     
     // Build URL with parameters
-    let url = '/api/v1/unified-transactions/';
+    let url = '/unified-transactions/';
     const queryParams: string[] = [];
     
     if (params?.page) {
@@ -379,38 +379,38 @@ class TransactionService {
   }
 
   async updateTransacao(transacao: Transacao): Promise<Transacao> {
-    const { data } = await api.put(`/api/v1/transacoes/${transacao.idTransacao}/`, transacao);
+    const { data } = await api.put(`/transacoes/${transacao.idTransacao}/`, transacao);
     return data;
   }
 
   // Métodos CRUD 
   async updateEntrada(entrada: Entrada): Promise<Entrada> {
-    const { data } = await api.put(`/api/v1/entradas/${entrada.codEntrada}/`, entrada);
+    const { data } = await api.put(`/entradas/${entrada.codEntrada}/`, entrada);
     return data;
   }
 
   async updateSaida(saida: Saida): Promise<Saida> {
-    const { data } = await api.put(`/api/v1/saidas/${saida.codPedido}/`, saida);
+    const { data } = await api.put(`/saidas/${saida.codPedido}/`, saida);
     return data;
   }
 
   // Métodos para deletar
   async deleteEntrada(codEntrada: number): Promise<void> {
-    await api.delete(`/api/v1/entradas/${codEntrada}/`);
+    await api.delete(`/entradas/${codEntrada}/`);
   }
 
   async deleteSaida(codPedido: number): Promise<void> {
-    await api.delete(`/api/v1/saidas/${codPedido}/`);
+    await api.delete(`/saidas/${codPedido}/`);
   }
 
   async deleteTransacao(idTransacao: number): Promise<void> {
-    await api.delete(`/api/v1/transacoes/${idTransacao}/`);
+    await api.delete(`/transacoes/${idTransacao}/`);
   }
 
   // Método para recalcular custos (agora delegado para o backend)
   async recalculateSubsequentSaidaCosts(transactionId: number, sku: string): Promise<void> {
     try {
-      const { data } = await api.post('/api/v1/recalculate-costs/', {
+      const { data } = await api.post('/recalculate-costs/', {
         transactionId,
         sku
       });

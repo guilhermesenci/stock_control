@@ -337,7 +337,7 @@ const handleProductSearch = async (query: string) => {
   
   try {
     await withLoading(async () => {
-      const { data } = await api.get(`/api/v1/itens/?search=${query}`);
+      const { data } = await api.get(`/itens/?search=${query}`);
       productSuggestions.value = data.results || [];
       showProductSuggestions.value = true;
     }, 'productLoading');

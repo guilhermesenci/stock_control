@@ -13,7 +13,7 @@ interface RetryableRequest extends AxiosRequestConfig {
  */
 const api: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
-    timeout: 10000, // 10 segundos de timeout
+    timeout: 30000, // 10 segundos de timeout
     headers: {
         'Content-Type': 'application/json',
         'ngrok-skip-browser-warning': 'true',

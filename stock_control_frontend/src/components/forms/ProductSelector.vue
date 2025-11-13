@@ -80,7 +80,7 @@ async function handleSearch() {
   
   searchTimeout = setTimeout(async () => {
     try {
-      const { data } = await api.get(`/api/v1/itens/?search=${encodeURIComponent(searchTerm.value)}`);
+      const { data } = await api.get(`/itens/?search=${encodeURIComponent(searchTerm.value)}`);
       suggestions.value = data.results || [];
       showSuggestions.value = suggestions.value.length > 0;
       selectedIndex.value = -1;

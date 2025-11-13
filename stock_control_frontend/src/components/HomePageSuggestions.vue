@@ -1,6 +1,6 @@
 <template>
     <div class="homepage-title">
-        <h1 class="homepage-title-text">Controle de estoque projeto congonhas</h1>
+        <h1 class="homepage-title-text">Controle de estoque</h1>
         <p class="welcome-message" v-if="authStore.currentUser">
             Bem-vindo(a), <strong>{{ authStore.currentUser.username }}</strong>!
             <span v-if="authStore.currentUser.isMaster" class="master-badge">Usuário Master</span>

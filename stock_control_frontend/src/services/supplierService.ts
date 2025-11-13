@@ -14,7 +14,7 @@ export interface Fornecedor {
 }
 
 export class SupplierService {
-  private baseUrl = '/api/v1/fornecedores/';
+  private baseUrl = '/fornecedores/';
 
   async getSuppliers(page = 1, filters?: { nomeFornecedor?: string; active?: boolean }): Promise<Paginated<Fornecedor>> {
     console.log('SupplierService: Iniciando busca de fornecedores');
