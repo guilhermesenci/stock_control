@@ -13,7 +13,7 @@ A API utiliza JWT (JSON Web Token) para autenticação. Todos os endpoints prote
 ### Obter Token
 
 ```bash
-POST /api/token/
+POST /api/token
 Content-Type: application/json
 
 {

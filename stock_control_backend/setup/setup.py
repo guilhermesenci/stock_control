@@ -4,7 +4,7 @@ def main():
 
     entradas = pd.read_excel('stock_control_backend/setup/transactions.xlsx', sheet_name='entradas')
     
-    r = post('http://localhost:8000/api/token/', data={"username": "jpafarelli", "password": "0pr3SS@0"})
+    r = post('http://localhost:8000/api/token', data={"username": "jpafarelli", "password": "0pr3SS@0"})
     
     access_token = r.json()['access']
     # refresh_token = r.json()['refresh']
