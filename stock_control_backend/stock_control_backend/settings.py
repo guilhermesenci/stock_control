@@ -130,7 +130,8 @@ WSGI_APPLICATION = 'stock_control_backend.wsgi.application'
 DATABASES = {
     'default': env.db(),
 }
-
+DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
+DATABASES['default']['CONN_MAX_AGE'] = 0
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -271,10 +272,3 @@ CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     'http://127.0.0.1:5173',
     'https://stock-control-pi.vercel.app'
 ])
-
-#  Additional allowed hosts for deployment (RENDER)
-ALLOWED_HOSTS = [
-    'stock-control-6ecv.onrender.com',
-    'localhost',
-    '127.0.0.1',
-]
