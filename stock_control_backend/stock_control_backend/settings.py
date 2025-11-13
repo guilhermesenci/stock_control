@@ -37,7 +37,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 
 # Allowed hosts
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 
 
 # Application definition
@@ -266,14 +266,11 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 ]
 
 # CORS allowed origins (used when CORS_ALLOW_ALL_ORIGINS is False)
-CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-])
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=['*'])
 
 #  Additional allowed hosts for deployment (RENDER)
 ALLOWED_HOSTS = [
-    'stock-control-6ecv.onrender.com',
+    'https://stock-control-6ecv.onrender.com',
     'localhost',
     '127.0.0.1',
 ]

@@ -27,7 +27,7 @@ def main():
         # if index == 336:
         #     data['codSku'] = 'Adk F100'
 
-        r = post('http://localhost:8000/api/v1/entradas/', headers=headers, json=data)
+        r = post('http://localhost:8000/entradas/', headers=headers, json=data)
 
         print(r.raise_for_status())
         

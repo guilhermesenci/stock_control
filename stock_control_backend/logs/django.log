@@ -7498,3 +7498,227 @@ INFO 2025-10-21 19:14:49,803 basehttp 2460 5388 "GET /api/stocks/?page=1&showOnl
 INFO 2025-10-21 19:14:51,358 basehttp 2460 21660 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
 INFO 2025-10-21 19:14:53,579 basehttp 2460 4904 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 259
 INFO 2025-10-21 19:14:55,450 basehttp 2460 4764 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 259
+INFO 2025-10-21 19:43:31,756 basehttp 2460 21596 "POST /api/token/ HTTP/1.1" 200 486
+INFO 2025-10-21 19:43:33,601 basehttp 2460 22324 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-11-02 18:38:16,873 autoreload 2164 3288 Watching for file changes with StatReloader
+INFO 2025-11-02 18:44:40,699 autoreload 8116 17732 Watching for file changes with StatReloader
+INFO 2025-11-02 18:44:57,273 basehttp 8116 24728 "POST /api/token/ HTTP/1.1" 200 486
+INFO 2025-11-02 18:44:59,094 basehttp 8116 1088 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-11-02 18:49:59,899 basehttp 8116 18392 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-11-02 18:52:21,408 basehttp 8116 22416 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-11-02 18:53:23,160 basehttp 8116 26292 "POST /api/token/ HTTP/1.1" 200 486
+INFO 2025-11-02 18:53:24,825 basehttp 8116 26344 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-11-02 18:53:51,082 basehttp 8116 7540 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-11-02 18:55:08,183 basehttp 8116 25808 "GET /api/current-user-info/ HTTP/1.1" 200 481
+INFO 2025-11-02 18:55:09,720 basehttp 8116 3468 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-11-02 18:59:27,522 basehttp 8116 25956 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-11-02 18:59:36,279 basehttp 8116 21884 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 259
+INFO 2025-11-02 18:59:38,080 basehttp 8116 22368 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 259
+WARNING 2025-11-02 19:00:33,532 log 8116 25660 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-11-02 19:00:33,536 log 8116 21192 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-11-02 19:00:33,537 basehttp 8116 25660 "GET /api/api/v1/fornecedores/?page=1&nomeFornecedor=123 HTTP/1.1" 404 34928
+WARNING 2025-11-02 19:00:33,537 basehttp 8116 21192 "GET /api/api/v1/fornecedores/?page=1&nomeFornecedor=12 HTTP/1.1" 404 34927
+WARNING 2025-11-02 19:00:35,064 log 8116 9696 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:00:35,065 basehttp 8116 9696 "GET /api/api/v1/itens/?search=12 HTTP/1.1" 404 34887
+WARNING 2025-11-02 19:00:35,152 log 8116 9676 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:00:35,154 basehttp 8116 9676 "GET /api/api/v1/itens/?search=123 HTTP/1.1" 404 34888
+WARNING 2025-11-02 19:00:39,549 log 8116 10180 Not Found: /api/api/v1/current-user-inventory-info/
+WARNING 2025-11-02 19:00:39,550 basehttp 8116 10180 "GET /api/api/v1/current-user-inventory-info/ HTTP/1.1" 404 34943
+WARNING 2025-11-02 19:00:53,055 log 8116 24156 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-11-02 19:00:53,056 basehttp 8116 24156 "GET /api/api/v1/fornecedores/?page=1&active=true HTTP/1.1" 404 34921
+WARNING 2025-11-02 19:00:57,846 log 8116 23992 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-11-02 19:00:57,847 basehttp 8116 23992 "GET /api/api/v1/fornecedores/?page=1 HTTP/1.1" 404 34905
+WARNING 2025-11-02 19:00:57,860 log 8116 21888 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-11-02 19:00:57,861 basehttp 8116 21888 "GET /api/api/v1/fornecedores/?page=1 HTTP/1.1" 404 34905
+WARNING 2025-11-02 19:00:57,882 log 8116 26408 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-11-02 19:00:57,883 basehttp 8116 26408 "GET /api/api/v1/fornecedores/?page=1 HTTP/1.1" 404 34905
+WARNING 2025-11-02 19:01:08,754 log 8116 24736 Not Found: /api/api/v1/fornecedores/
+WARNING 2025-11-02 19:01:08,755 basehttp 8116 24736 "POST /api/api/v1/fornecedores/ HTTP/1.1" 404 34899
+WARNING 2025-11-02 19:01:51,624 log 8116 11892 Not Found: /api/v1/fornecedores/
+WARNING 2025-11-02 19:01:51,625 basehttp 8116 11892 "GET /api/v1/fornecedores/?page=1&active=true HTTP/1.1" 404 34909
+WARNING 2025-11-02 19:01:51,646 log 8116 26488 Not Found: /api/v1/fornecedores/
+WARNING 2025-11-02 19:01:51,647 basehttp 8116 26488 "GET /api/v1/fornecedores/?page=1 HTTP/1.1" 404 34893
+WARNING 2025-11-02 19:01:59,487 log 8116 21336 Not Found: /api/v1/fornecedores/
+WARNING 2025-11-02 19:01:59,488 basehttp 8116 21336 "POST /api/v1/fornecedores/ HTTP/1.1" 404 34887
+INFO 2025-11-02 19:02:56,805 basehttp 8116 25936 "GET /api/fornecedores/?page=1&active=true HTTP/1.1" 200 59
+INFO 2025-11-02 19:02:56,839 basehttp 8116 17400 "GET /api/fornecedores/?page=1 HTTP/1.1" 200 59
+INFO 2025-11-02 19:02:58,073 basehttp 8116 25336 "GET /api/fornecedores/?page=1&active=true HTTP/1.1" 200 59
+INFO 2025-11-02 19:03:00,531 basehttp 8116 8584 "POST /api/fornecedores/ HTTP/1.1" 201 63
+INFO 2025-11-02 19:03:01,931 basehttp 8116 25752 "GET /api/fornecedores/?page=1&active=true HTTP/1.1" 200 122
+INFO 2025-11-02 19:03:11,673 basehttp 8116 7980 "GET /api/fornecedores/?page=1&nomeFornecedor=te HTTP/1.1" 200 122
+INFO 2025-11-02 19:03:12,059 basehttp 8116 23332 "GET /api/fornecedores/?page=1&nomeFornecedor=tes HTTP/1.1" 200 122
+INFO 2025-11-02 19:03:12,236 basehttp 8116 26004 "GET /api/fornecedores/?page=1&nomeFornecedor=test HTTP/1.1" 200 122
+INFO 2025-11-02 19:03:12,296 basehttp 8116 22240 "GET /api/fornecedores/?page=1&nomeFornecedor=teste HTTP/1.1" 200 122
+WARNING 2025-11-02 19:03:17,936 log 8116 7400 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:03:17,936 basehttp 8116 7400 "GET /api/api/v1/itens/?search=12 HTTP/1.1" 404 34887
+WARNING 2025-11-02 19:03:18,037 log 8116 3620 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:03:18,038 basehttp 8116 3620 "GET /api/api/v1/itens/?search=123 HTTP/1.1" 404 34888
+WARNING 2025-11-02 19:03:18,254 log 8116 16736 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:03:18,255 basehttp 8116 16736 "GET /api/api/v1/itens/?search=1234 HTTP/1.1" 404 34889
+WARNING 2025-11-02 19:03:23,174 log 8116 10532 Not Found: /api/api/v1/current-user-inventory-info/
+WARNING 2025-11-02 19:03:23,175 basehttp 8116 10532 "GET /api/api/v1/current-user-inventory-info/ HTTP/1.1" 404 34943
+INFO 2025-11-02 19:03:51,693 basehttp 8116 7488 "GET /api/fornecedores/?page=1&nomeFornecedor=te HTTP/1.1" 200 122
+INFO 2025-11-02 19:03:52,185 basehttp 8116 6316 "GET /api/fornecedores/?page=1&nomeFornecedor=tes HTTP/1.1" 200 122
+INFO 2025-11-02 19:03:52,335 basehttp 8116 22784 "GET /api/fornecedores/?page=1&nomeFornecedor=test HTTP/1.1" 200 122
+INFO 2025-11-02 19:03:52,405 basehttp 8116 8412 "GET /api/fornecedores/?page=1&nomeFornecedor=teste HTTP/1.1" 200 122
+WARNING 2025-11-02 19:03:56,906 log 8116 1768 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:03:56,907 basehttp 8116 1768 "GET /api/api/v1/itens/?search=12 HTTP/1.1" 404 34887
+WARNING 2025-11-02 19:03:57,013 log 8116 19428 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:03:57,014 basehttp 8116 19428 "GET /api/api/v1/itens/?search=123 HTTP/1.1" 404 34888
+WARNING 2025-11-02 19:04:02,563 log 8116 10168 Not Found: /api/v1/current-user-inventory-info/
+WARNING 2025-11-02 19:04:02,563 basehttp 8116 10168 "GET /api/v1/current-user-inventory-info/ HTTP/1.1" 404 34931
+INFO 2025-11-02 19:04:18,525 basehttp 8116 8316 "GET /api/fornecedores/?page=1&nomeFornecedor=te HTTP/1.1" 200 122
+INFO 2025-11-02 19:04:18,678 basehttp 8116 14820 "GET /api/fornecedores/?page=1&nomeFornecedor=tes HTTP/1.1" 200 122
+INFO 2025-11-02 19:04:18,847 basehttp 8116 22136 "GET /api/fornecedores/?page=1&nomeFornecedor=test HTTP/1.1" 200 122
+INFO 2025-11-02 19:04:18,878 basehttp 8116 16036 "GET /api/fornecedores/?page=1&nomeFornecedor=teste HTTP/1.1" 200 122
+WARNING 2025-11-02 19:04:28,282 log 8116 19244 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:04:28,283 basehttp 8116 19244 "GET /api/api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34937
+WARNING 2025-11-02 19:04:29,756 log 8116 20940 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:04:29,757 basehttp 8116 20940 "GET /api/api/v1/itens/?page=1&active=true&ordering=-codSku&page_size=10 HTTP/1.1" 404 34938
+WARNING 2025-11-02 19:04:31,436 log 8116 16072 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:04:31,437 basehttp 8116 16072 "GET /api/api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34937
+WARNING 2025-11-02 19:04:31,457 log 8116 20288 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:04:31,457 basehttp 8116 20288 "GET /api/api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34937
+WARNING 2025-11-02 19:04:31,475 log 8116 11556 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:04:31,476 basehttp 8116 11556 "GET /api/api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34937
+INFO 2025-11-02 19:04:57,029 basehttp 8116 22312 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-11-02 19:04:57,358 log 8116 20548 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:04:57,359 basehttp 8116 20548 "GET /api/api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34937
+WARNING 2025-11-02 19:05:00,194 log 8116 23468 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:05:00,195 basehttp 8116 23468 "GET /api/api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34937
+WARNING 2025-11-02 19:05:00,214 log 8116 25288 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:05:00,216 basehttp 8116 25288 "GET /api/api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34937
+WARNING 2025-11-02 19:05:01,718 log 8116 3400 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:05:01,719 basehttp 8116 3400 "GET /api/api/v1/itens/?page=1&ordering=codSku&page_size=10 HTTP/1.1" 404 34921
+WARNING 2025-11-02 19:05:01,733 log 8116 7912 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:05:01,734 basehttp 8116 7912 "GET /api/api/v1/itens/?page=1&ordering=codSku&page_size=10 HTTP/1.1" 404 34921
+INFO 2025-11-02 19:05:19,131 basehttp 8116 13156 "GET /api/current-user-info/ HTTP/1.1" 200 481
+WARNING 2025-11-02 19:05:19,163 log 8116 15616 Not Found: /api/api/v1/itens/
+WARNING 2025-11-02 19:05:19,164 basehttp 8116 15616 "GET /api/api/v1/itens/?page=1&active=true&ordering=codSku&page_size=10 HTTP/1.1" 404 34937
+INFO 2025-11-02 19:05:24,198 basehttp 8116 2420 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-11-02 19:05:25,745 basehttp 8116 13436 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-11-02 19:05:27,331 basehttp 8116 4640 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 117
+INFO 2025-11-02 19:05:29,053 basehttp 8116 23192 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 259
+INFO 2025-11-02 19:05:30,885 basehttp 8116 19360 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 259
+INFO 2025-11-02 19:05:31,154 basehttp 8116 25912 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=false&page_size=10&ordering=codSku HTTP/1.1" 200 259
+INFO 2025-11-02 19:05:32,962 basehttp 8116 7980 "GET /api/stocks/?page=1&showOnlyStockItems=false&showOnlyActiveItems=false&page_size=10&ordering=codSku HTTP/1.1" 200 259
+WARNING 2025-11-02 19:05:36,731 log 8116 22764 Not Found: /api/api/v1/stock-costs/
+WARNING 2025-11-02 19:05:36,732 basehttp 8116 22764 "GET /api/api/v1/stock-costs/?page=1&active=true&ordering=sku&page_size=10 HTTP/1.1" 404 34952
+WARNING 2025-11-02 19:05:38,851 log 8116 25468 Not Found: /api/api/v1/unified-transactions/
+WARNING 2025-11-02 19:05:38,852 basehttp 8116 25468 "GET /api/api/v1/unified-transactions/?page=1&dateFrom=02%2F11%2F2025&dateTo=02%2F11%2F2025&ordering=-cronology&page_size=10 HTTP/1.1" 404 35024
+INFO 2025-11-02 19:05:50,199 basehttp 8116 25680 "GET /api/fornecedores/?page=1&nomeFornecedor=te HTTP/1.1" 200 122
+INFO 2025-11-02 19:05:50,356 basehttp 8116 8088 "GET /api/fornecedores/?page=1&nomeFornecedor=tes HTTP/1.1" 200 122
+INFO 2025-11-02 19:05:50,514 basehttp 8116 22948 "GET /api/fornecedores/?page=1&nomeFornecedor=test HTTP/1.1" 200 122
+INFO 2025-11-02 19:05:50,879 basehttp 8116 24196 "GET /api/fornecedores/?page=1&nomeFornecedor=teste HTTP/1.1" 200 122
+INFO 2025-11-02 19:05:55,438 basehttp 8116 2884 "GET /api/itens/?search=12 HTTP/1.1" 200 141
+INFO 2025-11-02 19:05:55,564 basehttp 8116 13404 "GET /api/itens/?search=123 HTTP/1.1" 200 141
+INFO 2025-11-02 19:06:04,962 basehttp 8116 9808 "GET /api/fornecedores/?page=1&nomeFornecedor=teste HTTP/1.1" 200 122
+INFO 2025-11-02 19:06:04,964 basehttp 8116 16084 "GET /api/fornecedores/?page=1&nomeFornecedor=te HTTP/1.1" 200 122
+INFO 2025-11-02 19:06:04,974 basehttp 8116 3796 "GET /api/fornecedores/?page=1&nomeFornecedor=test HTTP/1.1" 200 122
+INFO 2025-11-02 19:06:04,984 basehttp 8116 16992 "GET /api/fornecedores/?page=1&nomeFornecedor=tes HTTP/1.1" 200 122
+INFO 2025-11-02 19:06:09,988 basehttp 8116 8300 "GET /api/current-user-inventory-info/ HTTP/1.1" 200 33
+WARNING 2025-11-02 19:06:10,006 log 8116 6300 Not Found: /api/api/v1/unified-transactions/
+WARNING 2025-11-02 19:06:10,007 basehttp 8116 6300 "GET /api/api/v1/unified-transactions/?notaFiscal=123 HTTP/1.1" 404 34937
+WARNING 2025-11-02 19:06:10,021 log 8116 15736 Not Found: /api/api/v1/transacoes/
+WARNING 2025-11-02 19:06:10,022 basehttp 8116 15736 "POST /api/api/v1/transacoes/ HTTP/1.1" 404 34893
+INFO 2025-11-02 19:07:15,010 basehttp 8116 18168 "GET /api/fornecedores/?page=1&nomeFornecedor=te HTTP/1.1" 200 122
+INFO 2025-11-02 19:07:15,203 basehttp 8116 22128 "GET /api/fornecedores/?page=1&nomeFornecedor=tes HTTP/1.1" 200 122
+INFO 2025-11-02 19:07:15,249 basehttp 8116 10640 "GET /api/fornecedores/?page=1&nomeFornecedor=test HTTP/1.1" 200 122
+INFO 2025-11-02 19:07:15,332 basehttp 8116 26372 "GET /api/fornecedores/?page=1&nomeFornecedor=teste HTTP/1.1" 200 122
+INFO 2025-11-02 19:07:27,652 basehttp 8116 18624 "GET /api/itens/?search=12 HTTP/1.1" 200 141
+INFO 2025-11-02 19:07:29,087 basehttp 8116 19428 "GET /api/itens/?search=123 HTTP/1.1" 200 141
+INFO 2025-11-02 19:07:35,368 basehttp 8116 8968 "GET /api/current-user-inventory-info/ HTTP/1.1" 200 33
+INFO 2025-11-02 19:07:36,661 basehttp 8116 1736 "GET /api/unified-transactions/?notaFiscal=1234 HTTP/1.1" 200 15
+INFO 2025-11-02 19:07:38,375 basehttp 8116 7472 "POST /api/transacoes/ HTTP/1.1" 201 118
+WARNING 2025-11-02 19:07:38,391 log 8116 9592 Not Found: /api/api/v1/entradas/
+WARNING 2025-11-02 19:07:38,392 basehttp 8116 9592 "POST /api/api/v1/entradas/ HTTP/1.1" 404 34887
+INFO 2025-11-02 19:08:36,173 basehttp 8116 24636 "GET /api/fornecedores/?page=1&nomeFornecedor=te HTTP/1.1" 200 122
+INFO 2025-11-02 19:08:36,226 basehttp 8116 22688 "GET /api/fornecedores/?page=1&nomeFornecedor=tes HTTP/1.1" 200 122
+INFO 2025-11-02 19:08:36,306 basehttp 8116 21908 "GET /api/fornecedores/?page=1&nomeFornecedor=test HTTP/1.1" 200 122
+INFO 2025-11-02 19:08:36,415 basehttp 8116 24400 "GET /api/fornecedores/?page=1&nomeFornecedor=teste HTTP/1.1" 200 122
+INFO 2025-11-02 19:08:40,971 basehttp 8116 22100 "GET /api/itens/?search=12 HTTP/1.1" 200 141
+INFO 2025-11-02 19:08:41,044 basehttp 8116 26316 "GET /api/itens/?search=123 HTTP/1.1" 200 141
+INFO 2025-11-02 19:08:49,562 basehttp 8116 6236 "GET /api/current-user-inventory-info/ HTTP/1.1" 200 33
+INFO 2025-11-02 19:08:50,830 basehttp 8116 11140 "GET /api/unified-transactions/?notaFiscal=123 HTTP/1.1" 200 15
+INFO 2025-11-02 19:08:52,421 basehttp 8116 26268 "POST /api/transacoes/ HTTP/1.1" 201 117
+INFO 2025-11-02 19:08:54,294 basehttp 8116 24912 "POST /api/entradas/ HTTP/1.1" 201 106
+ERROR 2025-11-02 19:09:01,575 log 8116 15716 Internal Server Error: /api/unified-transactions/
+Traceback (most recent call last):
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\views.py", line 429, in unified_transactions
+    result = TransactionService.get_unified_transactions(
+        date_from=date_from,
+    ...<3 lines>...
+        description=description
+    )
+  File "C:\Users\guilh\OneDrive\Documentos\StockControl\stock_control_backend\inventory\services.py", line 322, in get_unified_transactions
+    entradas_qs = entradas_qs.filter(data_entrada__gte=date_from)
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1412, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\db\models\lookups.py", line 38, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\db\models\lookups.py", line 96, in get_prep_lookup
+    return self.lhs.output_field.get_prep_value(self.rhs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\db\models\fields\__init__.py", line 1537, in get_prep_value
+    return self.to_python(value)
+           ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\guilh\AppData\Roaming\Python\Python313\site-packages\django\db\models\fields\__init__.py", line 1503, in to_python
+    raise exceptions.ValidationError(
+    ...<3 lines>...
+    )
+django.core.exceptions.ValidationError: ['O valor "02/11/2025" tem um formato de data inválido. Deve ser no formato  YYYY-MM-DD.']
+ERROR 2025-11-02 19:09:01,589 basehttp 8116 15716 "GET /api/unified-transactions/?page=1&dateFrom=02%2F11%2F2025&dateTo=02%2F11%2F2025&ordering=-cronology&page_size=10 HTTP/1.1" 500 163943
+INFO 2025-11-02 19:09:08,508 basehttp 8116 26204 "GET /api/unified-transactions/?page=1&ordering=-cronology&page_size=10 HTTP/1.1" 200 281
+WARNING 2025-11-02 19:09:37,905 log 8116 23572 Not Found: /api/api/v1/stock-costs/
+WARNING 2025-11-02 19:09:37,906 basehttp 8116 23572 "GET /api/api/v1/stock-costs/?page=1&active=true&ordering=sku&page_size=10 HTTP/1.1" 404 34952
+WARNING 2025-11-02 19:09:40,635 log 8116 26244 Not Found: /api/api/v1/stock-costs/
+WARNING 2025-11-02 19:09:40,636 basehttp 8116 26244 "GET /api/api/v1/stock-costs/?page=1&ordering=sku&page_size=10 HTTP/1.1" 404 34936
+WARNING 2025-11-02 19:09:40,649 log 8116 6404 Not Found: /api/api/v1/stock-costs/
+WARNING 2025-11-02 19:09:40,650 basehttp 8116 6404 "GET /api/api/v1/stock-costs/?page=1&ordering=sku&page_size=10 HTTP/1.1" 404 34936
+INFO 2025-11-02 19:09:53,889 basehttp 8116 17740 "GET /api/fornecedores/?page=1&active=true HTTP/1.1" 200 122
+INFO 2025-11-02 19:10:30,634 basehttp 8116 25764 "GET /api/stocks/?page=1&showOnlyStockItems=true&showOnlyActiveItems=true&page_size=10&ordering=codSku HTTP/1.1" 200 267
