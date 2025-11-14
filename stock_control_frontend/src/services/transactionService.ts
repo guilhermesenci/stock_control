@@ -182,7 +182,7 @@ class TransactionService {
   }
 
   async getSaidas(page = 1, params?: { dataSaidaAfter?: string; dataSaidaBefore?: string; codSku?: string }): Promise<Paginated<Saida>> {
-    let url = `/api/v1/saidas/`;
+    let url = `/saidas/`;
     
     // Add all parameters that are defined
     if (params) {
@@ -217,7 +217,7 @@ class TransactionService {
     console.log('Sending saida payload:', JSON.stringify(saida, null, 2));
     
     try {
-      const { data } = await api.post('/api/v1/saidas/', saida);
+      const { data } = await api.post('/saidas', saida);
       console.log('Saida response:', data);
       
       // Clear cache after creating a saida
@@ -435,7 +435,7 @@ class TransactionService {
     newQuantity?: number
   ): Promise<boolean> {
     try {
-      const { data } = await api.post('/api/v1/validate-stock-operation/', {
+      const { data } = await api.post('/validate-stock-operation/', {
         sku,
         operationType,
         transactionId,
@@ -453,7 +453,7 @@ class TransactionService {
   async deleteTransaction(transactionId: string): Promise<void> {
     try {
       // Usar o novo endpoint do backend que faz toda a validação e recálculo
-      const { data } = await api.delete(`/api/v1/transactions/${transactionId}/`);
+      const { data } = await api.delete(`/transactions/${transactionId}/`);
       
       if (!data.success) {
         throw new Error(data.message || 'Erro ao excluir transação');
@@ -487,7 +487,7 @@ class TransactionService {
       }
 
       // Usar o novo endpoint do backend que faz toda a validação e recálculo
-      const { data } = await api.put(`/api/v1/transactions/${transaction.id}/update/`, updateData);
+      const { data } = await api.put(`/transactions/${transaction.id}/update/`, updateData);
       
       if (!data.success) {
         throw new Error(data.message || 'Erro ao atualizar transação');

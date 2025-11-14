@@ -60,7 +60,7 @@ const userService = {
       params.append('ordering', filters.ordering);
     }
     
-    const url = `/v1/users/?${params.toString()}`;
+    const url = `/users/?${params.toString()}`;
     const response = await api.get(url);
     return response.data;
   },

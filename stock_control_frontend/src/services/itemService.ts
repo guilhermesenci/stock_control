@@ -7,7 +7,7 @@ import type { Paginated } from '@/types/api';
  */
 class ItemService extends BaseService<Item, CreateItemData, UpdateItemData, ItemFilters> {
   constructor() {
-    super('/api/v1/itens');
+    super('/itens');
   }
 
   /**

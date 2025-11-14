@@ -50,7 +50,7 @@ export const stockCostService = {
         params.append('page_size', String(filters.page_size));
       }
       
-      const url = `/api/v1/stock-costs/?${params.toString()}`;
+      const url = `/stock-costs/?${params.toString()}`;
       const response = await api.get(url);
       
       return response.data;

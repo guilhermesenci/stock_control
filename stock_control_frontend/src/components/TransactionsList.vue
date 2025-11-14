@@ -71,7 +71,7 @@ import BaseTable from './BaseTable.vue';
 import PaginationControls from '@/components/PaginationControls.vue';
 import { usePagination } from '@/composables/usePagination';
 import type { ColumnDef } from '@/composables/useTable';
-import { parseBrazilianDate, formatDateToBrazilian } from '@/utils/date';
+import { parseBrazilianDate, formatDateToBrazilian, formatBrazilianDateToISO } from '@/utils/date';
 import { transactionService, type FormattedTransaction, type TransactionSearchParams } from '@/services/transactionService';
 import formatCurrency from '@/utils/currency';
 import { formatInteger, formatDecimal, parseInteger, parseDecimal } from '@/utils/numbersFormat';
@@ -121,8 +121,8 @@ const serviceParams = computed<TransactionSearchParams>(() => {
     if (!props.filters) return {};
     
     const params = {
-        dateFrom: props.filters.transactionsDateFrom || undefined,
-        dateTo: props.filters.transactionsDateTo || undefined,
+        dateFrom: formatBrazilianDateToISO(props.filters.transactionsDateFrom) || undefined,
+        dateTo: formatBrazilianDateToISO(props.filters.transactionsDateTo) || undefined,
         sku: props.filters.itemSKU === '' ? undefined : props.filters.itemSKU,
         description: props.filters.itemDescription === '' ? undefined : props.filters.itemDescription,
         notaFiscal: props.filters.notaFiscal === '' ? undefined : props.filters.notaFiscal
